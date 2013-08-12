@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VoGISProfilToolPlot</class>
+ <widget class="QDialog" name="VoGISProfilToolPlot">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>639</width>
+    <height>341</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QComboBox" name="IDC_cbDecimalDelimiter">
+       <item>
+        <property name="text">
+         <string>,</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>.</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="IDC_cbDelimiter">
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>tab</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>;</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>,</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string> </string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="IDC_chkHekto">
+       <property name="text">
+        <string>Hektometrie Attribute</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="IDC_chkLineAttributes">
+       <property name="text">
+        <string>Linien Attribute</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="11" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="8">
+      <widget class="QPushButton" name="IDC_bClose">
+       <property name="text">
+        <string>Schließen</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="6">
+      <widget class="QPushButton" name="IDC_bDxfLine">
+       <property name="text">
+        <string>DXF Linie</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="4">
+      <widget class="QPushButton" name="IDC_bDxfPnt">
+       <property name="text">
+        <string>DXF Punkt</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QPushButton" name="IDC_bShpPnt">
+       <property name="text">
+        <string>Shp Punkt</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="7">
+      <widget class="QPushButton" name="IDC_bExcel">
+       <property name="text">
+        <string>csv (Excel)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="5">
+      <widget class="QPushButton" name="IDC_bShpLine">
+       <property name="text">
+        <string>Shp Linie</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="IDC_bACadTxt">
+       <property name="text">
+        <string>Autocad Text</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="IDC_bChart">
+       <property name="text">
+        <string>Grafik</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="IDC_bText">
+       <property name="text">
+        <string>Textdatei</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>619</width>
+        <height>251</height>
+       </rect>
+      </property>
+      <zorder>checkBox</zorder>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>IDC_bClose</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolPlot</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>605</x>
+     <y>320</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>237</x>
+     <y>306</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IDC_bText</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolPlot</receiver>
+   <slot>exportTxt()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>317</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>84</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>exportTxt()</slot>
+ </slots>
+</ui>
