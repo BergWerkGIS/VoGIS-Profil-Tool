@@ -191,7 +191,7 @@
 			"file": "VoGISProfilToolMain/util/createProfile.py",
 			"settings":
 			{
-				"buffer_size": 13216,
+				"buffer_size": 13341,
 				"line_ending": "Unix"
 			}
 		},
@@ -207,7 +207,7 @@
 			"file": "VoGISProfilToolMain/util/u.py",
 			"settings":
 			{
-				"buffer_size": 3055,
+				"buffer_size": 3312,
 				"line_ending": "Unix"
 			}
 		},
@@ -272,15 +272,15 @@
 	"build_system": "Packages/Makefile/Make.sublime-build",
 	"command_palette":
 	{
-		"height": 240.0,
+		"height": 79.0,
 		"selected_items":
 		[
 			[
-				"insta",
+				"instal",
 				"Package Control: Install Package"
 			],
 			[
-				"instal",
+				"insta",
 				"Package Control: Install Package"
 			],
 			[
@@ -309,6 +309,9 @@
 	},
 	"file_history":
 	[
+		"/home/user/.config/sublime-text-2/Packages/SublimeGit/SublimeGit.sublime-settings",
+		"/home/user/.config/sublime-text-2/Packages/User/SublimeGit.sublime-settings",
+		"/home/user/.config/sublime-text-2/Packages/User/SideBarGit.sublime-settings",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/raster.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/rasterCollection.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/u.py",
@@ -338,7 +341,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 95.0,
+		"height": 0.0,
 		"where_history":
 		[
 			"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain",
@@ -384,7 +387,7 @@
 	"groups":
 	[
 		{
-			"selected": 4,
+			"selected": 6,
 			"sheets":
 			[
 				{
@@ -506,15 +509,15 @@
 					"file": "VoGISProfilToolMain/util/createProfile.py",
 					"settings":
 					{
-						"buffer_size": 13216,
+						"buffer_size": 13341,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3219,
-								3219
+								3646,
+								3646
 							]
 						],
 						"settings":
@@ -525,7 +528,7 @@
 							"wrap_width": 113.142857143
 						},
 						"translation.x": 0.0,
-						"translation.y": 765.0,
+						"translation.y": 810.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -564,26 +567,26 @@
 					"file": "VoGISProfilToolMain/util/u.py",
 					"settings":
 					{
-						"buffer_size": 3055,
+						"buffer_size": 3312,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3027,
-								3027
+								2032,
+								2032
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 2,
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true,
 							"wrap_width": 113.142857143
 						},
 						"translation.x": 0.0,
-						"translation.y": 495.0,
+						"translation.y": 675.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -591,7 +594,7 @@
 			]
 		},
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -724,7 +727,7 @@
 						"settings":
 						{
 							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 2,
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true,
 							"wrap_width": 0.0
 						},

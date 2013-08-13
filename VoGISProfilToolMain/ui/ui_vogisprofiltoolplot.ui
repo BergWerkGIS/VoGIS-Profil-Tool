@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>639</width>
+    <width>841</width>
     <height>341</height>
    </rect>
   </property>
@@ -55,7 +55,7 @@
        </item>
        <item>
         <property name="text">
-         <string> </string>
+         <string/>
         </property>
        </item>
       </widget>
@@ -156,11 +156,10 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>619</width>
+        <width>821</width>
         <height>251</height>
        </rect>
       </property>
-      <zorder>checkBox</zorder>
      </widget>
     </widget>
    </item>
@@ -175,8 +174,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>605</x>
-     <y>320</y>
+     <x>830</x>
+     <y>330</y>
     </hint>
     <hint type="destinationlabel">
      <x>237</x>
@@ -200,8 +199,42 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>IDC_bShpPnt</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolPlot</receiver>
+   <slot>exportShpPnt()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>331</x>
+     <y>318</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>347</x>
+     <y>339</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IDC_bShpLine</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolPlot</receiver>
+   <slot>exportShpLine()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>525</x>
+     <y>322</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>512</x>
+     <y>339</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>exportTxt()</slot>
+  <slot>exportShpPnt()</slot>
+  <slot>exportShpLine()</slot>
  </slots>
 </ui>

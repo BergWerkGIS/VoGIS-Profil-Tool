@@ -25,6 +25,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from ui.ui_vogisprofiltoolplot import Ui_VoGISProfilToolPlot
 from util.u import Util
+from util.exportShape import ExportShape
 
 
 class VoGISProfilToolPlotDialog(QDialog):
@@ -45,6 +46,20 @@ class VoGISProfilToolPlotDialog(QDialog):
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
         QDialog.reject(self)
+
+    def exportShpPnt(self):
+        self.__exportShp(True)
+
+    def exportShpLine(self):
+        self.__exportShp(False)
+
+    def __exportShp(self, asPnt):
+
+        u = Util(self.iface)
+        fileName = u.getFileName("Linien Shapefile exportieren", "SHP (*.shp)")
+        expShp = ExportShape(self.iface, self.settings, self.profiles)
+        if asPnt is False:
+            expShp.exportLine(fileName)
 
     def exportTxt(self):
 

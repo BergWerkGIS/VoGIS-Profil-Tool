@@ -74,14 +74,16 @@ class CreateProfile:
                 provider.select(attrIndices)
                 feat = QgsFeature()
                 while (provider.nextFeature(feat)):
-                    geom = feat.geometry()
-                    QgsMessageLog.logMessage( 'isMultipart: {0}'.format(str(geom.isMultipart())), 'VoGis')
+                    #geom = feat.geometry()
+                    #QgsMessageLog.logMessage( 'isMultipart: {0}'.format(str(geom.isMultipart())), 'VoGis')
                     #attrs = feat.attributeMap()
                     # attrs is a dictionary: key = field index, value = QgsFeatureAttribute
                     # show all attributes and their values
                     #for (k,attr) in attrs.iteritems():
                     #    QgsMessageLog.logMessage( '{0}: {1}'.format(k, attr.toString()), 'VoGis')
                     feats.append(feat)
+                    #neues Feature verwenden, weil sonst die Multiparts
+                    #nicht als solche erkannt werden
                     feat = QgsFeature()
 
             ut = Util(self.iface)

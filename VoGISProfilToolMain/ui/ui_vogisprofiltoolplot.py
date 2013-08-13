@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Sun Aug 11 18:09:37 2013
+# Created: Tue Aug 13 13:12:51 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_VoGISProfilToolPlot(object):
     def setupUi(self, VoGISProfilToolPlot):
         VoGISProfilToolPlot.setObjectName(_fromUtf8("VoGISProfilToolPlot"))
-        VoGISProfilToolPlot.resize(639, 341)
+        VoGISProfilToolPlot.resize(841, 341)
         VoGISProfilToolPlot.setModal(True)
         self.gridLayout_2 = QtGui.QGridLayout(VoGISProfilToolPlot)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
@@ -35,6 +35,7 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_cbDelimiter.addItem(_fromUtf8(""))
         self.IDC_cbDelimiter.addItem(_fromUtf8(""))
         self.IDC_cbDelimiter.addItem(_fromUtf8(""))
+        self.IDC_cbDelimiter.setItemText(3, _fromUtf8(""))
         self.horizontalLayout.addWidget(self.IDC_cbDelimiter)
         self.IDC_chkHekto = QtGui.QCheckBox(VoGISProfilToolPlot)
         self.IDC_chkHekto.setObjectName(_fromUtf8("IDC_chkHekto"))
@@ -78,7 +79,7 @@ class Ui_VoGISProfilToolPlot(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 619, 251))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 821, 251))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.gridLayout_2.addWidget(self.scrollArea, 0, 0, 1, 1)
@@ -86,6 +87,8 @@ class Ui_VoGISProfilToolPlot(object):
         self.retranslateUi(VoGISProfilToolPlot)
         QtCore.QObject.connect(self.IDC_bClose, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.reject)
         QtCore.QObject.connect(self.IDC_bText, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.exportTxt)
+        QtCore.QObject.connect(self.IDC_bShpPnt, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.exportShpPnt)
+        QtCore.QObject.connect(self.IDC_bShpLine, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.exportShpLine)
         QtCore.QMetaObject.connectSlotsByName(VoGISProfilToolPlot)
 
     def retranslateUi(self, VoGISProfilToolPlot):
@@ -95,7 +98,6 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_cbDelimiter.setItemText(0, QtGui.QApplication.translate("VoGISProfilToolPlot", "tab", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDelimiter.setItemText(1, QtGui.QApplication.translate("VoGISProfilToolPlot", ";", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDelimiter.setItemText(2, QtGui.QApplication.translate("VoGISProfilToolPlot", ",", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_cbDelimiter.setItemText(3, QtGui.QApplication.translate("VoGISProfilToolPlot", " ", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_chkHekto.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Hektometrie Attribute", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_chkLineAttributes.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Linien Attribute", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bClose.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Schließen", None, QtGui.QApplication.UnicodeUTF8))
