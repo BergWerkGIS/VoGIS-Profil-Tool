@@ -126,10 +126,12 @@ class VoGISProfilToolMain:
         for lyr in availLayers:
             lyrType = lyr.type()
             if lyrType == 0:
-                #Line
-                l = Line(lyr.id(), lyr.name(), lyr)
-                #QgsMessageLog.logMessage(l.toStr(), 'VoGis')
-                lColl.addLine(l)
+                #vector
+                if lyr.geometryType() == 1:
+                    #Line
+                    l = Line(lyr.id(), lyr.name(), lyr)
+                    #QgsMessageLog.logMessage(l.toStr(), 'VoGis')
+                    lColl.addLine(l)
             elif lyrType == 1:
                 #Raster
                 r = Raster(lyr.id(), lyr.name(), lyr)

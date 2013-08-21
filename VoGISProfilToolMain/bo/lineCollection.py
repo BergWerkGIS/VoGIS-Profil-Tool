@@ -9,9 +9,9 @@ class LineCollection(object):
     def getById(self, id):
         if len(self.__lines) < 1:
             return None
-        for r in self.__lines:
-            if r.id == id:
-                return r
+        for l in self.__lines:
+            if l.id == id:
+                return l
 
     def count(self):
         return len(self.__lines)

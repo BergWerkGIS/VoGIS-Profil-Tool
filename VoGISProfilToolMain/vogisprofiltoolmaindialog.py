@@ -24,7 +24,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import QgsPoint
 from ui.ui_vogisprofiltoolmain import Ui_VoGISProfilToolMain
-from bo.raster import Raster
+#from bo.raster import Raster
 from util.u import Util
 from bo.settings import enumModeLine, enumModeVertices
 
@@ -99,7 +99,7 @@ class VoGISProfilToolMainDialog(QDialog):
         self.settings.onlySelectedFeatures = (self.ui.IDC_chkOnlySelectedFeatures.checkState() == Qt.Checked)
         self.settings.equiDistance = self.ui.IDC_dblspinDistance.value()
         self.settings.vertexCnt = self.ui.IDC_dblspinVertexCnt.value()
-        self.settings.createHekto = (self.ui.IDC_chkCreateHekto.checkState() == Qt.Checked)
+        #self.settings.createHekto = (self.ui.IDC_chkCreateHekto.checkState() == Qt.Checked)
         self.settings.nodesAndVertices = (self.ui.IDC_chkNodesAndVertices.checkState() == Qt.Checked)
 
         self.settings.mapData.selectedLineLyr = (self.ui.IDC_cbLineLayers.itemData(
@@ -149,5 +149,3 @@ class VoGISProfilToolMainDialog(QDialog):
             self.settings.mapData.customLine = ut.createQgLineFeature([fromPnt, toPnt])
 
         return True
-
-

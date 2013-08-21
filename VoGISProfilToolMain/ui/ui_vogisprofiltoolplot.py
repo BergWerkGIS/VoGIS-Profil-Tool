@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Tue Aug 13 13:12:51 2013
+# Created: Mon Aug 19 15:44:38 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -44,6 +44,8 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_chkLineAttributes.setChecked(True)
         self.IDC_chkLineAttributes.setObjectName(_fromUtf8("IDC_chkLineAttributes"))
         self.horizontalLayout.addWidget(self.IDC_chkLineAttributes)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem)
         self.gridLayout_2.addLayout(self.horizontalLayout, 1, 0, 1, 1)
         self.gridLayout = QtGui.QGridLayout()
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))

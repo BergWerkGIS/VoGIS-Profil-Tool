@@ -30,7 +30,6 @@ class CreateProfile:
         #Line aus den Textboxwerten erstellen
         if self.settings.modeLine == enumModeLine.straightLine:
             profiles.append(self.processFeature(1,
-                                                None,
                                                 1,
                                                 self.settings.mapData.customLine
                                                 )
@@ -67,6 +66,9 @@ class CreateProfile:
             provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
             feats = []
 
+            #Alle Attribute holen
+            provider.select(provider.attributeIndexes())
+
             if self.settings.onlySelectedFeatures is True:
                 feats = self.settings.mapData.selectedLineLyr.line.selectedFeatures()
             else:
@@ -79,8 +81,8 @@ class CreateProfile:
                     #attrs = feat.attributeMap()
                     # attrs is a dictionary: key = field index, value = QgsFeatureAttribute
                     # show all attributes and their values
-                    #for (k,attr) in attrs.iteritems():
-                    #    QgsMessageLog.logMessage( '{0}: {1}'.format(k, attr.toString()), 'VoGis')
+                    for (k,attr) in feat.attributeMap().iteritems():
+                        QgsMessageLog.logMessage('{0}: {1}'.format(k, attr.toString()), 'VoGis')
                     feats.append(feat)
                     #neues Feature verwenden, weil sonst die Multiparts
                     #nicht als solche erkannt werden
@@ -102,11 +104,13 @@ class CreateProfile:
 
         #QgsMessageLog.logMessage('processFeature', 'VoGis')
         geom = feat.geometry()
-        segments = self.processVertices(profileId, geom, layerId, feat.id())
+        segments = self.processVertices(feat.attributeMap(), profileId, geom, layerId, feat.id())
 
         return Profile(profileId, segments)
 
-    def processVertices(self, profileId, qgGeom, layerId, featId):
+    def processVertices(self, attribMap, profileId, qgGeom, layerId, featId):
+
+        QgsMessageLog.logMessage('{0}: {1}'.format('processFeature',attribMap), 'VoGis')
 
         step = -1
         segmentCnter = 1
@@ -134,8 +138,8 @@ class CreateProfile:
         #erster, echter Punkt der Geometrie
         qgPntOld = qgLineVertices[0]
         vtxType = enumVertexType.node
-        zVals = [768.0, 546.1, None, 256.1]
-        newVtx = Vertex(vtxType,
+        newVtx = Vertex(attribMap,
+                        vtxType,
                         qgLineVertices[0].x(),
                         qgLineVertices[0].y(),
                         profileId,
@@ -166,9 +170,9 @@ class CreateProfile:
                         qgPnt = self.__qgPntFromShplyPnt(v)
                         distQgVertices = sqrt(qgPnt.sqrDist(qgPntOld))
                         vtxType = enumVertexType.vertex
-                        zVals = [108.1, None, 2340.76, None]
                         vtxId += 1
-                        newVtx = Vertex(vtxType,
+                        newVtx = Vertex(attribMap,
+                                        vtxType,
                                         v.x,
                                         v.y,
                                         profileId,
@@ -193,9 +197,9 @@ class CreateProfile:
             if distTotal < shplyGeom.length:
                 shplyPnt = shplyGeom.interpolate(distTotal, False)
                 vtxType = enumVertexType.point
-                zVals = [33.3, 99, 66.76, 123]
                 vtxId += 1
-                newVtx = Vertex(vtxType,
+                newVtx = Vertex(attribMap,
+                                vtxType,
                                 shplyPnt.x,
                                 shplyPnt.y,
                                 profileId,
@@ -213,9 +217,9 @@ class CreateProfile:
         qgLastPnt = qgLineVertices[len(qgLineVertices)-1]
         distSegment = sqrt(qgLastPnt.sqrDist(qgPntOld))
         vtxType = enumVertexType.node
-        zVals = [768.0, 546.1, None, 256.1]
         vtxId += 1
-        newVtx = Vertex(vtxType,
+        newVtx = Vertex(attribMap,
+                        vtxType,
                         qgLastPnt.x(),
                         qgLastPnt.y(),
                         profileId,
@@ -229,52 +233,6 @@ class CreateProfile:
                         )
         segmentvertices.append(newVtx)
         segments.append(Segment(segmentCnter, segmentvertices))
-
-        return segments
-
-        for lv in qgLineVertices:
-
-            if len(vertices) < 1:
-                #startnode der linie
-                vtxType = enumVertexType.node
-            elif (len(vertices) - 1) == len(qgLineVertices):
-                #endenode der linie
-                vtxType = enumVertexType.node
-            else:
-                #echter
-                vtxType = enumVertexType.vertex
-
-            if oldQGpnt is None:
-                distSegment = 0
-                distTotal = 0
-            else:
-                distSegment = sqrt(lv.sqrDist(oldQGpnt))
-                distTotal += distSegment
-
-            zVals = [768.0, 546.1, None, 256.1]
-
-            newVtx = Vertex(vtxType,
-                            lv.x(),
-                            lv.y(),
-                            profileId,
-                            layerId,
-                            featId,
-                            segmentCnter,
-                            layerId + '_' + str(featId) + '_' + str(segmentCnter),
-                            distTotal,
-                            distSegment,
-                            zVals
-                            )
-
-            oldQGpnt = lv
-            vertices.append(newVtx)
-
-            #segment = Segment(segmentCnter, vertices)
-            segment = Segment(segmentCnter, [newVtx])
-
-            segments.append(segment)
-
-            segmentCnter += 1
 
         return segments
 

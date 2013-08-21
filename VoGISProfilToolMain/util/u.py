@@ -2,6 +2,7 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import QgsPoint
 from qgis.core import QgsGeometry
 from qgis.core import QgsFeature
 from qgis.core import QgsMessageLog
@@ -46,13 +47,24 @@ class Util:
         qgFeat.setGeometry(line)
         return qgFeat
 
-    #multipart explodieren
-    #linien mit gleichen end und start vertices verinden
+    def createQgPointFeature(self, vertex):
+        pnt = QgsGeometry.fromPoint(QgsPoint(vertex.x, vertex.y))
+        qgPnt = QgsFeature()
+        qgPnt.setGeometry(pnt)
+        return qgPnt
+
     def prepareFeatures(self, provider, origFeats):
+        """multipart explodieren"""
+        """linien mit gleichen end und start vertices verinden"""
 
         newFeats = self.__explodeMultiPartFeatures(provider, origFeats)
+        self.__printAttribs(newFeats[0].attributeMap())
+
         newFeats = self.__mergeFeaturesAny(newFeats)
-        newFeats = self.__mergeFeaturesSimple(newFeats)
+        self.__printAttribs(newFeats[0].attributeMap())
+
+        newFeats = self.__mergeFeaturesSimple(provider, newFeats)
+        self.__printAttribs(newFeats[0].attributeMap())
         return newFeats
 
     def __mergeFeaturesAny(self, origFeats):
@@ -70,18 +82,18 @@ class Util:
                     n.setPrev(i)
             ll.addNode(n)
 
-        for n in ll.nodes:
-            QgsMessageLog.logMessage('{0}'.format(n.toString()), 'VoGis')
+        #for n in ll.nodes:
+        #    QgsMessageLog.logMessage('{0}'.format(n.toString()), 'VoGis')
 
         newFeats = []
         orderedIds = ll.getOrderedIds()
-        QgsMessageLog.logMessage('{0}'.format(orderedIds), 'VoGis')
+        #QgsMessageLog.logMessage('{0}'.format(orderedIds), 'VoGis')
         for idx in orderedIds:
             newFeats.append(origFeats[idx])
 
         return newFeats
 
-    def __mergeFeaturesSimple(self, origFeats):
+    def __mergeFeaturesSimple(self, provider, origFeats):
 
         newFeats = []
         QgsMessageLog.logMessage('---- Merge Simple: {0} features'.format(len(origFeats)), 'VoGis')
@@ -89,28 +101,40 @@ class Util:
         prevToPnt = None
         #newGeom = QgsGeometry()
         newGeom = QgsGeometry().fromPolyline([])
+        attrMap = None
         #newGeom = QgsGeometry.fromPolyline([QgsPoint(1, 1), QgsPoint(2, 2)])
-        QgsMessageLog.logMessage('newGeom WKB Type {0}'.format(newGeom.wkbType() == QGis.WKBLineString), 'VoGis')
+        #QgsMessageLog.logMessage('newGeom WKB Type {0}'.format(newGeom.wkbType() == QGis.WKBLineString), 'VoGis')
         for feat in origFeats:
+            QgsMessageLog.logMessage('{0}:{1}'.format('ORIG FEAT AttributeMap', self.__printAttribs(feat.attributeMap())), 'VoGis')
+            #self.__printAttribs(feat.attributeMap())
             currentGeom = feat.geometry()
             currentPnts = currentGeom.asPolyline()
             if prevToPnt is None:
-                QgsMessageLog.logMessage('combining FIRST {0}'.format(currentGeom.asPolyline()), 'VoGis')
+                #QgsMessageLog.logMessage('combining FIRST {0}'.format(currentGeom.asPolyline()), 'VoGis')
                 newGeom = newGeom.combine(currentGeom)
+                attrMap = feat.attributeMap()
             else:
                 if currentPnts[0] == prevToPnt:
-                    QgsMessageLog.logMessage('combining {0}'.format(currentGeom.asPolyline()), 'VoGis')
+                    #QgsMessageLog.logMessage('combining {0}'.format(currentGeom.asPolyline()), 'VoGis')
                     newGeom = newGeom.combine(currentGeom)
+                    attrMap = feat.attributeMap()
                 else:
-                    QgsMessageLog.logMessage('creating {0}'.format(newGeom.asPolyline()), 'VoGis')
-                    newFeats.append(self.createQgLineFeature(newGeom.asPolyline()))
+                    #QgsMessageLog.logMessage('creating {0}'.format(newGeom.asPolyline()), 'VoGis')
+                    featNew = self.createQgLineFeature(newGeom.asPolyline())
+                    featNew = self.__transferAttributes(provider, attrMap, featNew)
+                    newFeats.append(featNew)
+                    #feat = QgsFeature()
                     #newGeom = QgsGeometry()
                     newGeom = QgsGeometry().fromPolyline(currentPnts)
-                    #newGeom = QgsGeometry.fromPolyline([QgsPoint(1, 1), QgsPoint(2, 2)])
+                    attrMap = feat.attributeMap()
+                #newGeom = QgsGeometry.fromPolyline([QgsPoint(1, 1), QgsPoint(2, 2)])
 
             prevToPnt = currentPnts[len(currentPnts) - 1]
 
-        newFeats.append(self.createQgLineFeature(newGeom.asPolyline()))
+        featNew = self.createQgLineFeature(newGeom.asPolyline())
+        self.__transferAttributes(provider, attrMap, featNew)
+        #newFeats.append(self.createQgLineFeature(newGeom.asPolyline()))
+        newFeats.append(featNew)
 
         QgsMessageLog.logMessage('---- {0} features after Merge Simple'.format(len(newFeats)), 'VoGis')
 
@@ -123,6 +147,12 @@ class Util:
 
         return newFeats
 
+    def __printAttribs(self, attributeMap):
+        txt = ''
+        for (k, attr) in attributeMap.iteritems():
+            txt += '({0}: {1}) '.format(k, attr.toString())
+        return txt
+
     def __explodeMultiPartFeatures(self, provider, origFeats):
 
         newFeats = []
@@ -131,10 +161,10 @@ class Util:
         for feat in origFeats:
             geom = feat.geometry()
             if geom.isMultipart():
-                QgsMessageLog.logMessage('multipart feature!', 'VoGis')
+                QgsMessageLog.logMessage('FId[{0}]: {1}'.format(feat.id(), 'multipart feature!'), 'VoGis')
                 newFeats.extend(self.explodeMultiPartFeature(provider, feat))
             else:
-                QgsMessageLog.logMessage('single part feature', 'VoGis')
+                QgsMessageLog.logMessage('FId[{0}]: {1}'.format(feat.id(), 'single part feature'), 'VoGis')
                 newFeats.append(feat)
 
         QgsMessageLog.logMessage('{0} features after exploding'.format(len(newFeats)), 'VoGis')
@@ -154,7 +184,7 @@ class Util:
                     newAttribs[j] = provider.defaultValue(j)
             tmpFeat.setAttributeMap(newAttribs)
         else:
-            newAttribs = feature.attributes()
+            newAttribs = feat.attributes()
             for j in range(newAttribs.__len__()):
                 if not provider.defaultValue(j).isNull():
                     newAttribs[j] = provider.defaultValue(j)
@@ -168,3 +198,23 @@ class Util:
             newFeats.append(QgsFeature(tmpFeat))
 
         return newFeats
+
+    def __transferAttributes(self, provider, attrMap, featNew):
+        QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes OLD', self.__printAttribs(attrMap)), 'VoGis')
+        QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW', self.__printAttribs(featNew.attributeMap())), 'VoGis')
+
+        if QGis.QGIS_VERSION_INT < 10900:
+            newAttribs = attrMap
+            for j in range(newAttribs.__len__()):
+                if not provider.defaultValue(j).isNull():
+                    newAttribs[j] = provider.defaultValue(j)
+            featNew.setAttributeMap(newAttribs)
+        else:
+            newAttribs = attrMap
+            for j in range(newAttribs.__len__()):
+                if not provider.defaultValue(j).isNull():
+                    newAttribs[j] = provider.defaultValue(j)
+            featNew.setAttributes(newAttribs)
+
+        QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW2', self.__printAttribs(featNew.attributeMap())), 'VoGis')
+        return featNew

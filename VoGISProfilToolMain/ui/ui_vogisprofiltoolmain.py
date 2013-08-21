@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Sat Aug  3 16:04:45 2013
+# Created: Mon Aug 19 15:44:38 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -129,23 +129,6 @@ class Ui_VoGISProfilToolMain(object):
         self.formLayout = QtGui.QFormLayout(self.IDC_grpVertices)
         self.formLayout.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
         self.formLayout.setObjectName(_fromUtf8("formLayout"))
-        self.IDC_chkNodesAndVertices = QtGui.QCheckBox(self.IDC_grpVertices)
-        self.IDC_chkNodesAndVertices.setObjectName(_fromUtf8("IDC_chkNodesAndVertices"))
-        self.formLayout.setWidget(7, QtGui.QFormLayout.LabelRole, self.IDC_chkNodesAndVertices)
-        self.IDC_chkCreateHekto = QtGui.QCheckBox(self.IDC_grpVertices)
-        self.IDC_chkCreateHekto.setObjectName(_fromUtf8("IDC_chkCreateHekto"))
-        self.formLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.IDC_chkCreateHekto)
-        self.IDC_rbVertexCount = QtGui.QRadioButton(self.IDC_grpVertices)
-        self.IDC_rbVertexCount.setObjectName(_fromUtf8("IDC_rbVertexCount"))
-        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.IDC_rbVertexCount)
-        self.IDC_dblspinVertexCnt = QtGui.QDoubleSpinBox(self.IDC_grpVertices)
-        self.IDC_dblspinVertexCnt.setMaximumSize(QtCore.QSize(70, 16777215))
-        self.IDC_dblspinVertexCnt.setDecimals(0)
-        self.IDC_dblspinVertexCnt.setMinimum(2.0)
-        self.IDC_dblspinVertexCnt.setMaximum(1000000.0)
-        self.IDC_dblspinVertexCnt.setProperty("value", 100.0)
-        self.IDC_dblspinVertexCnt.setObjectName(_fromUtf8("IDC_dblspinVertexCnt"))
-        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.IDC_dblspinVertexCnt)
         self.IDC_rbEquiDistance = QtGui.QRadioButton(self.IDC_grpVertices)
         self.IDC_rbEquiDistance.setChecked(True)
         self.IDC_rbEquiDistance.setObjectName(_fromUtf8("IDC_rbEquiDistance"))
@@ -163,6 +146,20 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_dblspinDistance.setProperty("value", 10.0)
         self.IDC_dblspinDistance.setObjectName(_fromUtf8("IDC_dblspinDistance"))
         self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.IDC_dblspinDistance)
+        self.IDC_rbVertexCount = QtGui.QRadioButton(self.IDC_grpVertices)
+        self.IDC_rbVertexCount.setObjectName(_fromUtf8("IDC_rbVertexCount"))
+        self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.IDC_rbVertexCount)
+        self.IDC_dblspinVertexCnt = QtGui.QDoubleSpinBox(self.IDC_grpVertices)
+        self.IDC_dblspinVertexCnt.setMaximumSize(QtCore.QSize(70, 16777215))
+        self.IDC_dblspinVertexCnt.setDecimals(0)
+        self.IDC_dblspinVertexCnt.setMinimum(2.0)
+        self.IDC_dblspinVertexCnt.setMaximum(1000000.0)
+        self.IDC_dblspinVertexCnt.setProperty("value", 100.0)
+        self.IDC_dblspinVertexCnt.setObjectName(_fromUtf8("IDC_dblspinVertexCnt"))
+        self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.IDC_dblspinVertexCnt)
+        self.IDC_chkNodesAndVertices = QtGui.QCheckBox(self.IDC_grpVertices)
+        self.IDC_chkNodesAndVertices.setObjectName(_fromUtf8("IDC_chkNodesAndVertices"))
+        self.formLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.IDC_chkNodesAndVertices)
         self.gridLayout_6.addWidget(self.IDC_grpVertices, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.IDC_widVertices)
         self.buttonBox = QtGui.QDialogButtonBox(VoGISProfilToolMain)
@@ -197,8 +194,7 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_chkLinesMerge.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Zusammenhängende Linien verbinden", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_rbStraigthLine.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "gerade Profillinie zwischen zwei Punkten", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_grpVertices.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Stützstellen festlegen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkNodesAndVertices.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profilpunkte erstellen an Knoten und Sützstellen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkCreateHekto.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Zusätzliche Hektometrieattribute erzeugen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_rbVertexCount.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Anzahl Profilpunkte pro Profil", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_rbEquiDistance.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Abstand zwischen den Profilpunkten", None, QtGui.QApplication.UnicodeUTF8))
+        self.IDC_rbVertexCount.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Anzahl Profilpunkte pro Profil", None, QtGui.QApplication.UnicodeUTF8))
+        self.IDC_chkNodesAndVertices.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profilpunkte erstellen an Knoten und Sützstellen", None, QtGui.QApplication.UnicodeUTF8))
 

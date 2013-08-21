@@ -57,14 +57,28 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         u = Util(self.iface)
         fileName = u.getFileName("Linien Shapefile exportieren", "SHP (*.shp)")
-        expShp = ExportShape(self.iface, self.settings, self.profiles)
+        if fileName == '':
+            return
+        expShp = ExportShape(self.iface,
+                             (self.ui.IDC_chkHekto.checkState() == Qt.Checked),
+                             (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked),
+                             self.__getDelimiter(),
+                             self.__getDecimalDelimiter(),
+                             fileName,
+                             self.settings,
+                             self.profiles
+                             )
         if asPnt is False:
-            expShp.exportLine(fileName)
+            expShp.exportLine()
+        else:
+            expShp.exportPoint()
 
     def exportTxt(self):
 
         u = Util(self.iface)
         fileName = u.getFileName("Textdatei exportieren", "TXT (*.txt)")
+        if fileName == '':
+            return
 
         txt = open(fileName, 'w')
 
@@ -73,7 +87,11 @@ class VoGISProfilToolPlotDialog(QDialog):
             #txt.write('Segments:{0}\r\n'.format(len(p.segments)))
             #for s in p.segments:
             #    txt.write('Vertices:{0}\r\n'.format(len(s.vertices)))
-            txt.write(p.toString(self.__getDelimiter(), self.__getDecimalDelimiter()))
+            txt.write(p.toString((self.ui.IDC_chkHekto.checkState() == Qt.Checked),
+                                 (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked),
+                                 self.__getDelimiter(),
+                                 self.__getDecimalDelimiter()
+                                 ))
 
         txt.close()
 

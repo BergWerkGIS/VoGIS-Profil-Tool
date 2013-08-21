@@ -4,14 +4,24 @@ class Segment:
         self.id = id
         self.vertices = vertices
 
-    def toString(self, delimiter, decimalDelimiter):
+    def toString(self, hekto, attribs, delimiter, decimalDelimiter):
 
         txt = ''
         vCnt = len(self.vertices)
         for idxV in range(vCnt):
-            txt += '{0}\r\n'.format(self.vertices[idxV].toString(delimiter, decimalDelimiter))
+            txt += '{0}\r\n'.format(self.vertices[idxV].toString(hekto,
+                                                                 attribs,
+                                                                 delimiter,
+                                                                 decimalDelimiter
+                                                                 ))
 
         return txt
 
-    def toStringLastVertex(self, segmentId, delimiter, decimalDelimiter):
-        return '{0}\r\n'.format(self.vertices[len(self.vertices) - 1].toString2(0, segmentId, delimiter, decimalDelimiter))
+    def toStringLastVertex(self, hekto, attribs, segmentId, delimiter, decimalDelimiter):
+        return '{0}\r\n'.format(self.vertices[len(self.vertices) - 1].toString2(hekto,
+                                                                                attribs,
+                                                                                0,
+                                                                                segmentId,
+                                                                                delimiter,
+                                                                                decimalDelimiter
+                                                                                ))

@@ -4,12 +4,76 @@
 		"selected_items":
 		[
 			[
-				"Qgis",
-				"QGis"
+				"feat",
+				"featOld	(local, instance)"
+			],
+			[
+				"fld",
+				"fldCnt	(local, instance)"
+			],
+			[
+				"ex",
+				"exportPoint()	(attribute, function)"
+			],
+			[
+				"__i",
+				"__iterList(idx, ordered)	(attribute, function)"
+			],
+			[
+				"ord",
+				"ordered	(local, instance)"
+			],
+			[
+				"Qgsf",
+				"QgsField"
+			],
+			[
+				"file",
+				"fileName=	(parameter_keyword, instance)"
+			],
+			[
+				"pro",
+				"profiles	(attribute, instance)"
+			],
+			[
+				"ver",
+				"vertices	(local, instance)"
+			],
+			[
+				"set",
+				"settings	(local, instance)"
+			],
+			[
+				"cu",
+				"currentPnts	(local, instance)"
 			],
 			[
 				"Qgs",
-				"QgsMessageLog"
+				"QgsPoint"
+			],
+			[
+				"_",
+				"__mergeFeatures(origFeats)	(attribute, function)"
+			],
+			[
+				"__",
+				"__explodeMultiPartFeatures(provider, origFeats)	(attribute, function)"
+			],
+			[
+				"orig",
+				"origFeats"
+			],
+			[
+				"current",
+				"currentGeom	(local, instance)"
+			],
+			[
+				"cur",
+				"currentGeom	(local, instance)"
+			],
+			[
+				"Qgis",
+				"QGis"
 			],
 			[
 				"proces",
@@ -22,10 +86,6 @@
 			[
 				"__getD",
 				"__getDecimalDelimiter"
-			],
-			[
-				"__",
-				"__getValsAtPoint(pnt)	(attribute, function)"
 			],
 			[
 				"shpl",
@@ -42,10 +102,6 @@
 			[
 				"qg",
 				"qgPnt	(local, instance)"
-			],
-			[
-				"_",
-				"__appendType(txt)	(attribute, function)"
 			],
 			[
 				"vert",
@@ -159,7 +215,7 @@
 			"file": "VoGISProfilToolMain/Makefile",
 			"settings":
 			{
-				"buffer_size": 4481,
+				"buffer_size": 4529,
 				"line_ending": "Unix"
 			}
 		},
@@ -167,15 +223,15 @@
 			"file": "VoGISProfilToolMain/vogisprofiltoolmain.py",
 			"settings":
 			{
-				"buffer_size": 5638,
+				"buffer_size": 5722,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "VoGISProfilToolMain/bo/segment.py",
+			"file": "VoGISProfilToolMain/util/exportShape.py",
 			"settings":
 			{
-				"buffer_size": 561,
+				"buffer_size": 7168,
 				"line_ending": "Unix"
 			}
 		},
@@ -191,7 +247,7 @@
 			"file": "VoGISProfilToolMain/util/createProfile.py",
 			"settings":
 			{
-				"buffer_size": 13341,
+				"buffer_size": 12077,
 				"line_ending": "Unix"
 			}
 		},
@@ -199,7 +255,7 @@
 			"file": "VoGISProfilToolMain/vogisprofiltoolplot.py",
 			"settings":
 			{
-				"buffer_size": 3124,
+				"buffer_size": 4352,
 				"line_ending": "Unix"
 			}
 		},
@@ -207,7 +263,7 @@
 			"file": "VoGISProfilToolMain/util/u.py",
 			"settings":
 			{
-				"buffer_size": 3312,
+				"buffer_size": 8961,
 				"line_ending": "Unix"
 			}
 		},
@@ -224,6 +280,22 @@
 			"settings":
 			{
 				"buffer_size": 161,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VoGISProfilToolMain/bo/profile.py",
+			"settings":
+			{
+				"buffer_size": 1188,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VoGISProfilToolMain/bo/segment.py",
+			"settings":
+			{
+				"buffer_size": 1367,
 				"line_ending": "Unix"
 			}
 		},
@@ -248,15 +320,7 @@
 			"file": "VoGISProfilToolMain/bo/vertex.py",
 			"settings":
 			{
-				"buffer_size": 4258,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/profile.py",
-			"settings":
-			{
-				"buffer_size": 659,
+				"buffer_size": 5536,
 				"line_ending": "Unix"
 			}
 		},
@@ -265,6 +329,14 @@
 			"settings":
 			{
 				"buffer_size": 296,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VoGISProfilToolMain/bo/rasterCollection.py",
+			"settings":
+			{
+				"buffer_size": 667,
 				"line_ending": "Unix"
 			}
 		}
@@ -309,12 +381,14 @@
 	},
 	"file_history":
 	[
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/raster.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/node.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/linkedList.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/u.py",
 		"/home/user/.config/sublime-text-2/Packages/SublimeGit/SublimeGit.sublime-settings",
 		"/home/user/.config/sublime-text-2/Packages/User/SublimeGit.sublime-settings",
 		"/home/user/.config/sublime-text-2/Packages/User/SideBarGit.sublime-settings",
-		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/raster.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/rasterCollection.py",
-		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/u.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/__init__.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/__init__.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/__init__.py",
@@ -341,7 +415,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 95.0,
 		"where_history":
 		[
 			"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain",
@@ -353,6 +427,18 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"sonst",
+			"())",
+			"Vertex(",
+			"processVertices",
+			"Vertex",
+			"explodeMultiPartFeature",
+			"__explodeMultiPartFeatures",
+			"zVals",
+			"getType",
+			"getHekto",
+			"QgsPoint",
+			"features",
 			"QgsMessageLog",
 			"self.ui.IDC_tbFromX",
 			"Ui_VoGISProfilToolPlot",
@@ -395,15 +481,15 @@
 					"file": "VoGISProfilToolMain/Makefile",
 					"settings":
 					{
-						"buffer_size": 4481,
+						"buffer_size": 4529,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1446,
-								1446
+								0,
+								0
 							]
 						],
 						"settings":
@@ -411,8 +497,8 @@
 							"syntax": "Packages/Makefile/Makefile.tmLanguage",
 							"wrap_width": 0.0
 						},
-						"translation.x": 454.0,
-						"translation.y": 90.0,
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -422,15 +508,15 @@
 					"file": "VoGISProfilToolMain/vogisprofiltoolmain.py",
 					"settings":
 					{
-						"buffer_size": 5638,
+						"buffer_size": 5722,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4684,
-								4684
+								5233,
+								5233
 							]
 						],
 						"settings":
@@ -441,25 +527,25 @@
 							"wrap_width": 0.0
 						},
 						"translation.x": 0.0,
-						"translation.y": 990.0,
+						"translation.y": 1440.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "VoGISProfilToolMain/bo/segment.py",
+					"file": "VoGISProfilToolMain/util/exportShape.py",
 					"settings":
 					{
-						"buffer_size": 561,
+						"buffer_size": 7168,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								247,
-								247
+								4630,
+								4630
 							]
 						],
 						"settings":
@@ -467,10 +553,10 @@
 							"syntax": "Packages/Python/Python.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
+							"wrap_width": 112.857142857
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1260.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -487,8 +573,8 @@
 						"selection":
 						[
 							[
-								1178,
-								1178
+								3818,
+								3818
 							]
 						],
 						"settings":
@@ -499,7 +585,7 @@
 							"wrap_width": 110.857142857
 						},
 						"translation.x": 0.0,
-						"translation.y": 45.0,
+						"translation.y": 264.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -509,15 +595,15 @@
 					"file": "VoGISProfilToolMain/util/createProfile.py",
 					"settings":
 					{
-						"buffer_size": 13341,
+						"buffer_size": 12077,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3646,
-								3646
+								3788,
+								3788
 							]
 						],
 						"settings":
@@ -538,44 +624,15 @@
 					"file": "VoGISProfilToolMain/vogisprofiltoolplot.py",
 					"settings":
 					{
-						"buffer_size": 3124,
+						"buffer_size": 4352,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3124,
-								3124
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 450.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "VoGISProfilToolMain/util/u.py",
-					"settings":
-					{
-						"buffer_size": 3312,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2032,
-								2032
+								2642,
+								2642
 							]
 						],
 						"settings":
@@ -586,7 +643,36 @@
 							"wrap_width": 113.142857143
 						},
 						"translation.x": 0.0,
-						"translation.y": 675.0,
+						"translation.y": 592.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "VoGISProfilToolMain/util/u.py",
+					"settings":
+					{
+						"buffer_size": 8961,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5302,
+								5302
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true,
+							"wrap_width": 112.857142857
+						},
+						"translation.x": 0.0,
+						"translation.y": 1532.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -594,7 +680,7 @@
 			]
 		},
 		{
-			"selected": 3,
+			"selected": 6,
 			"sheets":
 			[
 				{
@@ -638,8 +724,8 @@
 						"selection":
 						[
 							[
-								161,
-								161
+								122,
+								122
 							]
 						],
 						"settings":
@@ -654,6 +740,64 @@
 				},
 				{
 					"buffer": 9,
+					"file": "VoGISProfilToolMain/bo/profile.py",
+					"settings":
+					{
+						"buffer_size": 1188,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								178,
+								178
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"wrap_width": 0.0
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "VoGISProfilToolMain/bo/segment.py",
+					"settings":
+					{
+						"buffer_size": 1367,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1367,
+								1367
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true,
+							"wrap_width": 0.0
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 11,
 					"file": "VoGISProfilToolMain/bo/lineCollection.py",
 					"settings":
 					{
@@ -664,8 +808,8 @@
 						"selection":
 						[
 							[
-								456,
-								456
+								351,
+								351
 							]
 						],
 						"settings":
@@ -682,7 +826,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 12,
 					"file": "VoGISProfilToolMain/bo/line.py",
 					"settings":
 					{
@@ -693,71 +837,13 @@
 						"selection":
 						[
 							[
-								217,
-								217
+								216,
+								216
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Python/Python.tmLanguage",
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "VoGISProfilToolMain/bo/vertex.py",
-					"settings":
-					{
-						"buffer_size": 4258,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3438,
-								3438
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 540.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"file": "VoGISProfilToolMain/bo/profile.py",
-					"settings":
-					{
-						"buffer_size": 659,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								108,
-								108
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
 							"wrap_width": 0.0
 						},
 						"translation.x": 0.0,
@@ -768,6 +854,35 @@
 				},
 				{
 					"buffer": 13,
+					"file": "VoGISProfilToolMain/bo/vertex.py",
+					"settings":
+					{
+						"buffer_size": 5536,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								570,
+								570
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"wrap_width": 112.857142857
+						},
+						"translation.x": 0.0,
+						"translation.y": 45.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 14,
 					"file": "VoGISProfilToolMain/bo/zVal.py",
 					"settings":
 					{
@@ -785,6 +900,34 @@
 						"settings":
 						{
 							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "VoGISProfilToolMain/bo/rasterCollection.py",
+					"settings":
+					{
+						"buffer_size": 667,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -828,7 +971,7 @@
 		"rows":
 		[
 			0.0,
-			0.642610296647,
+			0.539359808322,
 			1.0
 		]
 	},
