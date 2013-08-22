@@ -26,6 +26,7 @@ from qgis.core import *
 from ui.ui_vogisprofiltoolplot import Ui_VoGISProfilToolPlot
 from util.u import Util
 from util.exportShape import ExportShape
+import locale
 
 
 class VoGISProfilToolPlotDialog(QDialog):
@@ -38,6 +39,16 @@ class VoGISProfilToolPlotDialog(QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_VoGISProfilToolPlot()
         self.ui.setupUi(self)
+
+        #nimmt die Locale vom System, nicht von QGIS
+        #kein Weg gefunden, um QGIS Locale: QSettings().value("locale/userLocale")
+        #zu initialisieren, nur um Dezimaltrenne auszulesen
+        QgsMessageLog.logMessage('QGIS Locale:{0}'.format(QSettings().value("locale/userLocale").toString()), 'VoGis')
+        decimalDelimiter = locale.nl_langinfo(locale.RADIXCHAR)
+        QgsMessageLog.logMessage('delimiter:{0}'.format(decimalDelimiter), 'VoGis')
+        idx = self.ui.IDC_cbDecimalDelimiter.findText(decimalDelimiter, Qt.MatchExactly)
+        QgsMessageLog.logMessage('idx:{0}'.format(idx), 'VoGis')
+        self.ui.IDC_cbDecimalDelimiter.setCurrentIndex(idx)
 
     def accept(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")

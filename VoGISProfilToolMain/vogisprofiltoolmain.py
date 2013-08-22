@@ -33,7 +33,6 @@ from bo.lineCollection import LineCollection
 from bo.mapdata import MapData
 from bo.settings import Settings
 from util.createProfile import CreateProfile
-import locale
 
 
 class VoGISProfilToolMain:
@@ -46,9 +45,6 @@ class VoGISProfilToolMain:
         # initialize locale
         localePath = ""
         loc = QSettings().value("locale/userLocale").toString()[0:2]
-
-        #l2 = locale.setlocale(locale.LC_ALL)
-        QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", locale.nl_langinfo(locale.RADIXCHAR))
 
         if QFileInfo(self.plugin_dir).exists():
             localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + loc + ".qm"

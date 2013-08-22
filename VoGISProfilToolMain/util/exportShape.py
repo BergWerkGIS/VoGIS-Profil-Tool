@@ -86,44 +86,62 @@ class ExportShape:
             return
 
         ut = Util(self.iface)
+        segOld = None
 
         for p in self.profiles:
             for s in p.segments:
+                if segOld is not None:
+                    v = segOld.vertices[len(segOld.vertices) - 1]
+                    feat = ut.createQgPointFeature(v)
+                    feat = self.__addValues(feat, v, s.id)
+                    shpWriter.addFeature(feat)
                 for v in s.vertices:
                     feat = ut.createQgPointFeature(v)
-                    feat.addAttribute(0, v.distanceProfile)
-                    feat.addAttribute(1, v.distanceSegment)
-                    feat.addAttribute(2, v.x)
-                    feat.addAttribute(3, v.y)
-                    fldCnt = 4
-                    if len(v.zvals) > 0:
-                        for z in v.zvals:
-                            zVal = -9999
-                            if z is not None:
-                                zVal = z
-                            feat.addAttribute(fldCnt, zVal)
-                            fldCnt += 1
-                    feat.addAttribute(fldCnt, v.profileId)
-                    fldCnt += 1
-                    feat.addAttribute(fldCnt, v.segmentId)
-                    fldCnt += 1
-                    feat.addAttribute(fldCnt, v.vertexId)
-                    fldCnt += 1
-                    feat.addAttribute(fldCnt, v.getType())
-                    fldCnt += 1
-                    if self.hekto is True:
-                        feat.addAttribute(fldCnt, v.getHekto(self.decimalDelimiter))
-                        fldCnt += 1
-                    if self.attribs is True:
-                        QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
-                        if self.settings.modeLine == enumModeLine.line:
-                            for a in v.attributes:
-                                feat.addAttribute(fldCnt, a)
-                                fldCnt += 1
+                    feat = self.__addValues(feat, v, None)
                     shpWriter.addFeature(feat)
+                segOld = s
+            segOld = None
 
         del shpWriter
         self.__loadShp(self.fileName)
+
+    def __addValues(self, feat, v, sId):
+        feat.addAttribute(0, v.distanceProfile)
+        if sId is None:
+            feat.addAttribute(1, v.distanceSegment)
+        else:
+            feat.addAttribute(1, 0)
+        feat.addAttribute(2, v.x)
+        feat.addAttribute(3, v.y)
+        fldCnt = 4
+        if len(v.zvals) > 0:
+            for z in v.zvals:
+                zVal = -9999
+                if z is not None:
+                    zVal = z
+                feat.addAttribute(fldCnt, zVal)
+                fldCnt += 1
+        feat.addAttribute(fldCnt, v.profileId)
+        fldCnt += 1
+        if sId is None:
+            feat.addAttribute(fldCnt, v.segmentId)
+        else:
+            feat.addAttribute(fldCnt, sId)
+        fldCnt += 1
+        feat.addAttribute(fldCnt, v.vertexId)
+        fldCnt += 1
+        feat.addAttribute(fldCnt, v.getType())
+        fldCnt += 1
+        if self.hekto is True:
+            feat.addAttribute(fldCnt, v.getHekto(self.decimalDelimiter))
+            fldCnt += 1
+        if self.attribs is True:
+            QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
+            if self.settings.modeLine == enumModeLine.line:
+                for a in v.attributes:
+                    feat.addAttribute(fldCnt, a)
+                    fldCnt += 1
+        return feat
 
     def exportLine(self):
 
