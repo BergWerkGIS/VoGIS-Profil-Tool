@@ -244,10 +244,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>IDC_bExcel</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolPlot</receiver>
+   <slot>exportCsvXls()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>698</x>
+     <y>319</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>677</x>
+     <y>338</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>exportTxt()</slot>
   <slot>exportShpPnt()</slot>
   <slot>exportShpLine()</slot>
+  <slot>exportCsvXls()</slot>
  </slots>
 </ui>

@@ -11,6 +11,7 @@ from qgis.core import QgsPoint
 #from qgis.core import QgsGeometry
 #from qgis.core import QgsFeature
 from u import Util
+from ..bo.settings import enumModeLine
 
 
 class ExportShape:
@@ -61,14 +62,11 @@ class ExportShape:
 
         if self.attribs is True:
             QgsMessageLog.logMessage('EXPORT POINT attribs TRUE', 'VoGis')
-            #TODO:
-            #Beruwcksichtigen, wenn Linie gezeischnet oder mit COORDS eingegben
-            provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
-            #QgsMessageLog.logMessage('attrMap: {0}'.format(attrMap), 'VoGis')
-            for(idx, fld) in provider.fields().iteritems():
-            #    QgsMessageLog.logMessage('{0}: {1} / {2}'.format(fld, fldVal.fieldName(), fldVal.fieldValue()), 'VoGis')
-                flds[fldCnt] = fld
-                fldCnt += 1
+            if self.settings.modeLine == enumModeLine.line:
+                provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
+                for(idx, fld) in provider.fields().iteritems():
+                    flds[fldCnt] = fld
+                    fldCnt += 1
         else:
             QgsMessageLog.logMessage('attribs FALSE', 'VoGis')
 
@@ -117,9 +115,11 @@ class ExportShape:
                         feat.addAttribute(fldCnt, v.getHekto(self.decimalDelimiter))
                         fldCnt += 1
                     if self.attribs is True:
-                        for a in v.attributes:
-                            feat.addAttribute(fldCnt, a)
-                            fldCnt += 1
+                        QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
+                        if self.settings.modeLine == enumModeLine.line:
+                            for a in v.attributes:
+                                feat.addAttribute(fldCnt, a)
+                                fldCnt += 1
                     shpWriter.addFeature(feat)
 
         del shpWriter
@@ -132,6 +132,14 @@ class ExportShape:
 
         flds = {}
         flds[0] = QgsField('Profillaenge', QVariant.Double)
+        fldCnt = len(flds)
+
+        if self.attribs is True:
+            if self.settings.modeLine == enumModeLine.line:
+                provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
+                for(idx, fld) in provider.fields().iteritems():
+                    flds[fldCnt] = fld
+                    fldCnt += 1
 
         shpWriter = QgsVectorFileWriter(self.fileName,
                                         "CP1250",
@@ -150,13 +158,22 @@ class ExportShape:
 
         for p in self.profiles:
             vertices = []
+            lastV = None
             profileLength = 0
             for s in p.segments:
                 for v in s.vertices:
+                    lastV = v
                     profileLength = v.distanceProfile
                     vertices.append(QgsPoint(v.x, v.y))
             feat = ut.createQgLineFeature(vertices)
             feat.addAttribute(0, profileLength)
+            fldCnt = 1
+            if self.attribs is True:
+                if self.settings.modeLine == enumModeLine.line:
+                    lastV
+                    for a in lastV.attributes:
+                        feat.addAttribute(fldCnt, a)
+                        fldCnt += 1
             shpWriter.addFeature(feat)
 
         del shpWriter

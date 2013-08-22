@@ -15,6 +15,7 @@ from u import Util
 #from bo.zVal import ZVal
 from qgis.core import *
 from math import *
+from PyQt4.QtGui import QMessageBox
 
 
 class CreateProfile:
@@ -38,6 +39,11 @@ class CreateProfile:
 
         #Line aus gezeichneter Linie erstellen
         if self.settings.modeLine == enumModeLine.customLine:
+            profiles.append(self.processFeature(1,
+                                                1,
+                                                self.settings.mapData.customLine
+                                                )
+                            )
             return profiles
 
         #Shapefile Geometrien abarbeiten
@@ -89,7 +95,13 @@ class CreateProfile:
                     feat = QgsFeature()
 
             ut = Util(self.iface)
-            feats = ut.prepareFeatures(provider, feats)
+            feats = ut.prepareFeatures(self.settings, provider, feats)
+
+            for f in feats:
+                geom = f.geometry()
+                if geom.isMultipart():
+                    QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Multipart Feature vorhanden! Option zum Explodieren verwenden.")
+                    return profiles
 
             for feat in feats:
                 profiles.append(self.processFeature(len(profiles) + 1,
@@ -110,7 +122,7 @@ class CreateProfile:
 
     def processVertices(self, attribMap, profileId, qgGeom, layerId, featId):
 
-        QgsMessageLog.logMessage('{0}: {1}'.format('processFeature',attribMap), 'VoGis')
+        #QgsMessageLog.logMessage('{0}: {1}'.format('processFeature',attribMap), 'VoGis')
 
         step = -1
         segmentCnter = 1
@@ -162,35 +174,37 @@ class CreateProfile:
 
             #überprüfen, ob echter Vertex zwischen den
             # zu berechnenden Ṕrofilpunkten liegt
-            if distTotal > 0:
-                prevDist = distTotal - step
-                for v in shplyVertices:
-                    vDist = shplyGeom.project(v)
-                    if vDist > prevDist and vDist < distTotal:
-                        qgPnt = self.__qgPntFromShplyPnt(v)
-                        distQgVertices = sqrt(qgPnt.sqrDist(qgPntOld))
-                        vtxType = enumVertexType.vertex
-                        vtxId += 1
-                        newVtx = Vertex(attribMap,
-                                        vtxType,
-                                        v.x,
-                                        v.y,
-                                        profileId,
-                                        layerId,
-                                        featId,
-                                        segmentCnter,
-                                        vtxId,
-                                        vDist,
-                                        distQgVertices,
-                                        self.__getValsAtPoint(qgPnt)
-                                        )
-                        segmentvertices.append(newVtx)
-                        segments.append(Segment(segmentCnter, segmentvertices))
-                        #neues Segment beginnen
-                        qgPntOld = self.__qgPntFromShplyPnt(v)
-                        segmentvertices = []
-                        distSegment -= distQgVertices
-                        segmentCnter += 1
+            #nur falls diese auch ausgegeben werden sollen
+            if self.settings.nodesAndVertices is True:
+                if distTotal > 0:
+                    prevDist = distTotal - step
+                    for v in shplyVertices:
+                        vDist = shplyGeom.project(v)
+                        if vDist > prevDist and vDist < distTotal:
+                            qgPnt = self.__qgPntFromShplyPnt(v)
+                            distQgVertices = sqrt(qgPnt.sqrDist(qgPntOld))
+                            vtxType = enumVertexType.vertex
+                            vtxId += 1
+                            newVtx = Vertex(attribMap,
+                                            vtxType,
+                                            v.x,
+                                            v.y,
+                                            profileId,
+                                            layerId,
+                                            featId,
+                                            segmentCnter,
+                                            vtxId,
+                                            vDist,
+                                            distQgVertices,
+                                            self.__getValsAtPoint(qgPnt)
+                                            )
+                            segmentvertices.append(newVtx)
+                            segments.append(Segment(segmentCnter, segmentvertices))
+                            #neues Segment beginnen
+                            qgPntOld = self.__qgPntFromShplyPnt(v)
+                            segmentvertices = []
+                            distSegment -= distQgVertices
+                            segmentCnter += 1
 
             #Profilpunkte berechnen
             #nur wenn noch unter Featurelaenge

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Mon Aug 19 15:44:38 2013
+# Created: Thu Aug 22 16:14:45 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -158,6 +158,7 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_dblspinVertexCnt.setObjectName(_fromUtf8("IDC_dblspinVertexCnt"))
         self.formLayout.setWidget(3, QtGui.QFormLayout.FieldRole, self.IDC_dblspinVertexCnt)
         self.IDC_chkNodesAndVertices = QtGui.QCheckBox(self.IDC_grpVertices)
+        self.IDC_chkNodesAndVertices.setChecked(True)
         self.IDC_chkNodesAndVertices.setObjectName(_fromUtf8("IDC_chkNodesAndVertices"))
         self.formLayout.setWidget(6, QtGui.QFormLayout.LabelRole, self.IDC_chkNodesAndVertices)
         self.gridLayout_6.addWidget(self.IDC_grpVertices, 0, 0, 1, 1)
@@ -173,6 +174,8 @@ class Ui_VoGISProfilToolMain(object):
         QtCore.QObject.connect(self.IDC_listRasters, QtCore.SIGNAL(_fromUtf8("itemChanged(QListWidgetItem*)")), VoGISProfilToolMain.lvRasterItemChanged)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), VoGISProfilToolMain.reject)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), VoGISProfilToolMain.accept)
+        QtCore.QObject.connect(self.IDC_bSelectVisibleRasters, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolMain.selectVisibleRasters)
+        QtCore.QObject.connect(self.IDC_bDrawLine, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolMain.drawLine)
         QtCore.QMetaObject.connectSlotsByName(VoGISProfilToolMain)
 
     def retranslateUi(self, VoGISProfilToolMain):

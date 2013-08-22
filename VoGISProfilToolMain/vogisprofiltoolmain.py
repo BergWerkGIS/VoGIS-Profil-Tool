@@ -33,6 +33,7 @@ from bo.lineCollection import LineCollection
 from bo.mapdata import MapData
 from bo.settings import Settings
 from util.createProfile import CreateProfile
+import locale
 
 
 class VoGISProfilToolMain:
@@ -44,10 +45,13 @@ class VoGISProfilToolMain:
         self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/vogisprofiltoolmain"
         # initialize locale
         localePath = ""
-        locale = QSettings().value("locale/userLocale").toString()[0:2]
+        loc = QSettings().value("locale/userLocale").toString()[0:2]
+
+        #l2 = locale.setlocale(locale.LC_ALL)
+        QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", locale.nl_langinfo(locale.RADIXCHAR))
 
         if QFileInfo(self.plugin_dir).exists():
-            localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + locale + ".qm"
+            localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + loc + ".qm"
 
         if QFileInfo(localePath).exists():
             self.translator = QTranslator()
@@ -111,6 +115,10 @@ class VoGISProfilToolMain:
         createProf = CreateProfile(self.iface, self.settings)
         profiles = createProf.create()
         QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
+
+        if len(profiles) < 1:
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
+            return
 
         self.dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
         self.dlg.show()

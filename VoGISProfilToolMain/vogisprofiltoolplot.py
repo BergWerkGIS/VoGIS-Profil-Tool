@@ -73,6 +73,25 @@ class VoGISProfilToolPlotDialog(QDialog):
         else:
             expShp.exportPoint()
 
+    def exportCsvXls(self):
+        u = Util(self.iface)
+        fileName = u.getFileName("CSV-datei exportieren", "CSV (*.csv)")
+        if fileName == '':
+            return
+
+        txt = open(fileName, 'w')
+
+        for p in self.profiles:
+            #txt.write('=====Profil {0}======\r\n'.format(p.id))
+            #txt.write('Segments:{0}\r\n'.format(len(p.segments)))
+            #for s in p.segments:
+            #    txt.write('Vertices:{0}\r\n'.format(len(s.vertices)))
+            txt.write(p.toString((self.ui.IDC_chkHekto.checkState() == Qt.Checked),
+                                 (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked),
+                                 ';',
+                                 self.__getDecimalDelimiter()
+                                 ))
+
     def exportTxt(self):
 
         u = Util(self.iface)

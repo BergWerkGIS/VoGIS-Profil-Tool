@@ -76,7 +76,14 @@ class Vertex:
         return txt
 
     def __getAttribs(self, delimiter, decimalDelimiter):
-        return '{0}{1}'.format(delimiter, decimalDelimiter)
+        aTxt = ''
+        for a in self.attributes:
+            a2 = a.toPyObject()
+            if isinstance(a2, (int, long, float, complex)):
+                aTxt += ('{0}{1:.2f}'.format(delimiter, a2)).replace('.', decimalDelimiter)
+            else:
+                aTxt += '{0}{1}'.format(delimiter, a2)
+        return aTxt
 
     def getType(self):
         vType = ''

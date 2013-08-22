@@ -34,7 +34,7 @@ PLUGINNAME = vogisprofiltoolmain
 PY_FILES = vogisprofiltoolmain.py vogisprofiltoolmaindialog.py vogisprofiltoolplot.py __init__.py
 EXTRAS = icons/icon.png 
 BO_FILES = bo/__init__.py bo/line.py bo/lineCollection.py bo/mapdata.py bo/raster.py bo/rasterCollection.py bo/settings.py bo/profile.py bo/segment.py bo/vertex.py bo/zVal.py bo/node.py bo/linkedList.py
-UTIL_FILES = util/__init__.py util/u.py util/createProfile.py util/exportShape.py
+UTIL_FILES = util/__init__.py util/u.py util/createProfile.py util/exportShape.py util/ptmaptool.py
 UI_FILES = ui/ui_vogisprofiltoolmain.py ui/ui_vogisprofiltoolplot.py
 RESOURCE_FILES = resources_rc.py
 

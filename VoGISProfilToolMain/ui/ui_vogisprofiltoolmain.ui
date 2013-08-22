@@ -279,6 +279,9 @@
              <property name="text">
               <string>Profilpunkte erstellen an Knoten und Sützstellen</string>
              </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
           </layout>
@@ -351,8 +354,42 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>IDC_bSelectVisibleRasters</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolMain</receiver>
+   <slot>selectVisibleRasters()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>327</x>
+     <y>56</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>478</x>
+     <y>55</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IDC_bDrawLine</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolMain</receiver>
+   <slot>drawLine()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>388</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>479</x>
+     <y>359</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>lvRasterItemChanged(QListWidgetItem*)</slot>
+  <slot>selectVisibleRasters()</slot>
+  <slot>drawLine()</slot>
  </slots>
 </ui>

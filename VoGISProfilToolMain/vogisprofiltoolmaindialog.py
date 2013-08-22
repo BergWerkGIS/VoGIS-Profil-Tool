@@ -23,16 +23,19 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import QgsPoint
+from qgis.gui import QgsRubberBand
 from ui.ui_vogisprofiltoolmain import Ui_VoGISProfilToolMain
 #from bo.raster import Raster
 from util.u import Util
 from bo.settings import enumModeLine, enumModeVertices
+from util.ptmaptool import ProfiletoolMapTool
 
 
 class VoGISProfilToolMainDialog(QDialog):
     def __init__(self, interface, settings):
 
         QDialog.__init__(self)
+        self.selectingVisibleRasters = False
         self.settings = settings
         self.iface = interface
         # Set up the user interface from Designer.
@@ -64,6 +67,18 @@ class VoGISProfilToolMainDialog(QDialog):
         for lLyr in self.settings.mapData.lines.lines():
             self.ui.IDC_cbLineLayers.addItem(lLyr.name, lLyr)
 
+        #Einstellungen fuer Linie zeichen
+        self.action = QAction(QIcon(":/plugins/vogisprofiltoolmain/icons/icon.png"), "VoGIS-Profiltool", self.iface.mainWindow())
+        self.action.setWhatsThis("VoGIS-Profiltool")
+        self.canvas = self.iface.mapCanvas()
+        self.tool = ProfiletoolMapTool(self.canvas, self.action)
+        self.savedTool = self.canvas.mapTool()
+        self.polygon = False
+        self.rubberband = QgsRubberBand(self.canvas, self.polygon)
+        self.pointsToDraw = []
+        self.dblclktemp = None
+        self.drawnLine = None
+
     def accept(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
         if self.__getSettingsFromGui() is False:
@@ -73,13 +88,41 @@ class VoGISProfilToolMainDialog(QDialog):
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
             return
 
+        if self.settings.modeLine is not enumModeLine.line and self.settings.mapData.customLine is None:
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Keine Profillinie vorhanden!")
+            return
+
+        self.rubberband.reset(self.polygon)
         QDialog.accept(self)
 
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
+        self.rubberband.reset(self.polygon)
         QDialog.reject(self)
 
+    def selectVisibleRasters(self):
+        self.selectingVisibleRasters = True
+        extCanvas = self.iface.mapCanvas().extent()
+        #alle raster in den einstellunge deselektieren
+        for r in self.settings.mapData.rasters.rasters():
+            r.selected = False
+        #alle raster in der ListView deselektieren
+        for idx in xrange(self.ui.IDC_listRasters.count()):
+            item = self.ui.IDC_listRasters.item(idx)
+            item.setCheckState(Qt.Unchecked)
+        #Raster im Extent selektieren
+        for idx in xrange(self.ui.IDC_listRasters.count()):
+            item = self.ui.IDC_listRasters.item(idx)
+            raster = item.data(Qt.UserRole).toPyObject()
+            for r in self.settings.mapData.rasters.rasters():
+                if extCanvas.intersects(r.grid.extent()):
+                    if r.id == raster.id:
+                        r.selected = True
+                        item.setCheckState(Qt.Checked)
+        self.selectingVisibleRasters = False
+
     def lvRasterItemChanged(self, item):
+        if self.selectingVisibleRasters is True: return
         if item.checkState() == Qt.Checked:
             selected = True
         if item.checkState() == Qt.Unchecked:
@@ -89,9 +132,86 @@ class VoGISProfilToolMainDialog(QDialog):
         rl = iData.toPyObject()
         self.settings.mapData.rasters.getById(rl.id).selected = selected
 
-        #QMessageBox.warning(self.iface.mainWindow(),
-        #                    "VoGIS-Profiltool",
-        #                    str(self.settings.mapData.rasters.getById(rl.id).selected))
+    def drawLine(self):
+        if self.ui.IDC_rbDigi.isChecked() is False:
+            self.ui.IDC_rbDigi.setChecked(True)
+        self.dblckltemp = None
+        self.rubberband.reset(self.polygon)
+        self.__cleanDigi()
+        self.__activateDigiTool()
+        self.canvas.setMapTool(self.tool)
+
+    def __createDigiFeature(self, pnts):
+        u = Util(self.iface)
+        f = u.createQgLineFeature(pnts)
+        self.settings.mapData.customLine = f
+
+    def __lineFinished(self, position):
+        mapPos = self.canvas.getCoordinateTransform().toMapCoordinates(position["x"], position["y"])
+        newPoint = QgsPoint(mapPos.x(), mapPos.y())
+        self.pointsToDraw.append(newPoint)
+        #launch analyses
+        self.iface.mainWindow().statusBar().showMessage(str(self.pointsToDraw))
+        if len(self.pointsToDraw) < 2:
+            self.__cleanDigi()
+            self.pointsToDraw = []
+            self.dblclktemp = newPoint
+            self.drawnLine = None
+            QMessageBox.warning(self, "VoGIS-Profiltool", "Profillinie digitalisieren abgebrochen!")
+        self.drawnLine = self.__createDigiFeature(self.pointsToDraw)
+        self.__cleanDigi()
+
+        self.pointsToDraw = []
+        self.dblclktemp = newPoint
+
+    def __cleanDigi(self):
+        self.pointsToDraw = []
+        self.canvas.unsetMapTool(self.tool)
+        self.canvas.setMapTool(self.savedTool)
+
+    def __activateDigiTool(self):
+        QObject.connect(self.tool, SIGNAL("moved"), self.__moved)
+        QObject.connect(self.tool, SIGNAL("rightClicked"), self.__rightClicked)
+        QObject.connect(self.tool, SIGNAL("leftClicked"), self.__leftClicked)
+        QObject.connect(self.tool, SIGNAL("doubleClicked"), self.__doubleClicked)
+        QObject.connect(self.tool, SIGNAL("deactivate"), self.__deactivateDigiTool)
+
+    def __deactivateDigiTool(self):
+        QObject.disconnect(self.tool, SIGNAL("moved"), self.__moved)
+        QObject.disconnect(self.tool, SIGNAL("leftClicked"), self.__leftClicked)
+        QObject.disconnect(self.tool, SIGNAL("rightClicked"), self.__rightClicked)
+        QObject.disconnect(self.tool, SIGNAL("doubleClicked"), self.__doubleClicked)
+        self.iface.mainWindow().statusBar().showMessage(QString(""))
+
+    def __moved(self, position):
+        if len(self.pointsToDraw) > 0:
+            mapPos = self.canvas.getCoordinateTransform().toMapCoordinates(position["x"], position["y"])
+            self.rubberband.reset(self.polygon)
+            for i in range(0, len(self.pointsToDraw)):
+                self.rubberband.addPoint(self.pointsToDraw[i])
+            self.rubberband.addPoint(QgsPoint(mapPos.x(), mapPos.y()))
+
+    def __rightClicked(self, position):
+        self.__lineFinished(position)
+
+    def __leftClicked(self, position):
+        mapPos = self.canvas.getCoordinateTransform().toMapCoordinates(position["x"], position["y"])
+        newPoint = QgsPoint(mapPos.x(), mapPos.y())
+        #if self.selectionmethod == 0:
+        if newPoint == self.dblclktemp:
+            self.dblclktemp = None
+            return
+        else:
+            if len(self.pointsToDraw) == 0:
+                self.rubberband.reset(self.polygon)
+            self.pointsToDraw.append(newPoint)
+
+    def __doubleClicked(self, position):
+        pass
+
+    #not in use right now
+    def __lineCancel(self):
+        pass
 
     def __getSettingsFromGui(self):
         self.settings.linesExplode = (self.ui.IDC_chkLinesExplode.checkState() == Qt.Checked)

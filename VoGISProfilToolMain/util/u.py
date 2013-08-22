@@ -53,19 +53,27 @@ class Util:
         qgPnt.setGeometry(pnt)
         return qgPnt
 
-    def prepareFeatures(self, provider, origFeats):
+    def prepareFeatures(self, settings, provider, origFeats):
         """multipart explodieren"""
         """linien mit gleichen end und start vertices verinden"""
 
-        newFeats = self.__explodeMultiPartFeatures(provider, origFeats)
-        self.__printAttribs(newFeats[0].attributeMap())
+        newFeats = None
 
-        newFeats = self.__mergeFeaturesAny(newFeats)
-        self.__printAttribs(newFeats[0].attributeMap())
+        if settings.linesExplode is True:
+            newFeats = self.__explodeMultiPartFeatures(provider, origFeats)
+            self.__printAttribs(newFeats[0].attributeMap())
 
-        newFeats = self.__mergeFeaturesSimple(provider, newFeats)
-        self.__printAttribs(newFeats[0].attributeMap())
-        return newFeats
+        if settings.linesMerge is True:
+            newFeats = self.__mergeFeaturesAny(newFeats)
+            self.__printAttribs(newFeats[0].attributeMap())
+
+            newFeats = self.__mergeFeaturesSimple(provider, newFeats)
+            self.__printAttribs(newFeats[0].attributeMap())
+
+        if newFeats is None:
+            return origFeats
+        else:
+            return newFeats
 
     def __mergeFeaturesAny(self, origFeats):
         ll = LinkedList()
@@ -105,7 +113,7 @@ class Util:
         #newGeom = QgsGeometry.fromPolyline([QgsPoint(1, 1), QgsPoint(2, 2)])
         #QgsMessageLog.logMessage('newGeom WKB Type {0}'.format(newGeom.wkbType() == QGis.WKBLineString), 'VoGis')
         for feat in origFeats:
-            QgsMessageLog.logMessage('{0}:{1}'.format('ORIG FEAT AttributeMap', self.__printAttribs(feat.attributeMap())), 'VoGis')
+            #QgsMessageLog.logMessage('{0}:{1}'.format('ORIG FEAT AttributeMap', self.__printAttribs(feat.attributeMap())), 'VoGis')
             #self.__printAttribs(feat.attributeMap())
             currentGeom = feat.geometry()
             currentPnts = currentGeom.asPolyline()
@@ -200,8 +208,8 @@ class Util:
         return newFeats
 
     def __transferAttributes(self, provider, attrMap, featNew):
-        QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes OLD', self.__printAttribs(attrMap)), 'VoGis')
-        QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW', self.__printAttribs(featNew.attributeMap())), 'VoGis')
+        #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes OLD', self.__printAttribs(attrMap)), 'VoGis')
+        #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW', self.__printAttribs(featNew.attributeMap())), 'VoGis')
 
         if QGis.QGIS_VERSION_INT < 10900:
             newAttribs = attrMap
@@ -216,5 +224,5 @@ class Util:
                     newAttribs[j] = provider.defaultValue(j)
             featNew.setAttributes(newAttribs)
 
-        QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW2', self.__printAttribs(featNew.attributeMap())), 'VoGis')
+        #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW2', self.__printAttribs(featNew.attributeMap())), 'VoGis')
         return featNew
