@@ -30,7 +30,8 @@ class CreateProfile:
 
         #Line aus den Textboxwerten erstellen
         if self.settings.modeLine == enumModeLine.straightLine:
-            profiles.append(self.processFeature(1,
+            profiles.append(self.processFeature(None,
+                                                1,
                                                 1,
                                                 self.settings.mapData.customLine
                                                 )
@@ -39,7 +40,8 @@ class CreateProfile:
 
         #Line aus gezeichneter Linie erstellen
         if self.settings.modeLine == enumModeLine.customLine:
-            profiles.append(self.processFeature(1,
+            profiles.append(self.processFeature(None,
+                                                1,
                                                 1,
                                                 self.settings.mapData.customLine
                                                 )
@@ -87,7 +89,7 @@ class CreateProfile:
                     #attrs = feat.attributeMap()
                     # attrs is a dictionary: key = field index, value = QgsFeatureAttribute
                     # show all attributes and their values
-                    for (k,attr) in feat.attributeMap().iteritems():
+                    for (k, attr) in feat.attributeMap().iteritems():
                         QgsMessageLog.logMessage('{0}: {1}'.format(k, attr.toString()), 'VoGis')
                     feats.append(feat)
                     #neues Feature verwenden, weil sonst die Multiparts
@@ -104,7 +106,8 @@ class CreateProfile:
                     return profiles
 
             for feat in feats:
-                profiles.append(self.processFeature(len(profiles) + 1,
+                profiles.append(self.processFeature(provider.fields(),
+                                                    len(profiles) + 1,
                                                     self.settings.mapData.selectedLineLyr.line.id(),
                                                     feat
                                                     )
@@ -112,15 +115,15 @@ class CreateProfile:
 
         return profiles
 
-    def processFeature(self, profileId, layerId, feat):
+    def processFeature(self, fields, profileId, layerId, feat):
 
         #QgsMessageLog.logMessage('processFeature', 'VoGis')
         geom = feat.geometry()
-        segments = self.processVertices(feat.attributeMap(), profileId, geom, layerId, feat.id())
+        segments = self.processVertices(fields, feat.attributeMap(), profileId, geom, layerId, feat.id())
 
         return Profile(profileId, segments)
 
-    def processVertices(self, attribMap, profileId, qgGeom, layerId, featId):
+    def processVertices(self, fields, attribMap, profileId, qgGeom, layerId, featId):
 
         #QgsMessageLog.logMessage('{0}: {1}'.format('processFeature',attribMap), 'VoGis')
 
@@ -150,7 +153,8 @@ class CreateProfile:
         #erster, echter Punkt der Geometrie
         qgPntOld = qgLineVertices[0]
         vtxType = enumVertexType.node
-        newVtx = Vertex(attribMap,
+        newVtx = Vertex(fields,
+                        attribMap,
                         vtxType,
                         qgLineVertices[0].x(),
                         qgLineVertices[0].y(),
@@ -185,7 +189,8 @@ class CreateProfile:
                             distQgVertices = sqrt(qgPnt.sqrDist(qgPntOld))
                             vtxType = enumVertexType.vertex
                             vtxId += 1
-                            newVtx = Vertex(attribMap,
+                            newVtx = Vertex(fields,
+                                            attribMap,
                                             vtxType,
                                             v.x,
                                             v.y,
@@ -212,7 +217,8 @@ class CreateProfile:
                 shplyPnt = shplyGeom.interpolate(distTotal, False)
                 vtxType = enumVertexType.point
                 vtxId += 1
-                newVtx = Vertex(attribMap,
+                newVtx = Vertex(fields,
+                                attribMap,
                                 vtxType,
                                 shplyPnt.x,
                                 shplyPnt.y,
@@ -232,7 +238,8 @@ class CreateProfile:
         distSegment = sqrt(qgLastPnt.sqrDist(qgPntOld))
         vtxType = enumVertexType.node
         vtxId += 1
-        newVtx = Vertex(attribMap,
+        newVtx = Vertex(fields,
+                        attribMap,
                         vtxType,
                         qgLastPnt.x(),
                         qgLastPnt.y(),

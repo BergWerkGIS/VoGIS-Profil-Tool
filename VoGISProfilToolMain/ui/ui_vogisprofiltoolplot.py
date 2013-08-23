@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Thu Aug 22 17:28:45 2013
+# Created: Fri Aug 23 21:24:09 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -92,6 +92,8 @@ class Ui_VoGISProfilToolPlot(object):
         QtCore.QObject.connect(self.IDC_bShpPnt, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.exportShpPnt)
         QtCore.QObject.connect(self.IDC_bShpLine, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.exportShpLine)
         QtCore.QObject.connect(self.IDC_bExcel, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.exportCsvXls)
+        QtCore.QObject.connect(self.IDC_bACadTxt, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.exportAutoCadTxt)
+        QtCore.QObject.connect(self.IDC_bDxfPnt, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.exportDxfPnt)
         QtCore.QMetaObject.connectSlotsByName(VoGISProfilToolPlot)
 
     def retranslateUi(self, VoGISProfilToolPlot):

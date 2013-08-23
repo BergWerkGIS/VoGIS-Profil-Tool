@@ -25,3 +25,9 @@ class Segment:
                                                                                 delimiter,
                                                                                 decimalDelimiter
                                                                                 ))
+
+    def toACadTxt(self, delimiter, decimalDelimiter):
+        acadTxt = ''
+        for v in self.vertices:
+            acadTxt += v.toACadTxt(delimiter, decimalDelimiter)
+        return acadTxt

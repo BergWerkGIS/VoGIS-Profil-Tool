@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from PyQt4.QtCore import QVariant
 from settings import enumVertexType
 from qgis.core import QgsMessageLog
 
@@ -7,6 +8,7 @@ from qgis.core import QgsMessageLog
 class Vertex:
 
     def __init__(self,
+                 fields,
                  attribMap,
                  vertexType,
                  x,
@@ -20,9 +22,12 @@ class Vertex:
                  distanceSegment,
                  zvals
                  ):
+        self.attribNames = []
         self.attributes = []
         for (k, attr) in attribMap.iteritems():
             #QgsMessageLog.logMessage('new Vextex: {0}:{1}'.format(k, attr.toString()), 'VoGis')
+            if fields is not None:
+                self.attribNames.append(fields[k].name())
             self.attributes.append(attr)
         self.vertexType = vertexType
         self.x = x
@@ -75,11 +80,27 @@ class Vertex:
             txt += self.__getAttribs(delimiter, decimalDelimiter)
         return txt
 
+    def toACadTxt(self, delimiter, decimalDelimiter):
+        acadTxt = ''
+        #profillaenge, rechtswert, hochwert hoehe
+        for rVal in self.zvals:
+            acadTxt += '{1}{0}{2}{0}{3}{0}{4}\r\n'.format(delimiter,
+                                                         ('{0:.2f}'.format(self.distanceProfile)).replace('.', decimalDelimiter),
+                                                         ('{0:.2f}'.format(self.x)).replace('.', decimalDelimiter),
+                                                         ('{0:.2f}'.format(self.y)).replace('.', decimalDelimiter),
+                                                         ('{0:.2f}'.format(rVal)).replace('.', decimalDelimiter),
+                                                         )
+        return acadTxt
+
     def __getAttribs(self, delimiter, decimalDelimiter):
         aTxt = ''
         for a in self.attributes:
-            a2 = a.toPyObject()
-            if isinstance(a2, (int, long, float, complex)):
+            if isinstance(a, QVariant):
+                a2 = a.toPyObject()
+            else:
+                a2 = a
+            #if isinstance(a2, (int, long, float, complex)):
+            if isinstance(a2, (long, float, complex)):
                 aTxt += ('{0}{1:.2f}'.format(delimiter, a2)).replace('.', decimalDelimiter)
             else:
                 aTxt += '{0}{1}'.format(delimiter, a2)

@@ -260,11 +260,45 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>IDC_bACadTxt</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolPlot</receiver>
+   <slot>exportAutoCadTxt()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>270</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>281</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IDC_bDxfPnt</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolPlot</receiver>
+   <slot>exportDxfPnt()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>432</x>
+     <y>316</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>558</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>exportTxt()</slot>
   <slot>exportShpPnt()</slot>
   <slot>exportShpLine()</slot>
   <slot>exportCsvXls()</slot>
+  <slot>exportAutoCadTxt()</slot>
+  <slot>exportDxfPnt()</slot>
  </slots>
 </ui>

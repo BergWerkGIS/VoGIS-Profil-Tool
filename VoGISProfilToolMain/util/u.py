@@ -37,7 +37,8 @@ class Util:
         if fileName.isEmpty():
             return ''
         fileExt = str(selectedFilter[:3]).lower()
-        if str(fileName).lower().endswith(fileExt) is False:
+        fileName = unicode(fileName)
+        if fileName.lower().endswith(fileExt) is False:
             fileName = fileName + '.' + fileExt
         return fileName
 
