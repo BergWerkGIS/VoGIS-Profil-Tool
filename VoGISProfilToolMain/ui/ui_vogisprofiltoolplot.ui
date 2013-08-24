@@ -292,6 +292,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>IDC_bDxfLine</sender>
+   <signal>clicked()</signal>
+   <receiver>VoGISProfilToolPlot</receiver>
+   <slot>exportDxfLine()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>610</x>
+     <y>315</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>747</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>exportTxt()</slot>
@@ -300,5 +316,6 @@
   <slot>exportCsvXls()</slot>
   <slot>exportAutoCadTxt()</slot>
   <slot>exportDxfPnt()</slot>
+  <slot>exportDxfLine()</slot>
  </slots>
 </ui>

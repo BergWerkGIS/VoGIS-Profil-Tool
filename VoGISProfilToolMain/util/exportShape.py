@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from os.path import basename
 from PyQt4.QtCore import QVariant
 from PyQt4.QtGui import QMessageBox
+import ogr
 from qgis.core import QgsMessageLog
 from qgis.core import QGis
 from qgis.core import QgsVectorFileWriter
@@ -25,198 +25,232 @@ class ExportShape:
         self.fileName = fileName
         self.settings = settings
         self.profiles = profiles
+        self.u = Util(self.iface)
 
     def exportPoint(self):
 
-        if self.__deleteShape(self.fileName) is False:
+        if self.u.deleteVectorFile(self.fileName) is False:
             return
 
-        flds = {}
-        #standardfeler
-        flds[0] = QgsField('Profillaenge', QVariant.Double)
-        flds[1] = QgsField('Segmentlaenge', QVariant.Double)
-        flds[2] = QgsField('Rechtswert', QVariant.Double)
-        flds[3] = QgsField('Hochwert', QVariant.Double)
+        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, self.settings.mapData.selectedLineLyr.line.crs().epsg(), ogr.wkbPoint25D)
+        if ds is None:
+            return
 
-        fldCnt = len(flds)
+        flds = ['Profillaenge', 'Segmentlaenge', 'Rechtswert', 'Hochwert']
+        for fld in flds:
+            fldDfn = ogr.FieldDefn(fld, ogr.OFTReal)
+            if lyr.CreateField(fldDfn) != 0:
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld))
+                return
 
         #raster
-        for r in self.settings.mapData.rasters.rasters():
-            if r.selected is True:
-                flds[fldCnt] = QgsField(r.name, QVariant.Double)
-                fldCnt += 1
+        for r in self.settings.mapData.rasters.selectedRasters():
+            QgsMessageLog.logMessage('rasterName: {0}'.format(r.name), 'VoGis')
+            fldDfn = ogr.FieldDefn(str(r.name), ogr.OFTReal)
+            if lyr.CreateField(fldDfn) != 0:
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(r.name))
+                return
 
         #Punkttypen
-        pntAttribs = ['ProfilNr', 'SegNr', 'PktNr']
-        for pntAttr in pntAttribs:
-            flds[fldCnt] = QgsField(pntAttr, QVariant.Int)
-            fldCnt += 1
+        flds = ['ProfilNr', 'SegNr', 'PktNr']
+        for fld in flds:
+            fldDfn = ogr.FieldDefn(fld, ogr.OFTInteger)
+            if lyr.CreateField(fldDfn) != 0:
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld))
+                return
 
         #PktKlasse
-        flds[fldCnt] = QgsField('PktKlasse', QVariant.String)
-        fldCnt += 1
+        fldDfn = ogr.FieldDefn('PktKlasse', ogr.OFTString)
+        fldDfn.SetWidth(1)
+        if lyr.CreateField(fldDfn) != 0:
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format('PktKlasse'))
+            return
 
-        if self.hekto is True:
-            flds[fldCnt] = QgsField('Hekto', QVariant.String)
-            fldCnt += 1
+        fldDfn = ogr.FieldDefn('Hekto', ogr.OFTString)
+        fldDfn.SetWidth(10)
+        if lyr.CreateField(fldDfn) != 0:
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format('Hekto'))
+            return
 
         if self.attribs is True:
-            QgsMessageLog.logMessage('EXPORT POINT attribs TRUE', 'VoGis')
+            #QgsMessageLog.logMessage('EXPORT POINT attribs TRUE', 'VoGis')
             if self.settings.modeLine == enumModeLine.line:
                 provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
                 for(idx, fld) in provider.fields().iteritems():
-                    flds[fldCnt] = fld
-                    fldCnt += 1
+                    fldTyp = fld.type()
+                    if fldTyp == QVariant.Double:
+                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTReal)
+                    elif fldTyp == QVariant.Int:
+                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTInteger)
+                    else:
+                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTString)
+                        fldDfn.SetWidth(50)
+                    if lyr.CreateField(fldDfn) != 0:
+                        QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
+                        return
         else:
             QgsMessageLog.logMessage('attribs FALSE', 'VoGis')
 
-        QgsMessageLog.logMessage('flds: {0}'.format(flds), 'VoGis')
-
-        shpWriter = QgsVectorFileWriter(self.fileName,
-                                        "CP1250",
-                                        flds,
-                                        QGis.WKBPoint,
-                                        self.settings.mapData.selectedLineLyr.line.crs()
-                                        )
-        if shpWriter.hasError() != QgsVectorFileWriter.NoError:
-            QMessageBox.warning(self.iface.mainWindow(),
-                                "VoGIS-Profiltool",
-                                'Konnte Shapefile nicht erstellen: {0}'.format(self.fileName)
-                                )
-            return
-
-        ut = Util(self.iface)
         segOld = None
-
         for p in self.profiles:
             for s in p.segments:
                 if segOld is not None:
                     v = segOld.vertices[len(segOld.vertices) - 1]
-                    feat = ut.createQgPointFeature(v)
+                    feat = self.u.createOgrPointFeature(lyr, v)
                     feat = self.__addValues(feat, v, s.id)
-                    shpWriter.addFeature(feat)
+                    if lyr.CreateFeature(feat) != 0:
+                        QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Feature nicht erstellen: {0}'.format(v.id))
+                        return
+                    feat.Destroy()
                 for v in s.vertices:
-                    feat = ut.createQgPointFeature(v)
+                    feat = self.u.createOgrPointFeature(lyr, v)
                     feat = self.__addValues(feat, v, None)
-                    shpWriter.addFeature(feat)
+                    if lyr.CreateFeature(feat) != 0:
+                        QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Feature nicht erstellen: {0}'.format(v.id))
+                        return
+                    feat.Destroy()
                 segOld = s
             segOld = None
 
-        del shpWriter
-        self.__loadShp(self.fileName)
+        ds.Destroy()
+        ds = None
+        self.u.loadVectorFile(self.fileName)
 
     def __addValues(self, feat, v, sId):
-        feat.addAttribute(0, v.distanceProfile)
+        feat.SetField(0, v.distanceProfile)
         if sId is None:
-            feat.addAttribute(1, v.distanceSegment)
+            feat.SetField(1, v.distanceSegment)
         else:
-            feat.addAttribute(1, 0)
-        feat.addAttribute(2, v.x)
-        feat.addAttribute(3, v.y)
+            feat.SetField(1, 0)
+        feat.SetField(2, v.x)
+        feat.SetField(3, v.y)
         fldCnt = 4
         if len(v.zvals) > 0:
             for z in v.zvals:
                 zVal = -9999
                 if z is not None:
                     zVal = z
-                feat.addAttribute(fldCnt, zVal)
+                feat.SetField(fldCnt, zVal)
                 fldCnt += 1
-        feat.addAttribute(fldCnt, v.profileId)
+        feat.SetField(fldCnt, v.profileId)
         fldCnt += 1
         if sId is None:
-            feat.addAttribute(fldCnt, v.segmentId)
+            feat.SetField(fldCnt, v.segmentId)
         else:
-            feat.addAttribute(fldCnt, sId)
+            feat.SetField(fldCnt, sId)
         fldCnt += 1
-        feat.addAttribute(fldCnt, v.vertexId)
+        feat.SetField(fldCnt, v.vertexId)
         fldCnt += 1
-        feat.addAttribute(fldCnt, v.getType())
+        feat.SetField(fldCnt, v.getType())
         fldCnt += 1
         if self.hekto is True:
-            feat.addAttribute(fldCnt, v.getHekto(self.decimalDelimiter))
+            feat.SetField(fldCnt, v.getHekto(self.decimalDelimiter))
             fldCnt += 1
         if self.attribs is True:
-            QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
+            #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
             if self.settings.modeLine == enumModeLine.line:
-                for a in v.attributes:
-                    feat.addAttribute(fldCnt, a)
+                for a in v.getAttributeVals():
+                    feat.SetField(fldCnt, a)
                     fldCnt += 1
         return feat
 
     def exportLine(self):
 
-        if self.__deleteShape(self.fileName) is False:
+        if self.u.deleteVectorFile(self.fileName) is False:
             return
 
-        flds = {}
-        flds[0] = QgsField('Profillaenge', QVariant.Double)
-        fldCnt = len(flds)
+        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, self.settings.mapData.selectedLineLyr.line.crs().epsg(), ogr.wkbLineString25D)
+        if ds is None:
+            return
+
+        fld = 'Profillaenge'
+        fldDfn = ogr.FieldDefn(fld, ogr.OFTReal)
+        if lyr.CreateField(fldDfn) != 0:
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld))
+            return
+
+        fld = 'DHM'
+        fldDfn = ogr.FieldDefn(fld, ogr.OFTString)
+        fldDfn.SetWidth(20)
+        if lyr.CreateField(fldDfn) != 0:
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld))
+            return
 
         if self.attribs is True:
+            QgsMessageLog.logMessage('EXPORT LINE attribs TRUE', 'VoGis')
             if self.settings.modeLine == enumModeLine.line:
                 provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
                 for(idx, fld) in provider.fields().iteritems():
-                    flds[fldCnt] = fld
-                    fldCnt += 1
-
-        shpWriter = QgsVectorFileWriter(self.fileName,
-                                        "CP1250",
-                                        flds,
-                                        QGis.WKBLineString,
-                                        self.settings.mapData.selectedLineLyr.line.crs()
-                                        )
-        if shpWriter.hasError() != QgsVectorFileWriter.NoError:
-            QMessageBox.warning(self.iface.mainWindow(),
-                                "VoGIS-Profiltool",
-                                'Konnte Shapefile nicht erstellen: {0}'.format(self.fileName)
-                                )
-            return
-
-        ut = Util(self.iface)
-
-        for p in self.profiles:
-            vertices = []
-            lastV = None
-            profileLength = 0
-            for s in p.segments:
-                for v in s.vertices:
-                    lastV = v
-                    profileLength = v.distanceProfile
-                    vertices.append(QgsPoint(v.x, v.y))
-            feat = ut.createQgLineFeature(vertices)
-            feat.addAttribute(0, profileLength)
-            fldCnt = 1
-            if self.attribs is True:
-                if self.settings.modeLine == enumModeLine.line:
-                    lastV
-                    for a in lastV.attributes:
-                        feat.addAttribute(fldCnt, a)
-                        fldCnt += 1
-            shpWriter.addFeature(feat)
-
-        del shpWriter
-        self.__loadShp(self.fileName)
-
-    def __loadShp(self, fileName):
-        reply = QMessageBox.question(self.iface.mainWindow(),
-                                     "VoGIS-Profiltool",
-                                     'Shapefile gespeichert.\r\n\r\n\r\nLaden?',
-                                     QMessageBox.Yes | QMessageBox.No,
-                                     QMessageBox.Yes
-                                     )
-        if reply == QMessageBox.Yes:
-            self.iface.addVectorLayer(fileName,
-                                      basename(str(fileName)),
-                                      'ogr'
-                                      )
-
-    def __deleteShape(self, fileName):
-
-        if QgsVectorFileWriter.deleteShapeFile(fileName) is False:
-            QMessageBox.warning(self.iface.mainWindow(),
-                                "VoGIS-Profiltool",
-                                'Konnte vorhandenes Shapefile nicht löschen: {0}'.format(fileName)
-                                )
-            return False
+                    fldTyp = fld.type()
+                    if fldTyp == QVariant.Double:
+                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTReal)
+                    elif fldTyp == QVariant.Int:
+                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTInteger)
+                    else:
+                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTString)
+                        fldDfn.SetWidth(50)
+                    if lyr.CreateField(fldDfn) != 0:
+                        QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
+                        return
         else:
-            return True
+            QgsMessageLog.logMessage('attribs FALSE', 'VoGis')
+
+        selRstrs = self.settings.mapData.rasters.selectedRasters()
+        for p in self.profiles:
+            feats = {}
+            lineGeoms = {}
+            lastV = {}
+            for idx in range(len(selRstrs)):
+                feats[idx] = ogr.Feature(lyr.GetLayerDefn())
+                lineGeoms[idx] = ogr.Geometry(ogr.wkbLineString25D)
+            for s in p.segments:
+                for idxV in range(len(s.vertices)):
+                    v = s.vertices[idxV]
+                    for idx in range(len(selRstrs)):
+                        lastV[idx] = v
+                        #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[idx]), 'VoGis')
+                        lineGeoms[idx].AddPoint(v.x, v.y, v.zvals[idx])
+            for idx in range(len(selRstrs)):
+                feats[idx].SetField(0, lastV[idx].distanceProfile)
+                feats[idx].SetField(1, str(selRstrs[idx].name))
+                fldCnt = 2
+                if self.attribs is True:
+                    #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
+                    if self.settings.modeLine == enumModeLine.line:
+                        for a in v.getAttributeVals():
+                            feats[idx].SetField(fldCnt, a)
+                            fldCnt += 1
+                feats[idx].SetGeometry(lineGeoms[idx])
+                if lyr.CreateFeature(feats[idx]) != 0:
+                    QMessageBox.warning(self.iface.mainWindow(),
+                                        "VoGIS-Profiltool",
+                                        'Konnte Feature nicht erstellen: {0}'.format(p.id)
+                                        )
+                    return
+                feats[idx].Destroy()
+        ds.Destroy()
+        ds = None
+        self.u.loadVectorFile(self.fileName)
+
+        # for p in self.profiles:
+        #     vertices = []
+        #     lastV = None
+        #     profileLength = 0
+        #     for s in p.segments:
+        #         for v in s.vertices:
+        #             lastV = v
+        #             profileLength = v.distanceProfile
+        #             vertices.append(QgsPoint(v.x, v.y))
+        #     feat = ut.createQgLineFeature(vertices)
+        #     feat.addAttribute(0, profileLength)
+        #     fldCnt = 1
+        #     if self.attribs is True:
+        #         if self.settings.modeLine == enumModeLine.line:
+        #             lastV
+        #             for a in lastV.attributes:
+        #                 feat.addAttribute(fldCnt, a)
+        #                 fldCnt += 1
+        #     shpWriter.addFeature(feat)
+
+        # del shpWriter
+        # self.__loadShp(self.fileName)

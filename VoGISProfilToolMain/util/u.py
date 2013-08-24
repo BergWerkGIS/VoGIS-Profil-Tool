@@ -1,7 +1,11 @@
 # -*- coding: iso-8859-15 -*-
 
+from os.path import basename
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import ogr
+import osr
+from qgis.core import QgsVectorFileWriter
 from qgis.core import QgsPoint
 from qgis.core import QgsGeometry
 from qgis.core import QgsFeature
@@ -227,3 +231,73 @@ class Util:
 
         #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW2', self.__printAttribs(featNew.attributeMap())), 'VoGis')
         return featNew
+
+    def deleteVectorFile(self, fileName):
+        if QgsVectorFileWriter.deleteShapeFile(fileName) is False:
+            QMessageBox.warning(self.iface.mainWindow(),
+                                "VoGIS-Profiltool",
+                                'Konnte vorhandene Datei nicht löschen: {0}'.format(fileName)
+                                )
+            return False
+        else:
+            return True
+
+    def loadVectorFile(self, fileName):
+        reply = QMessageBox.question(self.iface.mainWindow(),
+                                     "VoGIS-Profiltool",
+                                     'Datei gespeichert.\r\n\r\n\r\nLaden?',
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.Yes
+                                     )
+        if reply == QMessageBox.Yes:
+            self.iface.addVectorLayer(fileName,
+                                      basename(str(fileName)),
+                                      'ogr'
+                                      )
+
+    def createOgrDataSrcAndLyr(self, driverName, fileName, epsg, geomType):
+
+        drv = ogr.GetDriverByName(driverName)
+        if drv is None:
+            QMessageBox.warning(self.iface.mainWindow(),
+                                "VoGIS-Profiltool",
+                                '{0} Treiber nicht verfügbar'.format(driverName)
+                                )
+            return None, None
+
+        ds = drv.CreateDataSource(fileName)
+        if ds is None:
+            QMessageBox.warning(self.iface.mainWindow(),
+                                "VoGIS-Profiltool",
+                                'Konnte {0} nicht erstellen: {1}'.format(driverName, fileName)
+                                )
+            return None, None
+
+        if epsg is None:
+            spatialReference = None
+        else:
+            spatialReference = osr.SpatialReference()
+            if spatialReference.ImportFromEPSG(epsg) != 0:
+                QMessageBox.warning(self.iface.mainWindow(),
+                                    "VoGIS-Profiltool",
+                                    'Konnte Koordinatensystem nicht initialisieren! EPSG: {0}'.format(epsg)
+                                    )
+                return None, None
+        #http://www.digital-geography.com/create-and-edit-shapefiles-with-python-only/
+        lyr = ds.CreateLayer("ogrlyr", spatialReference, geomType)
+        if lyr is None:
+            QMessageBox.warning(self.iface.mainWindow(),
+                                "VoGIS-Profiltool",
+                                'Konnte {0}-Layer nicht erstellen: {1}'.format(driverName, fileName)
+                                )
+            return None, None
+
+        return ds, lyr
+
+    def createOgrPointFeature(self, lyr, v):
+        #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[0]), 'VoGis')
+        feat = ogr.Feature(lyr.GetLayerDefn())
+        pt = ogr.Geometry(ogr.wkbPoint25D)
+        pt.SetPoint(0, v.x, v.y, v.zvals[0])
+        feat.SetGeometry(pt)
+        return feat

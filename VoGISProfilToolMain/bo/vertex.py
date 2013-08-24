@@ -93,6 +93,7 @@ class Vertex:
         return acadTxt
 
     def __getAttribs(self, delimiter, decimalDelimiter):
+        """internal: for text output"""
         aTxt = ''
         for a in self.attributes:
             if isinstance(a, QVariant):
@@ -105,6 +106,21 @@ class Vertex:
             else:
                 aTxt += '{0}{1}'.format(delimiter, a2)
         return aTxt
+
+    def getAttributeVals(self):
+        """for writing to shapefile"""
+        attribs = []
+        for a in self.attributes:
+            if isinstance(a, QVariant):
+                a2 = a.toPyObject()
+            else:
+                a2 = a
+            #if isinstance(a2, (int, long, float, complex)):
+            if isinstance(a2, (long, float, complex)):
+                attribs.append(a2)
+            else:
+                attribs.append(str(a2))
+        return attribs
 
     def getType(self):
         vType = ''
