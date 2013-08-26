@@ -32,7 +32,9 @@ class ExportShape:
         if self.u.deleteVectorFile(self.fileName) is False:
             return
 
-        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, self.settings.mapData.selectedLineLyr.line.crs().epsg(), ogr.wkbPoint25D)
+        #self.settings.mapData.selectedLineLyr.line.crs().epsg()
+        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
+        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, crs.epsg(), ogr.wkbPoint25D)
         if ds is None:
             return
 
@@ -45,8 +47,8 @@ class ExportShape:
 
         #raster
         for r in self.settings.mapData.rasters.selectedRasters():
-            QgsMessageLog.logMessage('rasterName: {0}'.format(r.name), 'VoGis')
-            fldDfn = ogr.FieldDefn(str(r.name), ogr.OFTReal)
+            #QgsMessageLog.logMessage('rasterName: {0}'.format(r.name), 'VoGis')
+            fldDfn = ogr.FieldDefn(r.name, ogr.OFTReal)
             if lyr.CreateField(fldDfn) != 0:
                 QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(r.name))
                 return
@@ -66,11 +68,12 @@ class ExportShape:
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format('PktKlasse'))
             return
 
-        fldDfn = ogr.FieldDefn('Hekto', ogr.OFTString)
-        fldDfn.SetWidth(10)
-        if lyr.CreateField(fldDfn) != 0:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format('Hekto'))
-            return
+        if self.hekto is True:
+            fldDfn = ogr.FieldDefn('Hekto', ogr.OFTString)
+            fldDfn.SetWidth(10)
+            if lyr.CreateField(fldDfn) != 0:
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format('Hekto'))
+                return
 
         if self.attribs is True:
             #QgsMessageLog.logMessage('EXPORT POINT attribs TRUE', 'VoGis')
@@ -159,7 +162,9 @@ class ExportShape:
         if self.u.deleteVectorFile(self.fileName) is False:
             return
 
-        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, self.settings.mapData.selectedLineLyr.line.crs().epsg(), ogr.wkbLineString25D)
+        #self.settings.mapData.selectedLineLyr.line.crs().epsg()
+        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
+        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, crs.epsg(), ogr.wkbLineString25D)
         if ds is None:
             return
 
@@ -212,7 +217,7 @@ class ExportShape:
                         lineGeoms[idx].AddPoint(v.x, v.y, v.zvals[idx])
             for idx in range(len(selRstrs)):
                 feats[idx].SetField(0, lastV[idx].distanceProfile)
-                feats[idx].SetField(1, str(selRstrs[idx].name))
+                feats[idx].SetField(1, selRstrs[idx].name)
                 fldCnt = 2
                 if self.attribs is True:
                     #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')

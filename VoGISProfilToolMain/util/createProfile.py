@@ -89,8 +89,8 @@ class CreateProfile:
                     #attrs = feat.attributeMap()
                     # attrs is a dictionary: key = field index, value = QgsFeatureAttribute
                     # show all attributes and their values
-                    for (k, attr) in feat.attributeMap().iteritems():
-                        QgsMessageLog.logMessage('{0}: {1}'.format(k, attr.toString()), 'VoGis')
+                    #for (k, attr) in feat.attributeMap().iteritems():
+                    #    QgsMessageLog.logMessage('{0}: {1}'.format(k, attr.toString()), 'VoGis')
                     feats.append(feat)
                     #neues Feature verwenden, weil sonst die Multiparts
                     #nicht als solche erkannt werden

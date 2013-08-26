@@ -66,14 +66,14 @@ class Util:
 
         if settings.linesExplode is True:
             newFeats = self.__explodeMultiPartFeatures(provider, origFeats)
-            self.__printAttribs(newFeats[0].attributeMap())
+            #self.__printAttribs(newFeats[0].attributeMap())
 
         if settings.linesMerge is True:
             newFeats = self.__mergeFeaturesAny(newFeats)
-            self.__printAttribs(newFeats[0].attributeMap())
+            #self.__printAttribs(newFeats[0].attributeMap())
 
             newFeats = self.__mergeFeaturesSimple(provider, newFeats)
-            self.__printAttribs(newFeats[0].attributeMap())
+            #self.__printAttribs(newFeats[0].attributeMap())
 
         if newFeats is None:
             return origFeats
@@ -174,10 +174,10 @@ class Util:
         for feat in origFeats:
             geom = feat.geometry()
             if geom.isMultipart():
-                QgsMessageLog.logMessage('FId[{0}]: {1}'.format(feat.id(), 'multipart feature!'), 'VoGis')
+                #QgsMessageLog.logMessage('FId[{0}]: {1}'.format(feat.id(), 'multipart feature!'), 'VoGis')
                 newFeats.extend(self.explodeMultiPartFeature(provider, feat))
             else:
-                QgsMessageLog.logMessage('FId[{0}]: {1}'.format(feat.id(), 'single part feature'), 'VoGis')
+                #QgsMessageLog.logMessage('FId[{0}]: {1}'.format(feat.id(), 'single part feature'), 'VoGis')
                 newFeats.append(feat)
 
         QgsMessageLog.logMessage('{0} features after exploding'.format(len(newFeats)), 'VoGis')
@@ -236,7 +236,7 @@ class Util:
         if QgsVectorFileWriter.deleteShapeFile(fileName) is False:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                'Konnte vorhandene Datei nicht löschen: {0}'.format(fileName)
+                                u'Konnte vorhandene Datei nicht löschen: {0}'.format(fileName)
                                 )
             return False
         else:
@@ -261,7 +261,7 @@ class Util:
         if drv is None:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                '{0} Treiber nicht verfügbar'.format(driverName)
+                                unicode('{0} Treiber nicht verfügbar'.format(driverName))
                                 )
             return None, None
 

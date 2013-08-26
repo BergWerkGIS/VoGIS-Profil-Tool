@@ -22,6 +22,7 @@
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import QgsMessageLog
 from qgis.core import QgsPoint
 from qgis.gui import QgsRubberBand
 from ui.ui_vogisprofiltoolmain import Ui_VoGISProfilToolMain
@@ -34,7 +35,7 @@ from util.ptmaptool import ProfiletoolMapTool
 class VoGISProfilToolMainDialog(QDialog):
     def __init__(self, interface, settings):
 
-        QDialog.__init__(self)
+        QDialog.__init__(self, interface.mainWindow())
         self.selectingVisibleRasters = False
         self.settings = settings
         self.iface = interface
@@ -67,6 +68,11 @@ class VoGISProfilToolMainDialog(QDialog):
         for lLyr in self.settings.mapData.lines.lines():
             self.ui.IDC_cbLineLayers.addItem(lLyr.name, lLyr)
 
+        if self.settings.mapData.lines.count() < 1:
+            self.ui.IDC_rbDigi.setChecked(True)
+            self.ui.IDC_rbShapeLine.setEnabled(False)
+
+
         #Einstellungen fuer Linie zeichen
         self.action = QAction(QIcon(":/plugins/vogisprofiltoolmain/icons/icon.png"), "VoGIS-Profiltool", self.iface.mainWindow())
         self.action.setWhatsThis("VoGIS-Profiltool")
@@ -88,7 +94,10 @@ class VoGISProfilToolMainDialog(QDialog):
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
             return
 
-        if self.settings.modeLine is not enumModeLine.line and self.settings.mapData.customLine is None:
+        QgsMessageLog.logMessage('modeLine!=line: {0}'.format(self.settings.modeLine != enumModeLine.line), 'VoGis')
+        QgsMessageLog.logMessage('customLine is None: {0}'.format(self.settings.mapData.customLine is None), 'VoGis')
+
+        if self.settings.modeLine != enumModeLine.line and self.settings.mapData.customLine is None:
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Keine Profillinie vorhanden!")
             return
 

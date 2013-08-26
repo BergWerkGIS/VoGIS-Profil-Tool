@@ -31,7 +31,7 @@ def description():
 
 
 def version():
-    return "Version 1.6"
+    return "Version 1.7"
 
 
 def icon():
@@ -41,11 +41,14 @@ def icon():
 def qgisMinimumVersion():
     return "1.8"
 
+
 def author():
     return "BergWerk GIS"
 
+
 def email():
     return "wb@BergWerk-GIS.at"
+
 
 def classFactory(iface):
     # load VoGISProfilToolMain class from file VoGISProfilToolMain

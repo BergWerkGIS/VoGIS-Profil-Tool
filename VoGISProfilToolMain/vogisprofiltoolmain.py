@@ -19,7 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-# Import the PyQt and QGIS libraries
+import unicodedata
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -82,9 +82,9 @@ class VoGISProfilToolMain:
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "lines:" + str(self.settings.mapData.lines.count()) + " rasters:" + str(self.settings.mapData.rasters.count()))
 
         #checken ob raster und oder lines vorhanden sind
-        if self.settings.mapData.lines.count() < 1:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Keine Linienebene vorhanden")
-            return 2
+        #if self.settings.mapData.lines.count() < 1:
+        #    QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Keine Linienebene vorhanden")
+        #    return 2
         if self.settings.mapData.rasters.count() < 1:
             retVal = QMessageBox.warning(self.iface.mainWindow(),
                                          "VoGIS-Profiltool",
@@ -129,16 +129,18 @@ class VoGISProfilToolMain:
 
         for lyr in availLayers:
             lyrType = lyr.type()
+            lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
+            #lyrName = unicodedata.normalize('NFKD', unicode(lyr.name()))
             if lyrType == 0:
                 #vector
                 if lyr.geometryType() == 1:
                     #Line
-                    l = Line(lyr.id(), lyr.name(), lyr)
+                    l = Line(lyr.id(), lyrName, lyr)
                     #QgsMessageLog.logMessage(l.toStr(), 'VoGis')
                     lColl.addLine(l)
             elif lyrType == 1:
                 #Raster
-                r = Raster(lyr.id(), lyr.name(), lyr)
+                r = Raster(lyr.id(), lyrName, lyr)
                 rColl.addRaster(r)
 
         mapData = MapData()

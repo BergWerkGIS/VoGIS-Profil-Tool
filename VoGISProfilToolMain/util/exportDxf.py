@@ -48,7 +48,7 @@ class ExportDxf:
             for s in p.segments:
                 for v in s.vertices:
                     for idx in range(len(selRstrs)):
-                        QgsMessageLog.logMessage('rasterName: {0}'.format(selRstrs[idx].name), 'VoGis')
+                        #QgsMessageLog.logMessage('rasterName: {0}'.format(selRstrs[idx].name), 'VoGis')
                         feat = ogr.Feature(lyr.GetLayerDefn())
                         feat.SetField('Layer', str(selRstrs[idx].name))
                         pt = ogr.Geometry(ogr.wkbPoint25D)

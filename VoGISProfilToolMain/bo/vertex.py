@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import unicodedata
 from PyQt4.QtCore import QVariant
 from settings import enumVertexType
 from qgis.core import QgsMessageLog
@@ -104,7 +105,7 @@ class Vertex:
             if isinstance(a2, (long, float, complex)):
                 aTxt += ('{0}{1:.2f}'.format(delimiter, a2)).replace('.', decimalDelimiter)
             else:
-                aTxt += '{0}{1}'.format(delimiter, a2)
+                aTxt += '{0}{1}'.format(delimiter, unicodedata.normalize('NFKD', unicode(a2)).encode('ascii', 'ignore'))
         return aTxt
 
     def getAttributeVals(self):
@@ -119,7 +120,7 @@ class Vertex:
             if isinstance(a2, (long, float, complex)):
                 attribs.append(a2)
             else:
-                attribs.append(str(a2))
+                attribs.append(unicodedata.normalize('NFKD', unicode(a2)).encode('ascii', 'ignore'))
         return attribs
 
     def getType(self):

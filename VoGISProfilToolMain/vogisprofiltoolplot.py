@@ -34,7 +34,7 @@ import ogr
 class VoGISProfilToolPlotDialog(QDialog):
     def __init__(self, interface, settings, profiles):
 
-        QDialog.__init__(self)
+        QDialog.__init__(self, interface.mainWindow())
         self.iface = interface
         self.settings = settings
         self.profiles = profiles
