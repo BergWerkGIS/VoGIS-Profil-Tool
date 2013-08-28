@@ -298,6 +298,9 @@ class Util:
         #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[0]), 'VoGis')
         feat = ogr.Feature(lyr.GetLayerDefn())
         pt = ogr.Geometry(ogr.wkbPoint25D)
-        pt.SetPoint(0, v.x, v.y, v.zvals[0])
+        z = 0
+        if len(v.zvals) > 0:
+            z = v.zvals[0]
+        pt.SetPoint(0, v.x, v.y, z)
         feat.SetGeometry(pt)
         return feat

@@ -43,16 +43,16 @@ class ExportDxf:
                                 )
             return
 
-        selRstrs = self.settings.mapData.rasters.selectedRasters()
-        for p in self.profiles:
-            for s in p.segments:
-                for v in s.vertices:
-                    for idx in range(len(selRstrs)):
+        if self.settings.onlyHektoMode is True:
+            selRstrs = self.settings.mapData.rasters.selectedRasters()
+            for p in self.profiles:
+                for s in p.segments:
+                    for v in s.vertices:
                         #QgsMessageLog.logMessage('rasterName: {0}'.format(selRstrs[idx].name), 'VoGis')
                         feat = ogr.Feature(lyr.GetLayerDefn())
-                        feat.SetField('Layer', str(selRstrs[idx].name))
+                        #feat.SetField('Layer', selRstrs[idx].name)
                         pt = ogr.Geometry(ogr.wkbPoint25D)
-                        pt.SetPoint(0, v.x, v.y, v.zvals[idx])
+                        pt.SetPoint(0, v.x, v.y, 0)
                         feat.SetGeometry(pt)
                         if lyr.CreateFeature(feat) != 0:
                             QMessageBox.warning(self.iface.mainWindow(),
@@ -61,6 +61,25 @@ class ExportDxf:
                                                 )
                             return
                         feat.Destroy()
+        else:
+            selRstrs = self.settings.mapData.rasters.selectedRasters()
+            for p in self.profiles:
+                for s in p.segments:
+                    for v in s.vertices:
+                        for idx in range(len(selRstrs)):
+                            #QgsMessageLog.logMessage('rasterName: {0}'.format(selRstrs[idx].name), 'VoGis')
+                            feat = ogr.Feature(lyr.GetLayerDefn())
+                            feat.SetField('Layer', selRstrs[idx].name)
+                            pt = ogr.Geometry(ogr.wkbPoint25D)
+                            pt.SetPoint(0, v.x, v.y, v.zvals[idx])
+                            feat.SetGeometry(pt)
+                            if lyr.CreateFeature(feat) != 0:
+                                QMessageBox.warning(self.iface.mainWindow(),
+                                                    "VoGIS-Profiltool",
+                                                    'Konnte Feature nicht erstellen: {0}'.format(v.id)
+                                                    )
+                                return
+                            feat.Destroy()
         ds = None
         #crashes QGIS: why?
         #self.u.loadVectorFile(self.fileName)
@@ -84,29 +103,48 @@ class ExportDxf:
                                 )
             return
 
-        selRstrs = self.settings.mapData.rasters.selectedRasters()
-        for p in self.profiles:
-            feats = {}
-            lineGeoms = {}
-            for idx in range(len(selRstrs)):
-                feats[idx] = ogr.Feature(lyr.GetLayerDefn())
-                feats[idx].SetField('Layer', str('{0} {1}'.format(selRstrs[idx].name, p.id)))
-                lineGeoms[idx] = ogr.Geometry(ogr.wkbLineString25D)
-            for s in p.segments:
-                for idxV in range(len(s.vertices)):
-                    v = s.vertices[idxV]
-                    for idx in range(len(selRstrs)):
-                        #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[idx]), 'VoGis')
-                        lineGeoms[idx].AddPoint(v.x, v.y, v.zvals[idx])
-            for idx in range(len(selRstrs)):
-                feats[idx].SetGeometry(lineGeoms[idx])
-                if lyr.CreateFeature(feats[idx]) != 0:
+        if self.settings.onlyHektoMode is True:
+            for p in self.profiles:
+                feat = ogr.Feature(lyr.GetLayerDefn())
+                lineGeom = ogr.Geometry(ogr.wkbLineString25D)
+                for s in p.segments:
+                    for idxV in range(len(s.vertices)):
+                        v = s.vertices[idxV]
+                        lineGeom.AddPoint(v.x, v.y, 0)
+                feat.SetGeometry(lineGeom)
+                if lyr.CreateFeature(feat) != 0:
                     QMessageBox.warning(self.iface.mainWindow(),
                                         "VoGIS-Profiltool",
                                         'Konnte Feature nicht erstellen: {0}'.format(p.id)
                                         )
                     return
-                feats[idx].Destroy()
+                lineGeom.Destroy()
+                feat.Destroy()
+        else:
+            selRstrs = self.settings.mapData.rasters.selectedRasters()
+            for p in self.profiles:
+                feats = {}
+                lineGeoms = {}
+                for idx in range(len(selRstrs)):
+                    feats[idx] = ogr.Feature(lyr.GetLayerDefn())
+                    feats[idx].SetField('Layer', str('{0} {1}'.format(selRstrs[idx].name, p.id)))
+                    lineGeoms[idx] = ogr.Geometry(ogr.wkbLineString25D)
+                for s in p.segments:
+                    for idxV in range(len(s.vertices)):
+                        v = s.vertices[idxV]
+                        for idx in range(len(selRstrs)):
+                            #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[idx]), 'VoGis')
+                            lineGeoms[idx].AddPoint(v.x, v.y, v.zvals[idx])
+                for idx in range(len(selRstrs)):
+                    feats[idx].SetGeometry(lineGeoms[idx])
+                    if lyr.CreateFeature(feats[idx]) != 0:
+                        QMessageBox.warning(self.iface.mainWindow(),
+                                            "VoGIS-Profiltool",
+                                            'Konnte Feature nicht erstellen: {0}'.format(p.id)
+                                            )
+                        return
+                    lineGeoms[idx].Destroy()
+                    feats[idx].Destroy()
         ds.Destroy()
         ds = None
         #crashes QGIS: why?

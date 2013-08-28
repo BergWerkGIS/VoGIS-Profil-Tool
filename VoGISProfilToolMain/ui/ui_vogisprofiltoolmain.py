@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Thu Aug 22 16:14:45 2013
+# Created: Tue Aug 27 17:07:26 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,12 @@ except AttributeError:
 class Ui_VoGISProfilToolMain(object):
     def setupUi(self, VoGISProfilToolMain):
         VoGISProfilToolMain.setObjectName(_fromUtf8("VoGISProfilToolMain"))
-        VoGISProfilToolMain.resize(483, 850)
+        VoGISProfilToolMain.resize(458, 806)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(VoGISProfilToolMain.sizePolicy().hasHeightForWidth())
+        VoGISProfilToolMain.setSizePolicy(sizePolicy)
         self.gridLayout = QtGui.QGridLayout(VoGISProfilToolMain)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.verticalLayout = QtGui.QVBoxLayout()

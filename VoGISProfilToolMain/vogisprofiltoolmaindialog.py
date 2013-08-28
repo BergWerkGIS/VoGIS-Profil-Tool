@@ -35,22 +35,24 @@ from util.ptmaptool import ProfiletoolMapTool
 class VoGISProfilToolMainDialog(QDialog):
     def __init__(self, interface, settings):
 
-        QDialog.__init__(self, interface.mainWindow())
-        self.selectingVisibleRasters = False
         self.settings = settings
         self.iface = interface
+        self.selectingVisibleRasters = False
+
+        QDialog.__init__(self, interface.mainWindow())
+
         # Set up the user interface from Designer.
         self.ui = Ui_VoGISProfilToolMain()
         self.ui.setupUi(self)
+
+        if self.settings.onlyHektoMode is True:
+            self.ui.IDC_widRaster.hide()
+            self.adjustSize()
 
         self.ui.IDC_tbFromX.setText('-30000')
         self.ui.IDC_tbFromY.setText('240000')
         self.ui.IDC_tbToX.setText('-20000')
         self.ui.IDC_tbToY.setText('230000')
-
-        if self.settings.onlyHektoMode is True:
-            self.ui.IDC_chkCreateHekto.setCheckState(Qt.Checked)
-            self.ui.IDC_chkCreateHekto.setEnabled(False)
 
         check = Qt.Unchecked
 
@@ -72,7 +74,6 @@ class VoGISProfilToolMainDialog(QDialog):
             self.ui.IDC_rbDigi.setChecked(True)
             self.ui.IDC_rbShapeLine.setEnabled(False)
 
-
         #Einstellungen fuer Linie zeichen
         self.action = QAction(QIcon(":/plugins/vogisprofiltoolmain/icons/icon.png"), "VoGIS-Profiltool", self.iface.mainWindow())
         self.action.setWhatsThis("VoGIS-Profiltool")
@@ -90,9 +91,10 @@ class VoGISProfilToolMainDialog(QDialog):
         if self.__getSettingsFromGui() is False:
             return
 
-        if len(self.settings.mapData.rasters.selectedRasters()) < 1:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
-            return
+        if self.settings.onlyHektoMode is False:
+            if len(self.settings.mapData.rasters.selectedRasters()) < 1:
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
+                return
 
         QgsMessageLog.logMessage('modeLine!=line: {0}'.format(self.settings.modeLine != enumModeLine.line), 'VoGis')
         QgsMessageLog.logMessage('customLine is None: {0}'.format(self.settings.mapData.customLine is None), 'VoGis')

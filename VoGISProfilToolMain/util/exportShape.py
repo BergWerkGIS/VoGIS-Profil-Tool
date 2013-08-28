@@ -200,39 +200,68 @@ class ExportShape:
         else:
             QgsMessageLog.logMessage('attribs FALSE', 'VoGis')
 
-        selRstrs = self.settings.mapData.rasters.selectedRasters()
-        for p in self.profiles:
-            feats = {}
-            lineGeoms = {}
-            lastV = {}
-            for idx in range(len(selRstrs)):
-                feats[idx] = ogr.Feature(lyr.GetLayerDefn())
-                lineGeoms[idx] = ogr.Geometry(ogr.wkbLineString25D)
-            for s in p.segments:
-                for idxV in range(len(s.vertices)):
-                    v = s.vertices[idxV]
-                    for idx in range(len(selRstrs)):
-                        lastV[idx] = v
-                        #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[idx]), 'VoGis')
-                        lineGeoms[idx].AddPoint(v.x, v.y, v.zvals[idx])
-            for idx in range(len(selRstrs)):
-                feats[idx].SetField(0, lastV[idx].distanceProfile)
-                feats[idx].SetField(1, selRstrs[idx].name)
-                fldCnt = 2
+        if self.settings.onlyHektoMode is True:
+            for p in self.profiles:
+                feat = ogr.Feature(lyr.GetLayerDefn())
+                lineGeom = ogr.Geometry(ogr.wkbLineString25D)
+                lastV = None
+                for s in p.segments:
+                    for idxV in range(len(s.vertices)):
+                        v = s.vertices[idxV]
+                        lastV = v
+                        lineGeom.AddPoint(v.x, v.y, 0)
+                feat.SetField(0, lastV.distanceProfile)
+                fldCnt = 1
                 if self.attribs is True:
                     #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
                     if self.settings.modeLine == enumModeLine.line:
                         for a in v.getAttributeVals():
-                            feats[idx].SetField(fldCnt, a)
+                            feat.SetField(fldCnt, a)
                             fldCnt += 1
-                feats[idx].SetGeometry(lineGeoms[idx])
-                if lyr.CreateFeature(feats[idx]) != 0:
+                feat.SetGeometry(lineGeom)
+                if lyr.CreateFeature(feat) != 0:
                     QMessageBox.warning(self.iface.mainWindow(),
                                         "VoGIS-Profiltool",
                                         'Konnte Feature nicht erstellen: {0}'.format(p.id)
                                         )
                     return
-                feats[idx].Destroy()
+                lineGeom.Destroy()
+                feat.Destroy()
+        else:
+            selRstrs = self.settings.mapData.rasters.selectedRasters()
+            for p in self.profiles:
+                feats = {}
+                lineGeoms = {}
+                lastV = {}
+                for idx in range(len(selRstrs)):
+                    feats[idx] = ogr.Feature(lyr.GetLayerDefn())
+                    lineGeoms[idx] = ogr.Geometry(ogr.wkbLineString25D)
+                for s in p.segments:
+                    for idxV in range(len(s.vertices)):
+                        v = s.vertices[idxV]
+                        for idx in range(len(selRstrs)):
+                            lastV[idx] = v
+                            #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[idx]), 'VoGis')
+                            lineGeoms[idx].AddPoint(v.x, v.y, v.zvals[idx])
+                for idx in range(len(selRstrs)):
+                    feats[idx].SetField(0, lastV[idx].distanceProfile)
+                    feats[idx].SetField(1, selRstrs[idx].name)
+                    fldCnt = 2
+                    if self.attribs is True:
+                        #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
+                        if self.settings.modeLine == enumModeLine.line:
+                            for a in v.getAttributeVals():
+                                feats[idx].SetField(fldCnt, a)
+                                fldCnt += 1
+                    feats[idx].SetGeometry(lineGeoms[idx])
+                    if lyr.CreateFeature(feats[idx]) != 0:
+                        QMessageBox.warning(self.iface.mainWindow(),
+                                            "VoGIS-Profiltool",
+                                            'Konnte Feature nicht erstellen: {0}'.format(p.id)
+                                            )
+                        return
+                    lineGeoms[idx].Destroy()
+                    feats[idx].Destroy()
         ds.Destroy()
         ds = None
         self.u.loadVectorFile(self.fileName)

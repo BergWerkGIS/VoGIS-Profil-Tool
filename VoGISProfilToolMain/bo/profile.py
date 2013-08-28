@@ -1,8 +1,51 @@
+from qgis.core import QgsMessageLog
+from plotExtent import PlotExtent
+import itertools
+
+
 class Profile:
 
     def __init__(self, id, segments):
         self.id = id
         self.segments = segments
+
+    def getExtent(self):
+        #always 0: distance
+        xmin = 0
+        xmax = -99999
+        ymin = 99999
+        ymax = -99999
+        for s in self.segments:
+            v = s.vertices[-1]
+            if xmax < v.distanceProfile:
+                xmax = v.distanceProfile
+            for z in v.zvals:
+                if ymin > z:
+                    ymin = z
+                if ymax < z:
+                    ymax = z
+        return PlotExtent(xmin, ymin, xmax, ymax)
+
+    def getPlotSegments(self):
+        # x = []
+        # pltSegs = []
+        # for s in self.segments:
+        #     for v in s.vertices:
+        #         #QgsMessageLog.logMessage('zvals: {0}'.format(v.zvals), 'VoGis')
+        #         x.append(v.distanceProfile)
+        #         pltSegs.append(list(zip(itertools.repeat(v.distanceProfile, len(v.zvals)), v.zvals)))
+        # return x, pltSegs
+        #one segement for each DHM
+        pltSegs = []
+        zCnt = len(self.segments[0].vertices[0].zvals)
+        for idx in range(zCnt):
+            pltSeg = []
+            for s in self.segments:
+                for v in s.vertices:
+                    #!!!double parentheses!!! -> tuples
+                    pltSeg.append((v.distanceProfile, v.zvals[idx]))
+            pltSegs.append(pltSeg)
+        return pltSegs
 
     def writeHeader(self, selectedRasters, hekto, attribs, delimiter):
         #Profillaenge;Segmentlaenge;Rechtswert;Hochwert;
@@ -50,5 +93,5 @@ class Profile:
     def toACadTxt(self, delimiter, decimalDelimiter):
         acadTxt = ''
         for s in self.segments:
-          acadTxt += s.toACadTxt(delimiter, decimalDelimiter)
+            acadTxt += s.toACadTxt(delimiter, decimalDelimiter)
         return acadTxt
