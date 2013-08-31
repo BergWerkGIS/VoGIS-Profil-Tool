@@ -108,11 +108,14 @@ class VoGISProfilToolMain:
         if result == 0:
             return
 
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+
         createProf = CreateProfile(self.iface, self.settings)
         profiles = createProf.create()
         QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
 
         if len(profiles) < 1:
+            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
             return
 

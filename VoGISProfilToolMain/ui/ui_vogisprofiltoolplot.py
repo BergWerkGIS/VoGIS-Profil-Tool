@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Wed Aug 28 17:37:34 2013
+# Created: Sat Aug 31 09:41:14 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_VoGISProfilToolPlot(object):
     def setupUi(self, VoGISProfilToolPlot):
         VoGISProfilToolPlot.setObjectName(_fromUtf8("VoGISProfilToolPlot"))
-        VoGISProfilToolPlot.resize(842, 393)
+        VoGISProfilToolPlot.resize(756, 464)
         VoGISProfilToolPlot.setModal(True)
         self.gridLayout_2 = QtGui.QGridLayout(VoGISProfilToolPlot)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
@@ -44,9 +44,6 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_bACadTxt = QtGui.QPushButton(VoGISProfilToolPlot)
         self.IDC_bACadTxt.setObjectName(_fromUtf8("IDC_bACadTxt"))
         self.gridLayout.addWidget(self.IDC_bACadTxt, 3, 2, 1, 1)
-        self.IDC_bChart = QtGui.QPushButton(VoGISProfilToolPlot)
-        self.IDC_bChart.setObjectName(_fromUtf8("IDC_bChart"))
-        self.gridLayout.addWidget(self.IDC_bChart, 3, 0, 1, 1)
         self.IDC_bText = QtGui.QPushButton(VoGISProfilToolPlot)
         self.IDC_bText.setObjectName(_fromUtf8("IDC_bText"))
         self.gridLayout.addWidget(self.IDC_bText, 3, 1, 1, 1)
@@ -77,6 +74,12 @@ class Ui_VoGISProfilToolPlot(object):
         self.horizontalLayout.addItem(spacerItem)
         self.gridLayout.addLayout(self.horizontalLayout, 2, 0, 1, 9)
         self.IDC_frPlot = QtGui.QFrame(VoGISProfilToolPlot)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.IDC_frPlot.sizePolicy().hasHeightForWidth())
+        self.IDC_frPlot.setSizePolicy(sizePolicy)
+        self.IDC_frPlot.setMinimumSize(QtCore.QSize(0, 350))
         self.IDC_frPlot.setFrameShape(QtGui.QFrame.StyledPanel)
         self.IDC_frPlot.setFrameShadow(QtGui.QFrame.Raised)
         self.IDC_frPlot.setObjectName(_fromUtf8("IDC_frPlot"))
@@ -90,7 +93,7 @@ class Ui_VoGISProfilToolPlot(object):
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.IDC_frToolbar)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.gridLayout.addWidget(self.IDC_frToolbar, 1, 0, 1, 9)
-        self.gridLayout_2.addLayout(self.gridLayout, 11, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.gridLayout, 10, 0, 1, 1)
 
         self.retranslateUi(VoGISProfilToolPlot)
         QtCore.QObject.connect(self.IDC_bClose, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolPlot.reject)
@@ -112,7 +115,6 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_bExcel.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "csv (Excel)", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bShpLine.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Shp Linie", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bACadTxt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Autocad Text", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bChart.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Grafik", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bText.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Textdatei", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDecimalDelimiter.setItemText(0, QtGui.QApplication.translate("VoGISProfilToolPlot", ",", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDecimalDelimiter.setItemText(1, QtGui.QApplication.translate("VoGISProfilToolPlot", ".", None, QtGui.QApplication.UnicodeUTF8))

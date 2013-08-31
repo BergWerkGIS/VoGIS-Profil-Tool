@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Tue Aug 27 17:07:26 2013
+# Created: Fri Aug 30 14:34:37 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_VoGISProfilToolMain(object):
     def setupUi(self, VoGISProfilToolMain):
         VoGISProfilToolMain.setObjectName(_fromUtf8("VoGISProfilToolMain"))
-        VoGISProfilToolMain.resize(458, 806)
+        VoGISProfilToolMain.resize(458, 917)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -125,6 +125,11 @@ class Ui_VoGISProfilToolMain(object):
         self.gridLayout_4.addWidget(self.IDC_grpProfilLinien, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.IDC_widProfilLinien)
         self.IDC_widVertices = QtGui.QWidget(VoGISProfilToolMain)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.IDC_widVertices.sizePolicy().hasHeightForWidth())
+        self.IDC_widVertices.setSizePolicy(sizePolicy)
         self.IDC_widVertices.setObjectName(_fromUtf8("IDC_widVertices"))
         self.gridLayout_6 = QtGui.QGridLayout(self.IDC_widVertices)
         self.gridLayout_6.setMargin(0)
@@ -152,6 +157,11 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_dblspinDistance.setObjectName(_fromUtf8("IDC_dblspinDistance"))
         self.formLayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.IDC_dblspinDistance)
         self.IDC_rbVertexCount = QtGui.QRadioButton(self.IDC_grpVertices)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.IDC_rbVertexCount.sizePolicy().hasHeightForWidth())
+        self.IDC_rbVertexCount.setSizePolicy(sizePolicy)
         self.IDC_rbVertexCount.setObjectName(_fromUtf8("IDC_rbVertexCount"))
         self.formLayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.IDC_rbVertexCount)
         self.IDC_dblspinVertexCnt = QtGui.QDoubleSpinBox(self.IDC_grpVertices)

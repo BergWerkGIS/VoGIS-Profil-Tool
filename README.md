@@ -1,20 +1,32 @@
-VoGIS-Profil-Tool
-=================
+#VoGIS-Profil-Tool
+ 
+##Developed for
 
-Developed on OSGeoLive: http://live.osgeo.org/de/index.html
-For
-Amt der Vorarlberger Landesregierung
-Landesamt für Vermessung und Geoinformation
-http://vorarlberg.at/vorarlberg/bauen_wohnen/bauen/vermessung_geoinformation/start.htm
-
-New Version: VoGISProfilToolMain
-Old Version: Z_VoGISProfilToolMain
-
-Git Reference: http://gitref.org/
-
+ Amt der Vorarlberger Landesregierung 
+Landesamt für Vermessung und Geoinformation 
+http://vorarlberg.at/vorarlberg/bauen_wohnen/bauen/vermessung_geoinformation/start.htm 
+ 
+##Developed on
+ 
+OSGeo-Live: 
+http://live.osgeo.org/en/index.html
+ 
+#Check out code and create plugin
+ 
+Directory VoGISProfilToolMain contains current version 
+Directory Z_VoGISProfilToolMain contains old version 
+ 
+'''
 * git clone https://github.com/BergWerkGIS/VoGIS-Profil-Tool.git
 * cd VoGISProfilToolMain
 * make clean
 * make derase
 * make deploy
-* make zip (to get a zip-file to distribute)
+* make zip (to create plugin zip-file for deployment)
+'''
+ 
+Git Reference: http://gitref.org/
+ 
+#Download PlugIn
+.
+https://github.com/BergWerkGIS/VoGIS-Profil-Tool/raw/master/VoGISProfilToolMain/vogisprofiltoolmain.zip

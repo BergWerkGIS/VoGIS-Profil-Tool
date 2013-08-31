@@ -23,6 +23,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+from random import randrange
 from ui.ui_vogisprofiltoolplot import Ui_VoGISProfilToolPlot
 from bo.plotExtent import PlotExtent
 from util.u import Util
@@ -65,7 +66,10 @@ class VoGISProfilToolPlotDialog(QDialog):
         pltExt = PlotExtent()
         for p in self.profiles:
             pltExt.union(p.getExtent())
+            #QgsMessageLog.logMessage(pltExt.toString(), 'VoGis')
 
+        pltExt.expand()
+        self.origPltExt = PlotExtent(pltExt.xmin, pltExt.ymin, pltExt.xmax, pltExt.ymax)
         self.pltWidget = self.__createMatplotlibCanvas(pltExt)
         layout = self.ui.IDC_frPlot.layout()
         #QgsMessageLog.logMessage('layout: {0}'.format(layout), 'VoGis')
@@ -74,20 +78,54 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.ui.IDC_frToolbar.layout().addWidget(pltToolbar)
         lstActions = pltToolbar.actions()
         pltToolbar.removeAction(lstActions[7])
+        pltToolbar.removeAction(lstActions[8])
+        self.one2one = QPushButton()
+        self.one2one.setText('1:1')
+        self.one2one.clicked.connect(self.__one2oneClicked)
+        #pltToolbar.addWidget(self.one2one)
+        pltToolbar.insertWidget(lstActions[0], self.one2one)
+        self.dhmLbl = QLabel()
+        pltToolbar.insertWidget(lstActions[0], self.dhmLbl)
 
-        #x = [100, 500, 620, 770, 1200]
-        #y = [900, 540, 893, 999, 2500]
-        #line = Line2D(x, y, linewidth=2, linestyle='-', picker=True)
-        #self.subplot.add_line(line)
-        colors =[(1.0, 0.5, 0.5, 0.5), (0.5, 1.0, 0.0, 0.5)]
-        for p in self.profiles:
+        #for less thatn 10 colors:
+        #alternative method: http://stackoverflow.com/a/14720445
+        colors = [(1.0, 0.0, 0.0, 1.0),
+                  (0.0, 1.0, 0.0, 1.0),
+                  (0.0, 0.0, 1.0, 1.0),
+                  (1.0, 1.0, 0.5, 1.0),
+                  (1.0, 0.0, 1.0, 1.0),
+                  (0.0, 1.0, 1.0, 1.0),
+                  (0.415686275, 0.807843137, 0.890196078, 1.0),
+                  (0.121568627, 0.470588235, 0.705882353, 1.0),
+                  (0.698039216, 0.874509804, 0.541176471, 1.0),
+                  (0.2, 0.62745098, 0.17254902, 1.0),
+                  (0.984313725, 0.603921569, 0.6, 1.0),
+                  (0.890196078, 0.101960784, 0.109803922, 1.0),
+                  (0.992156863, 0.749019608, 0.435294118, 1.0),
+                  (1, 0.498039216, 0, 1.0),
+                  (0.792156863, 0.698039216, 0.839215686, 1.0),
+                  (0.415686275, 0.239215686, 0.603921569, 1.0),
+                  (1, 1, 0.521568627, 1.0),
+                  ]
+
+        for idx, p in enumerate(self.profiles):
             #x, pltSegs = p.getPlotSegments()
             #QgsMessageLog.logMessage('x: {0}'.format(x), 'VoGis')
             pltSegs = p.getPlotSegments()
             #QgsMessageLog.logMessage('pltSegs: {0}'.format(pltSegs), 'VoGis')
-            lineColl = LineCollection(pltSegs, linewidths=2, linestyles='solid', colors=colors)
+            lineColl = LineCollection(pltSegs,
+                                      linewidths=2,
+                                      linestyles='solid',
+                                      colors=colors[randrange(len(colors))],
+                                      picker=True
+                                      )
             #lineColl.set_array(x)
             self.subplot.add_collection(lineColl)
+        #save inital view
+        pltToolbar.push_current()
+        #select pan tool
+        pltToolbar.pan()
+        QApplication.restoreOverrideCursor()
 
     def accept(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
@@ -208,21 +246,75 @@ class VoGISProfilToolPlotDialog(QDialog):
         else:
             exDxf.exportLine()
 
+    def __one2oneClicked(self):
+        QgsMessageLog.logMessage('1:1 clicked', 'VoGis')
+        QgsMessageLog.logMessage('axes:{0}'.format(self.pltWidget.figure.get_axes()), 'VoGis')
+        dpi = self.pltWidget.figure.get_dpi()
+        figWidth = self.pltWidget.figure.get_figwidth() * dpi
+        figHeight = self.pltWidget.figure.get_figheight() * dpi
+        QgsMessageLog.logMessage('dataExtent:{0}'.format(self.origPltExt.toString()), 'VoGis')
+        QgsMessageLog.logMessage('fig size:{0}/{1}'.format(figWidth, figHeight), 'VoGis')
+        mPerPixH = self.origPltExt.xmax / figWidth
+        deltaVnew = figHeight * mPerPixH
+        newYmax = self.origPltExt.ymin + deltaVnew
+        #QgsMessageLog.logMessage('mPerPixH:{0} deltaV:{1} deltaVnew:{2} newYmax:{3}'.format(mPerPixH, deltaV, deltaVnew, newYmax), 'VoGis')
+        #self.pltWidget.figure.get_axes()[0].set_xbound(self.origPltExt.xmin, self.origPltExt.xmax)
+        #self.pltWidget.figure.get_axes()[0].set_ybound(self.origPltExt.ymin, newYmax)
+        self.pltWidget.figure.get_axes()[0].set_xlim((self.origPltExt.xmin, self.origPltExt.xmax))
+        self.pltWidget.figure.get_axes()[0].set_ylim((self.origPltExt.ymin, newYmax))
+        self.pltWidget.figure.get_axes()[0].redraw_in_frame()
+        self.pltWidget.draw()
+
     def __plotPicked(self, event):
+        #QgsMessageLog.logMessage('artist:{0}'.format(type(event.artist)), 'VoGis')
         if isinstance(event.artist, Line2D):
+            QgsMessageLog.logMessage('Line2D', 'VoGis')
             line = event.artist
             xdata = line.get_xdata()
             ydata = line.get_ydata()
             ind = event.ind
             QgsMessageLog.logMessage('{0}: {1} {2}'.format(ind, xdata, ydata), 'VoGis')
             QgsMessageLog.logMessage(help(line), 'VoGis')
+        elif isinstance(event.artist, LineCollection):
+            QgsMessageLog.logMessage('LineCollection', 'VoGis')
+            r = self.settings.mapData.rasters.selectedRasters()[event.ind[0]]
+            QgsMessageLog.logMessage('Raster: {0}'.format(r.name), 'VoGis')
+            #self.pltWidget.figure.suptitle(r.name)
+            self.dhmLbl.setText('  [' + r.name + '] ')
+            #QgsMessageLog.logMessage('{0}'.format(event), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(dir(event)), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(event.artist), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(dir(event.artist)), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(event.canvas), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(dir(event.canvas)), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(event.guiEvent), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(dir(event.guiEvent)), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(event.ind), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(dir(event.ind)), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(event.mouseevent), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(dir(event.mouseevent)), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(event.name), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(dir(event.name)), 'VoGis')
+            #lColl = event.artist
+            #QgsMessageLog.logMessage('{0}'.format(lColl.get_array()), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(lColl.get_paths()[event.ind[0]]), 'VoGis')
+            #segs = lColl.get_segments()
+            #l = segs[ind]
+            #QgsMessageLog.logMessage('{0}'.format(l.get_data(True)), 'VoGis')
+            #QgsMessageLog.logMessage('{0}'.format(l.get_data()), 'VoGis')
         else:
-            QgsMessageLog.logMessage('no Line2D', 'VoGis')
+            QgsMessageLog.logMessage('no Line2D or LineCollection', 'VoGis')
 
     def __createMatplotlibCanvas(self, pltExt):
             fig = Figure((1.0, 1.0),
                          linewidth=0.0,
-                         subplotpars=matplotlib.figure.SubplotParams(left=0, bottom=0, right=1, top=1, wspace=0, hspace=0)
+                         subplotpars=matplotlib.figure.SubplotParams(left=0,
+                                                                     bottom=0,
+                                                                     right=1,
+                                                                     top=1,
+                                                                     wspace=0,
+                                                                     hspace=0
+                                                                     )
                          )
             #font = {'family': 'arial', 'weight': 'normal', 'size': 12}
             #rc('font', **font)

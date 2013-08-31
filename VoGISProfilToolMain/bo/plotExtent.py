@@ -15,3 +15,12 @@ class PlotExtent:
             self.xmax = pExt.xmax
         if self.ymax < pExt.ymax:
             self.ymax = pExt.ymax
+
+    def expand(self, distance=50):
+        self.xmin -= distance
+        self.ymin -= distance
+        self.xmax += distance
+        self.ymax += distance
+
+    def toString(self):
+        return '{0}/{1} {2}/{3}'.format(self.xmin, self.ymin, self.xmax, self.ymax)

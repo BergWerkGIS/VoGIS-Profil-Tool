@@ -1,6 +1,6 @@
-from qgis.core import QgsMessageLog
+#from qgis.core import QgsMessageLog
 from plotExtent import PlotExtent
-import itertools
+#import itertools
 
 
 class Profile:
@@ -16,14 +16,15 @@ class Profile:
         ymin = 99999
         ymax = -99999
         for s in self.segments:
-            v = s.vertices[-1]
-            if xmax < v.distanceProfile:
-                xmax = v.distanceProfile
-            for z in v.zvals:
-                if ymin > z:
-                    ymin = z
-                if ymax < z:
-                    ymax = z
+            for v in s.vertices:
+                if xmax < v.distanceProfile:
+                    xmax = v.distanceProfile
+                for z in v.zvals:
+                    if ymin > z:
+                        ymin = z
+                    if ymax < z:
+                        ymax = z
+                    #QgsMessageLog.logMessage('z:{0} ymin:{1} ymax:{2}'.format(z, ymin, ymax), 'VoGis')
         return PlotExtent(xmin, ymin, xmax, ymax)
 
     def getPlotSegments(self):

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>842</width>
-    <height>393</height>
+    <width>756</width>
+    <height>464</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="11" column="0">
+   <item row="10" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="3" column="8">
       <widget class="QPushButton" name="IDC_bClose">
@@ -65,13 +65,6 @@
       <widget class="QPushButton" name="IDC_bACadTxt">
        <property name="text">
         <string>Autocad Text</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QPushButton" name="IDC_bChart">
-       <property name="text">
-        <string>Grafik</string>
        </property>
       </widget>
      </item>
@@ -159,6 +152,18 @@
      </item>
      <item row="0" column="0" colspan="9">
       <widget class="QFrame" name="IDC_frPlot">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>350</height>
+        </size>
+       </property>
        <property name="frameShape">
         <enum>QFrame::StyledPanel</enum>
        </property>
