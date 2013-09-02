@@ -117,7 +117,9 @@ class Vertex:
             else:
                 a2 = a
             #if isinstance(a2, (int, long, float, complex)):
-            if isinstance(a2, (long, float, complex)):
+            if isinstance(a2, float):
+                attribs.append(round(a2, 3))
+            elif isinstance(a2, (long, float, complex)):
                 attribs.append(a2)
             else:
                 attribs.append(unicodedata.normalize('NFKD', unicode(a2)).encode('ascii', 'ignore'))

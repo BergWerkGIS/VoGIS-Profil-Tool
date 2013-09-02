@@ -25,14 +25,12 @@ from PyQt4.QtGui import *
 from qgis.core import *
 import resources_rc
 from vogisprofiltoolmaindialog import VoGISProfilToolMainDialog
-from vogisprofiltoolplot import VoGISProfilToolPlotDialog
 from bo.raster import Raster
 from bo.line import Line
 from bo.rasterCollection import RasterCollection
 from bo.lineCollection import LineCollection
 from bo.mapdata import MapData
 from bo.settings import Settings
-from util.createProfile import CreateProfile
 
 
 class VoGISProfilToolMain:
@@ -62,6 +60,7 @@ class VoGISProfilToolMain:
         # Create action that will start plugin configuration
         self.action = QAction(
             QIcon(":/plugins/vogisprofiltoolmain/icons/icon.png"),
+            #QIcon(":/plugins/vogisprofiltoolmain/icons/home.png"),
             u"VoGIS Profil Tool", self.iface.mainWindow())
         # connect the action to the run method
         QObject.connect(self.action, SIGNAL("triggered()"), self.run)
@@ -102,26 +101,27 @@ class VoGISProfilToolMain:
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        result = self.dlg.exec_()
+        #result = self.dlg.exec_()
+        self.dlg.exec_()
         #QgsMessageLog.logMessage(str(result), 'VoGis')
 
-        if result == 0:
-            return
+        # if result == 0:
+        #     return
 
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+        # QApplication.setOverrideCursor(Qt.WaitCursor)
 
-        createProf = CreateProfile(self.iface, self.settings)
-        profiles = createProf.create()
-        QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
+        # createProf = CreateProfile(self.iface, self.settings)
+        # profiles = createProf.create()
+        # QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
 
-        if len(profiles) < 1:
-            QApplication.restoreOverrideCursor()
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
-            return
+        # if len(profiles) < 1:
+        #     QApplication.restoreOverrideCursor()
+        #     QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
+        #     return
 
-        self.dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
-        self.dlg.show()
-        result = self.dlg.exec_()
+        # self.dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
+        # self.dlg.show()
+        # result = self.dlg.exec_()
 
     def __getMapData(self):
 

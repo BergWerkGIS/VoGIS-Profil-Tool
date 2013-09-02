@@ -29,18 +29,19 @@ class Util:
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "'" + valName + "' ist keine gültige Zahl!")
             return False
 
-    def getFileName(self, text, filter):
+    def getFileName(self, text, filter, filePath):
         selectedFilter = QString()
         fileDlg = QFileDialog(self.iface.mainWindow())
         fileName = fileDlg.getSaveFileName(self.iface.mainWindow(),
                                            text,
-                                           "",
+                                           filePath,
                                            filter,
                                            selectedFilter,
                                            )
         if fileName.isEmpty():
             return ''
         fileExt = str(selectedFilter[:3]).lower()
+        #fileExt = fInfo.suffix()
         fileName = unicode(fileName)
         if fileName.lower().endswith(fileExt) is False:
             fileName = fileName + '.' + fileExt

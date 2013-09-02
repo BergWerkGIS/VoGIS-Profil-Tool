@@ -120,20 +120,20 @@ class ExportShape:
         self.u.loadVectorFile(self.fileName)
 
     def __addValues(self, feat, v, sId):
-        feat.SetField(0, v.distanceProfile)
+        feat.SetField(0, round(v.distanceProfile, 3))
         if sId is None:
-            feat.SetField(1, v.distanceSegment)
+            feat.SetField(1, round(v.distanceSegment, 3))
         else:
             feat.SetField(1, 0)
-        feat.SetField(2, v.x)
-        feat.SetField(3, v.y)
+        feat.SetField(2, round(v.x, 3))
+        feat.SetField(3, round(v.y, 3))
         fldCnt = 4
         if len(v.zvals) > 0:
             for z in v.zvals:
                 zVal = -9999
                 if z is not None:
                     zVal = z
-                feat.SetField(fldCnt, zVal)
+                feat.SetField(fldCnt, round(zVal, 3))
                 fldCnt += 1
         feat.SetField(fldCnt, v.profileId)
         fldCnt += 1
@@ -244,7 +244,7 @@ class ExportShape:
                             #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[idx]), 'VoGis')
                             lineGeoms[idx].AddPoint(v.x, v.y, v.zvals[idx])
                 for idx in range(len(selRstrs)):
-                    feats[idx].SetField(0, lastV[idx].distanceProfile)
+                    feats[idx].SetField(0, round(lastV[idx].distanceProfile, 3))
                     feats[idx].SetField(1, selRstrs[idx].name)
                     fldCnt = 2
                     if self.attribs is True:

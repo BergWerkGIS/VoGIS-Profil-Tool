@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>458</width>
-    <height>917</height>
+    <height>893</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,22 +17,41 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>VoGISProfilToolMain</string>
+   <string>VoGIS Profil Tool</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QWidget" name="IDC_widRaster" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <layout class="QGridLayout" name="gridLayout_2">
         <item row="0" column="0">
          <widget class="QGroupBox" name="IDC_grpRaster">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="title">
            <string>Rastermodell(e) auswählen</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="1" column="0">
-            <widget class="QListWidget" name="IDC_listRasters"/>
+            <widget class="QListWidget" name="IDC_listRasters">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
            </item>
            <item row="0" column="0">
             <widget class="QPushButton" name="IDC_bSelectVisibleRasters">
@@ -215,12 +234,15 @@
           <property name="title">
            <string>Stützstellen festlegen</string>
           </property>
-          <layout class="QFormLayout" name="formLayout">
-           <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-           </property>
-           <item row="2" column="0">
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
             <widget class="QRadioButton" name="IDC_rbEquiDistance">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
               <string>Abstand zwischen den Profilpunkten</string>
              </property>
@@ -229,7 +251,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="0" column="1">
             <widget class="QDoubleSpinBox" name="IDC_dblspinDistance">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -257,7 +279,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="1" column="0">
             <widget class="QRadioButton" name="IDC_rbVertexCount">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -270,7 +292,7 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="1" column="1">
             <widget class="QDoubleSpinBox" name="IDC_dblspinVertexCnt">
              <property name="maximumSize">
               <size>
@@ -292,7 +314,7 @@
              </property>
             </widget>
            </item>
-           <item row="6" column="0">
+           <item row="2" column="0">
             <widget class="QCheckBox" name="IDC_chkNodesAndVertices">
              <property name="text">
               <string>Profilpunkte erstellen an Knoten und Sützstellen</string>
@@ -347,8 +369,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>344</x>
-     <y>825</y>
+     <x>354</x>
+     <y>882</y>
     </hint>
     <hint type="destinationlabel">
      <x>309</x>
@@ -363,8 +385,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>437</x>
-     <y>830</y>
+     <x>447</x>
+     <y>882</y>
     </hint>
     <hint type="destinationlabel">
      <x>424</x>
@@ -383,7 +405,7 @@
      <y>56</y>
     </hint>
     <hint type="destinationlabel">
-     <x>478</x>
+     <x>457</x>
      <y>55</y>
     </hint>
    </hints>
@@ -395,12 +417,60 @@
    <slot>drawLine()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>388</x>
-     <y>361</y>
+     <x>423</x>
+     <y>439</y>
     </hint>
     <hint type="destinationlabel">
-     <x>479</x>
+     <x>457</x>
      <y>359</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IDC_dblspinDistance</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>VoGISProfilToolMain</receiver>
+   <slot>valueChangedEquiDistance(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>394</x>
+     <y>748</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>453</x>
+     <y>759</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IDC_dblspinVertexCnt</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>VoGISProfilToolMain</receiver>
+   <slot>valueChangedVertexCount(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>793</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>453</x>
+     <y>804</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IDC_cbLineLayers</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>VoGISProfilToolMain</receiver>
+   <slot>lineLayerChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>380</x>
+     <y>487</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>453</x>
+     <y>489</y>
     </hint>
    </hints>
   </connection>
@@ -409,5 +479,8 @@
   <slot>lvRasterItemChanged(QListWidgetItem*)</slot>
   <slot>selectVisibleRasters()</slot>
   <slot>drawLine()</slot>
+  <slot>valueChangedEquiDistance(double)</slot>
+  <slot>valueChangedVertexCount(double)</slot>
+  <slot>lineLayerChanged(int)</slot>
  </slots>
 </ui>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Sat Aug 31 09:41:14 2013
+# Created: Tue Sep  3 00:09:43 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_VoGISProfilToolPlot(object):
     def setupUi(self, VoGISProfilToolPlot):
         VoGISProfilToolPlot.setObjectName(_fromUtf8("VoGISProfilToolPlot"))
-        VoGISProfilToolPlot.resize(756, 464)
+        VoGISProfilToolPlot.resize(820, 464)
         VoGISProfilToolPlot.setModal(True)
         self.gridLayout_2 = QtGui.QGridLayout(VoGISProfilToolPlot)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
@@ -49,11 +49,17 @@ class Ui_VoGISProfilToolPlot(object):
         self.gridLayout.addWidget(self.IDC_bText, 3, 1, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.label = QtGui.QLabel(VoGISProfilToolPlot)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.horizontalLayout.addWidget(self.label)
         self.IDC_cbDecimalDelimiter = QtGui.QComboBox(VoGISProfilToolPlot)
         self.IDC_cbDecimalDelimiter.setObjectName(_fromUtf8("IDC_cbDecimalDelimiter"))
         self.IDC_cbDecimalDelimiter.addItem(_fromUtf8(""))
         self.IDC_cbDecimalDelimiter.addItem(_fromUtf8(""))
         self.horizontalLayout.addWidget(self.IDC_cbDecimalDelimiter)
+        self.label_2 = QtGui.QLabel(VoGISProfilToolPlot)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
+        self.horizontalLayout.addWidget(self.label_2)
         self.IDC_cbDelimiter = QtGui.QComboBox(VoGISProfilToolPlot)
         self.IDC_cbDelimiter.setEditable(False)
         self.IDC_cbDelimiter.setObjectName(_fromUtf8("IDC_cbDelimiter"))
@@ -107,7 +113,7 @@ class Ui_VoGISProfilToolPlot(object):
         QtCore.QMetaObject.connectSlotsByName(VoGISProfilToolPlot)
 
     def retranslateUi(self, VoGISProfilToolPlot):
-        VoGISProfilToolPlot.setWindowTitle(QtGui.QApplication.translate("VoGISProfilToolPlot", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        VoGISProfilToolPlot.setWindowTitle(QtGui.QApplication.translate("VoGISProfilToolPlot", "VoGIS Profil Tool", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bClose.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Schließen", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bDxfLine.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "DXF Linie", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bDxfPnt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "DXF Punkt", None, QtGui.QApplication.UnicodeUTF8))
@@ -116,8 +122,10 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_bShpLine.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Shp Linie", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bACadTxt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Autocad Text", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bText.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Textdatei", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Dezimalzeichen (für Text, csv):", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDecimalDelimiter.setItemText(0, QtGui.QApplication.translate("VoGISProfilToolPlot", ",", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDecimalDelimiter.setItemText(1, QtGui.QApplication.translate("VoGISProfilToolPlot", ".", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Spaltentrennzeichen (Text):", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDelimiter.setItemText(0, QtGui.QApplication.translate("VoGISProfilToolPlot", "tab", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDelimiter.setItemText(1, QtGui.QApplication.translate("VoGISProfilToolPlot", ";", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDelimiter.setItemText(2, QtGui.QApplication.translate("VoGISProfilToolPlot", ",", None, QtGui.QApplication.UnicodeUTF8))

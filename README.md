@@ -28,5 +28,5 @@ Directory Z_VoGISProfilToolMain contains old version
 Git Reference: http://gitref.org/
  
 #Download PlugIn
-.
+ 
 https://github.com/BergWerkGIS/VoGIS-Profil-Tool/raw/master/VoGISProfilToolMain/vogisprofiltoolmain.zip

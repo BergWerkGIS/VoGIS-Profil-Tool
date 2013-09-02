@@ -105,7 +105,11 @@ class CreateProfile:
                     QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Multipart Feature vorhanden! Option zum Explodieren verwenden.")
                     return profiles
 
-            for feat in feats:
+            featCnt = len(feats)
+            for idx, feat in enumerate(feats):
+                #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
+                #http://acaciaecho.wordpress.com/2011/01/11/pyqtprogressbar/
+                self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, Element: {0}/{1}'.format(idx, featCnt))
                 profiles.append(self.processFeature(provider.fields(),
                                                     len(profiles) + 1,
                                                     self.settings.mapData.selectedLineLyr.line.id(),
@@ -113,6 +117,8 @@ class CreateProfile:
                                                     )
                                 )
 
+        #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
+        self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, {0} Profile'.format(len(profiles)))
         return profiles
 
     def processFeature(self, fields, profileId, layerId, feat):

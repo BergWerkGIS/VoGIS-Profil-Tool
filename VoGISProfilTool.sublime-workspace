@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"idx",
+				"idxCol	(local, instance)"
+			],
+			[
+				"delt",
+				"deltaVnew	(local, instance)"
+			],
+			[
+				"fig",
+				"figWidth	(local, instance)"
+			],
+			[
 				"Lie",
 				"LineCollection	(imported, instance)"
 			],
@@ -204,10 +216,6 @@
 				"format	(builtin, function)"
 			],
 			[
-				"idx",
-				"idxSeg	(local, instance)"
-			],
-			[
 				"profile",
 				"profileId	(local, instance)"
 			],
@@ -263,7 +271,7 @@
 			"file": "VoGISProfilToolMain/Makefile",
 			"settings":
 			{
-				"buffer_size": 4582,
+				"buffer_size": 4708,
 				"line_ending": "Unix"
 			}
 		},
@@ -271,15 +279,7 @@
 			"file": "VoGISProfilToolMain/vogisprofiltoolmain.py",
 			"settings":
 			{
-				"buffer_size": 6040,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/util/createProfile.py",
-			"settings":
-			{
-				"buffer_size": 13275,
+				"buffer_size": 6161,
 				"line_ending": "Unix"
 			}
 		},
@@ -287,96 +287,23 @@
 			"file": "VoGISProfilToolMain/vogisprofiltoolplot.py",
 			"settings":
 			{
-				"buffer_size": 14924,
+				"buffer_size": 17892,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "README.md",
+			"file": "VoGISProfilToolMain/__init__.py",
 			"settings":
 			{
-				"buffer_size": 781,
+				"buffer_size": 1653,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "cess Quantum GIS environment from this console\nuse qgis.utils.iface object (instance of QgisInterface class).\n\n>>> import matplotlib\n>>> from matplotlib.collections import LineCollection\n>>> lc = LineCollection()\nTraceback (most recent call last):\n  File \"<input>\", line 1, in <module>\nTypeError: __init__() takes at least 2 arguments (1 given)\n>>> lc = LineCollection(None)\n>>> help(lc)\nHelp on LineCollection in module matplotlib.collections object:\n\nclass LineCollection(Collection)\n |  All parameters must be sequences or scalars; if scalars, they will\n |  be converted to sequences.  The property of the ith line\n |  segment is::\n |  \n |     prop[i % len(props)]\n |  \n |  i.e., the properties cycle if the ``len`` of props is less than the\n |  number of segments.\n |  \n |  Method resolution order:\n |      LineCollection\n |      Collection\n |      matplotlib.artist.Artist\n |      __builtin__.object\n |      matplotlib.cm.ScalarMappable\n |  \n |  Methods defined here:\n |  \n |  __init__(self, segments, linewidths=None, colors=None, antialiaseds=None, linestyles='solid', offsets=None, transOffset=None, norm=None, cmap=None, pickradius=5, **kwargs)\n |      *segments*\n |          a sequence of (*line0*, *line1*, *line2*), where::\n |      \n |              linen = (x0, y0), (x1, y1), ... (xm, ym)\n |      \n |          or the equivalent numpy array with two columns. Each line\n |          can be a different length.\n |      \n |      *colors*\n |          must be a sequence of RGBA tuples (eg arbitrary color\n |          strings, etc, not allowed).\n |      \n |      *antialiaseds*\n |          must be a sequence of ones or zeros\n |      \n |      *linestyles* [ 'solid' | 'dashed' | 'dashdot' | 'dotted' ]\n |          a string or dash tuple. The dash tuple is::\n |      \n |              (offset, onoffseq),\n |      \n |          where *onoffseq* is an even length tuple of on and off ink\n |          in points.\n |      \n |      If *linewidths*, *colors*, or *antialiaseds* is None, they\n |      default to their rcParams setting, in sequence form.\n |      \n |      If *offsets* and *transOffset* are not None, then\n |      *offsets* are transformed by *transOffset* and applied after\n |      the segments have been transformed to display coordinates.\n |      \n |      If *offsets* is not None but *transOffset* is None, then the\n |      *offsets* are added to the segments before any transformation.\n |      In this case, a single offset can be specified as::\n |      \n |          offsets=(xo,yo)\n |      \n |      and this value will be added cumulatively to each successive\n |      segment, so as to produce a set of successively offset curves.\n |      \n |      *norm*\n |          None (optional for :class:`matplotlib.cm.ScalarMappable`)\n |      *cmap*\n |          None (optional for :class:`matplotlib.cm.ScalarMappable`)\n |      \n |      *pickradius* is the tolerance for mouse clicks picking a line.\n |      The default is 5 pt.\n |      \n |      The use of :class:`~matplotlib.cm.ScalarMappable` is optional.\n |      If the :class:`~matplotlib.cm.ScalarMappable` array\n |      :attr:`~matplotlib.cm.ScalarMappable._A` is not None (ie a call to\n |      :meth:`~matplotlib.cm.ScalarMappable.set_array` has been made), at\n |      draw time a call to scalar mappable will be made to set the colors.\n |  \n |  color(self, c)\n |      Set the color(s) of the line collection.  *c* can be a\n |      matplotlib color arg (all patches have same color), or a\n |      sequence or rgba tuples; if it is a sequence the patches will\n |      cycle through the sequence\n |      \n |      ACCEPTS: matplotlib color arg or sequence of rgba tuples\n |  \n |  get_color(self)\n |  \n |  get_colors = get_color(self)\n |  \n |  set_color(self, c)\n |      Set the color(s) of the line collection.  *c* can be a\n |      matplotlib color arg (all patches have same color), or a\n |      sequence or rgba tuples; if it is a sequence the patches will\n |      cycle through the sequence.\n |      \n |      ACCEPTS: matplotlib color arg or sequence of rgba tuples\n |  \n |  set_paths = set_segments(self, segments)\n |  \n |  set_segments(self, segments)\n |  \n |  set_verts = set_segments(self, segments)\n |  \n |  ----------------------------------------------------------------------\n |  Data and other attributes defined here:\n |  \n |  zorder = 2\n |  \n |  ----------------------------------------------------------------------\n |  Methods inherited from Collection:\n |  \n |  contains(self, mouseevent)\n |      Test whether the mouse event occurred in the collection.\n |      \n |      Returns True | False, ``dict(ind=itemlist)``, where every\n |      item in itemlist contains the event.\n |  \n |  draw(artist, renderer, *args, **kwargs)\n |      # the axes class has a second argument inframe for its draw method.\n |  \n |  get_dashes = get_linestyles(self)\n |  \n |  get_datalim(self, transData)\n |  \n |  get_edgecolor(self)\n |  \n |  get_edgecolors = get_edgecolor(self)\n |  \n |  get_facecolor(self)\n |  \n |  get_facecolors = get_facecolor(self)\n |  \n |  get_linestyle = get_linestyles(self)\n |  \n |  get_linestyles(self)\n |  \n |  get_linewidth = get_linewidths(self)\n |  \n |  get_linewidths(self)\n |  \n |  get_offsets(self)\n |      Return the offsets for the collection.\n |  \n |  get_paths(self)\n |  \n |  get_pickradius(self)\n |  \n |  get_transforms(self)\n |  \n |  get_urls(self)\n |  \n |  get_window_extent(self, renderer)\n |  \n |  set_alpha(self, alpha)\n |      Set the alpha tranparencies of the collection.  *alpha* must be\n |      a float or *None*.\n |      \n |      ACCEPTS: float or None\n |  \n |  set_antialiased(self, aa)\n |      Set the antialiasing state for rendering.\n |      \n |      ACCEPTS: Boolean or sequence of booleans\n |  \n |  set_antialiaseds(self, aa)\n |      alias for set_antialiased\n |  \n |  set_dashes(self, ls)\n |      alias for set_linestyle\n |  \n |  set_edgecolor(self, c)\n |      Set the edgecolor(s) of the collection. *c* can be a\n |      matplotlib color arg (all patches have same color), or a\n |      sequence of rgba tuples; if it is a sequence the patches will\n |      cycle through the sequence.\n |      \n |      If *c* is 'face', the edge color will always be the same as\n |      the face color.  If it is 'none', the patch boundary will not\n |      be drawn.\n |      \n |      ACCEPTS: matplotlib color arg or sequence of rgba tuples\n |  \n |  set_edgecolors(self, c)\n |      alias for set_edgecolor\n |  \n |  set_facecolor(self, c)\n |      Set the facecolor(s) of the collection.  *c* can be a\n |      matplotlib color arg (all patches have same color), or a\n |      sequence of rgba tuples; if it is a sequence the patches will\n |      cycle through the sequence.\n |      \n |      If *c* is 'none', the patch will not be filled.\n |      \n |      ACCEPTS: matplotlib color arg or sequence of rgba tuples\n |  \n |  set_facecolors(self, c)\n |      alias for set_facecolor\n |  \n |  set_linestyle(self, ls)\n |      Set the linestyle(s) for the collection.\n |      \n |      ACCEPTS: ['solid' | 'dashed', 'dashdot', 'dotted' |\n |      (offset, on-off-dash-seq) ]\n |  \n |  set_linestyles(self, ls)\n |      alias for set_linestyle\n |  \n |  set_linewidth(self, lw)\n |      Set the linewidth(s) for the collection.  *lw* can be a scalar\n |      or a sequence; if it is a sequence the patches will cycle\n |      through the sequence\n |      \n |      ACCEPTS: float or sequence of floats\n |  \n |  set_linewidths(self, lw)\n |      alias for set_linewidth\n |  \n |  set_lw(self, lw)\n |      alias for set_linewidth\n |  \n |  set_offsets(self, offsets)\n |      Set the offsets for the collection.  *offsets* can be a scalar\n |      or a sequence.\n |      \n |      ACCEPTS: float or sequence of floats\n |  \n |  set_pickradius(self, pr)\n |  \n |  set_urls(self, urls)\n |  \n |  update_from(self, other)\n |      copy properties from other to self\n |  \n |  update_scalarmappable(self)\n |      If the scalar mappable array is not none, update colors\n |      from scalar data\n |  \n |  ----------------------------------------------------------------------\n |  Methods inherited from matplotlib.artist.Artist:\n |  \n |  add_callback(self, func)\n |      Adds a callback function that will be called whenever one of\n |      the :class:`Artist`'s properties changes.\n |      \n |      Returns an *id* that is useful for removing the callback with\n |      :meth:`remove_callback` later.\n |  \n |  convert_xunits(self, x)\n |      For artists in an axes, if the xaxis has units support,\n |      convert *x* using xaxis unit type\n |  \n |  convert_yunits(self, y)\n |      For artists in an axes, if the yaxis has units support,\n |      convert *y* using yaxis unit type\n |  \n |  findobj(self, match=None, include_self=True)\n |      pyplot signature:\n |        findobj(o=gcf(), match=None, include_self=True)\n |      \n |      Recursively find all :class:matplotlib.artist.Artist instances\n |      contained in self.\n |      \n |      *match* can be\n |      \n |        - None: return all objects contained in artist.\n |      \n |        - function with signature ``boolean = match(artist)``\n |          used to filter matches\n |      \n |        - class instance: eg Line2D.  Only return artists of class type.\n |      \n |      If *include_self* is True (default), include self in the list to be\n |      checked for a match.\n |      \n |      .. plot:: mpl_examples/pylab_examples/findobj_demo.py\n |  \n |  get_agg_filter(self)\n |      return filter function to be used for agg filter\n |  \n |  get_alpha(self)\n |      Return the alpha value used for blending - not supported on all\n |      backends\n |  \n |  get_animated(self)\n |      Return the artist's animated state\n |  \n |  get_axes(self)\n |      Return the :class:`~matplotlib.axes.Axes` instance the artist\n |      resides in, or *None*\n |  \n |  get_children(self)\n |      Return a list of the child :class:`Artist`s this\n |      :class:`Artist` contains.\n |  \n |  get_clip_box(self)\n |      Return artist clipbox\n |  \n |  get_clip_on(self)\n |      Return whether artist uses clipping\n |  \n |  get_clip_path(self)\n |      Return artist clip path\n |  \n |  get_contains(self)\n |      Return the _contains test used by the artist, or *None* for default.\n |  \n |  get_figure(self)\n |      Return the :class:`~matplotlib.figure.Figure` instance the\n |      artist belongs to.\n |  \n |  get_gid(self)\n |      Returns the group id\n |  \n |  get_label(self)\n |      Get the label used for this artist in the legend.\n |  \n |  get_picker(self)\n |      Return the picker object used by this artist\n |  \n |  get_rasterized(self)\n |      return True if the artist is to be rasterized\n |  \n |  get_snap(self)\n |      Returns the snap setting which may be:\n |      \n |        * True: snap vertices to the nearest pixel center\n |      \n |        * False: leave vertices as-is\n |      \n |        * None: (auto) If the path contains only rectilinear line\n |          segments, round to the nearest pixel center\n |      \n |      Only supported by the Agg and MacOSX backends.\n |  \n |  get_transform(self)\n |      Return the :class:`~matplotlib.transforms.Transform`\n |      instance used by this artist.\n |  \n |  get_transformed_clip_path_and_affine(self)\n |      Return the clip path with the non-affine part of its\n |      transformation applied, and the remaining affine part of its\n |      transformation.\n |  \n |  get_url(self)\n |      Returns the url\n |  \n |  get_visible(self)\n |      Return the artist's visiblity\n |  \n |  get_zorder(self)\n |      Return the :class:`Artist`'s zorder.\n |  \n |  have_units(self)\n |      Return *True* if units are set on the *x* or *y* axes\n |  \n |  hitlist(self, event)\n |      List the children of the artist which contain the mouse event *event*.\n |  \n |  is_figure_set(self)\n |      Returns True if the artist is assigned to a\n |      :class:`~matplotlib.figure.Figure`.\n |  \n |  is_transform_set(self)\n |      Returns *True* if :class:`Artist` has a transform explicitly\n |      set.\n |  \n |  pchanged(self)\n |      Fire an event when property changed, calling all of the\n |      registered callbacks.\n |  \n |  pick(self, mouseevent)\n |      call signature::\n |      \n |        pick(mouseevent)\n |      \n |      each child artist will fire a pick event if *mouseevent* is over\n |      the artist and the artist has picker set\n |  \n |  pickable(self)\n |      Return *True* if :class:`Artist` is pickable.\n |  \n |  properties(self)\n |      return a dictionary mapping property name -> value for all Artist props\n |  \n |  remove(self)\n |      Remove the artist from the figure if possible.  The effect\n |      will not be visible until the figure is redrawn, e.g., with\n |      :meth:`matplotlib.axes.Axes.draw_idle`.  Call\n |      :meth:`matplotlib.axes.Axes.relim` to update the axes limits\n |      if desired.\n |      \n |      Note: :meth:`~matplotlib.axes.Axes.relim` will not see\n |      collections even if the collection was added to axes with\n |      *autolim* = True.\n |      \n |      Note: there is no support for removing the artist's legend entry.\n |  \n |  remove_callback(self, oid)\n |      Remove a callback based on its *id*.\n |      \n |      .. seealso::\n |      \n |          :meth:`add_callback`\n |             For adding callbacks\n |  \n |  set(self, **kwargs)\n |      A tkstyle set command, pass *kwargs* to set properties\n |  \n |  set_agg_filter(self, filter_func)\n |      set agg_filter fuction.\n |  \n |  set_animated(self, b)\n |      Set the artist's animation state.\n |      \n |      ACCEPTS: [True | False]\n |  \n |  set_axes(self, axes)\n |      Set the :class:`~matplotlib.axes.Axes` instance in which the\n |      artist resides, if any.\n |      \n |      ACCEPTS: an :class:`~matplotlib.axes.Axes` instance\n |  \n |  set_clip_box(self, clipbox)\n |      Set the artist's clip :class:`~matplotlib.transforms.Bbox`.\n |      \n |      ACCEPTS: a :class:`matplotlib.transforms.Bbox` instance\n |  \n |  set_clip_on(self, b)\n |      Set whether artist uses clipping.\n |      \n |      ACCEPTS: [True | False]\n |  \n |  set_clip_path(self, path, transform=None)\n |      Set the artist's clip path, which may be:\n |      \n |        * a :class:`~matplotlib.patches.Patch` (or subclass) instance\n |      \n |        * a :class:`~matplotlib.path.Path` instance, in which case\n |           an optional :class:`~matplotlib.transforms.Transform`\n |           instance may be provided, which will be applied to the\n |           path before using it for clipping.\n |      \n |        * *None*, to remove the clipping path\n |      \n |      For efficiency, if the path happens to be an axis-aligned\n |      rectangle, this method will set the clipping box to the\n |      corresponding rectangle and set the clipping path to *None*.\n |      \n |      ACCEPTS: [ (:class:`~matplotlib.path.Path`,\n |      :class:`~matplotlib.transforms.Transform`) |\n |      :class:`~matplotlib.patches.Patch` | None ]\n |  \n |  set_contains(self, picker)\n |      Replace the contains test used by this artist. The new picker\n |      should be a callable function which determines whether the\n |      artist is hit by the mouse event::\n |      \n |          hit, props = picker(artist, mouseevent)\n |      \n |      If the mouse event is over the artist, return *hit* = *True*\n |      and *props* is a dictionary of properties you want returned\n |      with the contains test.\n |      \n |      ACCEPTS: a callable function\n |  \n |  set_figure(self, fig)\n |      Set the :class:`~matplotlib.figure.Figure` instance the artist\n |      belongs to.\n |      \n |      ACCEPTS: a :class:`matplotlib.figure.Figure` instance\n |  \n |  set_gid(self, gid)\n |      Sets the (group) id for the artist\n |      \n |      ACCEPTS: an id string\n |  \n |  set_label(self, s)\n |      Set the label to *s* for auto legend.\n |      \n |      ACCEPTS: any string\n |  \n |  set_lod(self, on)\n |      Set Level of Detail on or off.  If on, the artists may examine\n |      things like the pixel width of the axes and draw a subset of\n |      their contents accordingly\n |      \n |      ACCEPTS: [True | False]\n |  \n |  set_picker(self, picker)\n |      Set the epsilon for picking used by this artist\n |      \n |      *picker* can be one of the following:\n |      \n |        * *None*: picking is disabled for this artist (default)\n |      \n |        * A boolean: if *True* then picking will be enabled and the\n |          artist will fire a pick event if the mouse event is over\n |          the artist\n |      \n |        * A float: if picker is a number it is interpreted as an\n |          epsilon tolerance in points and the artist will fire\n |          off an event if it's data is within epsilon of the mouse\n |          event.  For some artists like lines and patch collections,\n |          the artist may provide additional data to the pick event\n |          that is generated, e.g. the indices of the data within\n |          epsilon of the pick event\n |      \n |        * A function: if picker is callable, it is a user supplied\n |          function which determines whether the artist is hit by the\n |          mouse event::\n |      \n |            hit, props = picker(artist, mouseevent)\n |      \n |          to determine the hit test.  if the mouse event is over the\n |          artist, return *hit=True* and props is a dictionary of\n |          properties you want added to the PickEvent attributes.\n |      \n |      ACCEPTS: [None|float|boolean|callable]\n |  \n |  set_rasterized(self, rasterized)\n |      Force rasterized (bitmap) drawing in vector backend output.\n |      \n |      Defaults to None, which implies the backend's default behavior\n |      \n |      ACCEPTS: [True | False | None]\n |  \n |  set_snap(self, snap)\n |      Sets the snap setting which may be:\n |      \n |        * True: snap vertices to the nearest pixel center\n |      \n |        * False: leave vertices as-is\n |      \n |        * None: (auto) If the path contains only rectilinear line\n |          segments, round to the nearest pixel center\n |      \n |      Only supported by the Agg and MacOSX backends.\n |  \n |  set_transform(self, t)\n |      Set the :class:`~matplotlib.transforms.Transform` instance\n |      used by this artist.\n |      \n |      ACCEPTS: :class:`~matplotlib.transforms.Transform` instance\n |  \n |  set_url(self, url)\n |      Sets the url for the artist\n |      \n |      ACCEPTS: a url string\n |  \n |  set_visible(self, b)\n |      Set the artist's visiblity.\n |      \n |      ACCEPTS: [True | False]\n |  \n |  set_zorder(self, level)\n |      Set the zorder for the artist.  Artists with lower zorder\n |      values are drawn first.\n |      \n |      ACCEPTS: any number\n |  \n |  update(self, props)\n |      Update the properties of this :class:`Artist` from the\n |      dictionary *prop*.\n |  \n |  ----------------------------------------------------------------------\n |  Data descriptors inherited from matplotlib.artist.Artist:\n |  \n |  __dict__\n |      dictionary for instance variables (if defined)\n |  \n |  __weakref__\n |      list of weak references to the object (if defined)\n |  \n |  ----------------------------------------------------------------------\n |  Data and other attributes inherited from matplotlib.artist.Artist:\n |  \n |  aname = 'Artist'\n |  \n |  ----------------------------------------------------------------------\n |  Methods inherited from matplotlib.cm.ScalarMappable:\n |  \n |  add_checker(self, checker)\n |      Add an entry to a dictionary of boolean flags\n |      that are set to True when the mappable is changed.\n |  \n |  autoscale(self)\n |      Autoscale the scalar limits on the norm instance using the\n |      current array\n |  \n |  autoscale_None(self)\n |      Autoscale the scalar limits on the norm instance using the\n |      current array, changing only limits that are None\n |  \n |  changed(self)\n |      Call this whenever the mappable is changed to notify all the\n |      callbackSM listeners to the 'changed' signal\n |  \n |  check_update(self, checker)\n |      If mappable has changed since the last check,\n |      return True; else return False\n |  \n |  get_array(self)\n |      Return the array\n |  \n |  get_clim(self)\n |      return the min, max of the color limits for image scaling\n |  \n |  get_cmap(self)\n |      return the colormap\n |  \n |  set_array(self, A)\n |      Set the image array from numpy array *A*\n |  \n |  set_clim(self, vmin=None, vmax=None)\n |      set the norm limits for image scaling; if *vmin* is a length2\n |      sequence, interpret it as ``(vmin, vmax)`` which is used to\n |      support setp\n |      \n |      ACCEPTS: a length 2 sequence of floats\n |  \n |  set_cmap(self, cmap)\n |      set the colormap for luminance data\n |      \n |      ACCEPTS: a colormap or registered colormap name\n |  \n |  set_colorbar(self, im, ax)\n |      set the colorbar image and axes associated with mappable\n |  \n |  set_norm(self, norm)\n |      set the normalization instance\n |  \n |  to_rgba(self, x, alpha=None, bytes=False)\n |      Return a normalized rgba array corresponding to *x*. If *x*\n |      is already an rgb array, insert *alpha*; if it is already\n |      rgba, return it unchanged. If *bytes* is True, return rgba as\n |      4 uint8s instead of 4 floats.\n",
+			"file": "VoGISProfilToolMain/metadata.txt",
 			"settings":
 			{
-				"buffer_size": 21104,
-				"line_ending": "Unix",
-				"name": "cess Quantum GIS environment from this console"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/util/exportDxf.py",
-			"settings":
-			{
-				"buffer_size": 6547,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/settings.py",
-			"settings":
-			{
-				"buffer_size": 763,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/mapdata.py",
-			"settings":
-			{
-				"buffer_size": 161,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/profile.py",
-			"settings":
-			{
-				"buffer_size": 3830,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/plotExtent.py",
-			"settings":
-			{
-				"buffer_size": 758,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/vogisLineCollection.py",
-			"settings":
-			{
-				"buffer_size": 500,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/util/exportShape.py",
-			"settings":
-			{
-				"buffer_size": 12703,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/util/u.py",
-			"settings":
-			{
-				"buffer_size": 12431,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/segment.py",
-			"settings":
-			{
-				"buffer_size": 1562,
+				"buffer_size": 826,
 				"line_ending": "Unix"
 			}
 		},
@@ -384,39 +311,7 @@
 			"file": "VoGISProfilToolMain/vogisprofiltoolmaindialog.py",
 			"settings":
 			{
-				"buffer_size": 12162,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/line.py",
-			"settings":
-			{
-				"buffer_size": 217,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/vertex.py",
-			"settings":
-			{
-				"buffer_size": 7575,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/rasterCollection.py",
-			"settings":
-			{
-				"buffer_size": 667,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGISProfilToolMain/bo/lineCollection.py",
-			"settings":
-			{
-				"buffer_size": 457,
+				"buffer_size": 13235,
 				"line_ending": "Unix"
 			}
 		}
@@ -461,18 +356,29 @@
 	},
 	"file_history":
 	[
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/settings.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/exportDxf.py",
+		"/home/user/VoGIS-Profil-Tool/README.md",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/createProfile.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/lineCollection.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/rasterCollection.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/vertex.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/line.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/mapdata.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/profile.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/plotExtent.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/vogisLineCollection.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/exportShape.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/u.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/segment.py",
+		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/resources.qrc",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/metadata.txt",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/__init__.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/ui/ui_vogisprofiltoolmain.py",
-		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/exportShape.py",
-		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/rasterCollection.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/raster.py",
-		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/lineCollection.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/zVal.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/node.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/linkedList.py",
-		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/u.py",
 		"/home/user/.config/sublime-text-2/Packages/SublimeGit/SublimeGit.sublime-settings",
 		"/home/user/.config/sublime-text-2/Packages/User/SublimeGit.sublime-settings",
 		"/home/user/.config/sublime-text-2/Packages/User/SideBarGit.sublime-settings",
@@ -480,7 +386,6 @@
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/__init__.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/ui/ui_vogisprofiltoolmain.ui",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/i18n/vogisprofiltoolmain_en.ts",
-		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/resources.qrc",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilTool.sublime-project",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/vogisprofiltoolmain.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/ui/vogisprofiltoolmain.py",
@@ -499,7 +404,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 95.0,
 		"where_history":
 		[
 			"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain",
@@ -514,6 +419,10 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"IDC_cbLineLayers",
+			"home.png",
+			"icon.png",
+			"figure",
 			"data",
 			"ind",
 			"get_",
@@ -600,7 +509,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -608,15 +517,15 @@
 					"file": "VoGISProfilToolMain/Makefile",
 					"settings":
 					{
-						"buffer_size": 4582,
+						"buffer_size": 4708,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1691,
-								1691
+								1597,
+								1597
 							]
 						],
 						"settings":
@@ -625,7 +534,7 @@
 							"wrap_width": 0.0
 						},
 						"translation.x": 0.0,
-						"translation.y": 45.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -635,15 +544,15 @@
 					"file": "VoGISProfilToolMain/vogisprofiltoolmain.py",
 					"settings":
 					{
-						"buffer_size": 6040,
+						"buffer_size": 6161,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1161,
-								1161
+								1269,
+								1269
 							]
 						],
 						"settings":
@@ -651,57 +560,28 @@
 							"syntax": "Packages/Python/Python.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
+							"wrap_width": 114.857142857
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 990.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "VoGISProfilToolMain/util/createProfile.py",
-					"settings":
-					{
-						"buffer_size": 13275,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								13129,
-								13129
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 113.142857143
-						},
-						"translation.x": 0.0,
-						"translation.y": 3600.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
 					"file": "VoGISProfilToolMain/vogisprofiltoolplot.py",
 					"settings":
 					{
-						"buffer_size": 14924,
+						"buffer_size": 17892,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								10168,
-								10168
+								7006,
+								7006
 							]
 						],
 						"settings":
@@ -709,33 +589,35 @@
 							"syntax": "Packages/Python/Python.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true,
-							"wrap_width": 113.142857143
+							"wrap_width": 0.0
 						},
 						"translation.x": 0.0,
-						"translation.y": 2922.0,
+						"translation.y": 900.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "README.md",
+					"buffer": 3,
+					"file": "VoGISProfilToolMain/__init__.py",
 					"settings":
 					{
-						"buffer_size": 781,
+						"buffer_size": 1653,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								591,
-								591
+								1303,
+								1303
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Markdown/Markdown.tmLanguage"
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -744,57 +626,27 @@
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 4,
+					"file": "VoGISProfilToolMain/metadata.txt",
 					"settings":
 					{
-						"buffer_size": 21104,
+						"buffer_size": 826,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5253,
-								5253
+								674,
+								674
 							]
 						],
 						"settings":
 						{
-							"auto_name": "cess Quantum GIS environment from this console",
-							"syntax": "Packages/Text/Plain text.tmLanguage",
-							"wrap_width": 0.0
+							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 986.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "VoGISProfilToolMain/util/exportDxf.py",
-					"settings":
-					{
-						"buffer_size": 6547,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6392,
-								6392
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 112.857142857
-						},
-						"translation.x": 0.0,
-						"translation.y": 1575.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -802,249 +654,23 @@
 			]
 		},
 		{
-			"selected": 4,
+			"selected": 0,
 			"sheets":
 			[
 				{
-					"buffer": 7,
-					"file": "VoGISProfilToolMain/bo/settings.py",
-					"settings":
-					{
-						"buffer_size": 763,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								673,
-								673
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "VoGISProfilToolMain/bo/mapdata.py",
-					"settings":
-					{
-						"buffer_size": 161,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								153,
-								153
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "VoGISProfilToolMain/bo/profile.py",
-					"settings":
-					{
-						"buffer_size": 3830,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1,
-								1
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "VoGISProfilToolMain/bo/plotExtent.py",
-					"settings":
-					{
-						"buffer_size": 758,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								649,
-								649
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "VoGISProfilToolMain/bo/vogisLineCollection.py",
-					"settings":
-					{
-						"buffer_size": 500,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								500,
-								500
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"file": "VoGISProfilToolMain/util/exportShape.py",
-					"settings":
-					{
-						"buffer_size": 12703,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								9758,
-								9758
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 13,
-					"file": "VoGISProfilToolMain/util/u.py",
-					"settings":
-					{
-						"buffer_size": 12431,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								11466,
-								11466
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 112.857142857
-						},
-						"translation.x": 0.0,
-						"translation.y": 4050.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 14,
-					"file": "VoGISProfilToolMain/bo/segment.py",
-					"settings":
-					{
-						"buffer_size": 1562,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1422,
-								1422
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 179.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 15,
+					"buffer": 5,
 					"file": "VoGISProfilToolMain/vogisprofiltoolmaindialog.py",
 					"settings":
 					{
-						"buffer_size": 12162,
+						"buffer_size": 13235,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1940,
-								1940
+								6373,
+								6373
 							]
 						],
 						"settings":
@@ -1055,119 +681,7 @@
 							"wrap_width": 110.857142857
 						},
 						"translation.x": 0.0,
-						"translation.y": 556.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 16,
-					"file": "VoGISProfilToolMain/bo/line.py",
-					"settings":
-					{
-						"buffer_size": 217,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								216,
-								216
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 17,
-					"file": "VoGISProfilToolMain/bo/vertex.py",
-					"settings":
-					{
-						"buffer_size": 7575,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1164,
-								1164
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 112.857142857
-						},
-						"translation.x": 0.0,
-						"translation.y": 270.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 18,
-					"file": "VoGISProfilToolMain/bo/rasterCollection.py",
-					"settings":
-					{
-						"buffer_size": 667,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								505,
-								505
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 19,
-					"file": "VoGISProfilToolMain/bo/lineCollection.py",
-					"settings":
-					{
-						"buffer_size": 457,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1790.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1208,7 +722,7 @@
 		"rows":
 		[
 			0.0,
-			0.871586205942,
+			0.464986323797,
 			1.0
 		]
 	},

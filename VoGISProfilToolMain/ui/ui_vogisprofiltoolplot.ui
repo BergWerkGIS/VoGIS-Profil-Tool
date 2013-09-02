@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>756</width>
+    <width>820</width>
     <height>464</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>VoGIS Profil Tool</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -78,6 +78,13 @@
      <item row="2" column="0" colspan="9">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Dezimalzeichen (für Text, csv):</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QComboBox" name="IDC_cbDecimalDelimiter">
          <item>
           <property name="text">
@@ -89,6 +96,13 @@
            <string>.</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Spaltentrennzeichen (Text):</string>
+         </property>
         </widget>
        </item>
        <item>

@@ -1,5 +1,12 @@
 <RCC>
     <qresource prefix="/plugins/vogisprofiltoolmain" >
         <file>icons/icon.png</file>
+        <file>icons/home.png</file>
+        <file>icons/pan.png</file>
+        <file>icons/save.png</file>
+        <file>icons/zoomlast.png</file>
+        <file>icons/zoomnext.png</file>
+        <file>icons/zoomrectangle.png</file>
+        <file>icons/zoomselect.png</file>
     </qresource>
 </RCC>

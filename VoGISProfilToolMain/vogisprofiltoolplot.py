@@ -48,6 +48,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_VoGISProfilToolPlot()
         self.ui.setupUi(self)
+        self.filePath = ''
 
         #nimmt die Locale vom System, nicht von QGIS
         #kein Weg gefunden, um QGIS Locale: QSettings().value("locale/userLocale")
@@ -77,6 +78,19 @@ class VoGISProfilToolPlotDialog(QDialog):
         pltToolbar = matplotlib.backends.backend_qt4agg.NavigationToolbar2QTAgg(self.pltWidget, self.ui.IDC_frPlot)
         self.ui.IDC_frToolbar.layout().addWidget(pltToolbar)
         lstActions = pltToolbar.actions()
+
+        #QgsMessageLog.logMessage('{0}'.format(dir(lstActions[0])), 'VoGis')
+        #i = QIcon()
+        #i.addPixmap(QPixmap(":/plugins/vogisprofiltoolmain/icons/home.png"), QIcon.Normal, QIcon.Off)
+        #lstActions[0].setIcon(i)
+        lstActions[0].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/home.png"))
+        #lstActions[0].setWhatsThis("Configuration for test plugin")
+        #lstActions[0].setStatusTip("This is status tip")
+        lstActions[1].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomlast.png"))
+        lstActions[2].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomnext.png"))
+        lstActions[4].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/pan.png"))
+        lstActions[5].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomselect.png"))
+        lstActions[9].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/save.png"))
         pltToolbar.removeAction(lstActions[7])
         pltToolbar.removeAction(lstActions[8])
         self.one2one = QPushButton()
@@ -108,7 +122,10 @@ class VoGISProfilToolPlotDialog(QDialog):
                   (1, 1, 0.521568627, 1.0),
                   ]
 
+        idxCol = 0
         for idx, p in enumerate(self.profiles):
+            if idxCol > len(colors) - 1:
+                idxCol = 0
             #x, pltSegs = p.getPlotSegments()
             #QgsMessageLog.logMessage('x: {0}'.format(x), 'VoGis')
             pltSegs = p.getPlotSegments()
@@ -116,11 +133,15 @@ class VoGISProfilToolPlotDialog(QDialog):
             lineColl = LineCollection(pltSegs,
                                       linewidths=2,
                                       linestyles='solid',
-                                      colors=colors[randrange(len(colors))],
-                                      picker=True
+                                      #colors=colors[randrange(len(colors))],
+                                      colors=colors[idxCol],
+                                      picker=True,
+                                      label='LBL'
                                       )
             #lineColl.set_array(x)
+            #lineColl.text.set_text('line label')
             self.subplot.add_collection(lineColl)
+            idxCol += 1
         #save inital view
         pltToolbar.push_current()
         #select pan tool
@@ -148,9 +169,11 @@ class VoGISProfilToolPlotDialog(QDialog):
             caption = 'Punkt Shapefile exportieren'
         else:
             caption = 'Linien Shapefile exportieren'
-        fileName = u.getFileName(caption, "SHP (*.shp)")
+        fileName = u.getFileName(caption, "SHP (*.shp)", self.filePath)
         if fileName == '':
             return
+        fInfo = QFileInfo(fileName)
+        self.filePath = fInfo.path()
         expShp = ExportShape(self.iface,
                              (self.ui.IDC_chkHekto.checkState() == Qt.Checked),
                              (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked),
@@ -167,10 +190,11 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def exportCsvXls(self):
         u = Util(self.iface)
-        fileName = u.getFileName("CSV-datei exportieren", "CSV (*.csv)")
+        fileName = u.getFileName("CSV-datei exportieren", "CSV (*.csv)", self.filePath)
         if fileName == '':
             return
-
+        fInfo = QFileInfo(fileName)
+        self.filePath = fInfo.path()
         hekto = (self.ui.IDC_chkHekto.checkState() == Qt.Checked)
         attribs = (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked)
         delimiter = ';'
@@ -191,17 +215,20 @@ class VoGISProfilToolPlotDialog(QDialog):
                                  ))
 
     def exportTxt(self):
-
-        u = Util(self.iface)
-        fileName = u.getFileName("Textdatei exportieren", "TXT (*.txt)")
-        if fileName == '':
-            return
-
-        hekto = (self.ui.IDC_chkHekto.checkState() == Qt.Checked)
-        attribs = (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked)
         delimiter = self.__getDelimiter()
         decimalDelimiter = self.__getDecimalDelimiter()
+        if delimiter == decimalDelimiter:
+            QMessageBox.warning(self.iface.mainWindow(), 'VoGIS-Profiltool', u'Gleiches Dezimal- und Spaltentrennzeichen gewählt!')
+            return
 
+        u = Util(self.iface)
+        fileName = u.getFileName("Textdatei exportieren", "TXT (*.txt)", self.filePath)
+        if fileName == '':
+            return
+        fInfo = QFileInfo(fileName)
+        self.filePath = fInfo.path()
+        hekto = (self.ui.IDC_chkHekto.checkState() == Qt.Checked)
+        attribs = (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked)
         txt = open(fileName, 'w')
 
         txt.write(self.profiles[0].writeHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter))
@@ -220,9 +247,11 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def exportAutoCadTxt(self):
         u = Util(self.iface)
-        fileName = u.getFileName("AutoCad Textdatei exportieren", "TXT (*.txt)")
+        fileName = u.getFileName("AutoCad Textdatei exportieren", "TXT (*.txt)", self.filePath)
         if fileName == '':
             return
+        fInfo = QFileInfo(fileName)
+        self.filePath = fInfo.path()
         txt = open(fileName, 'w')
         for p in self.profiles:
             txt.write(p.toACadTxt(' ', '.'))
@@ -236,10 +265,11 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def __exportDxf(self, asPnt):
         u = Util(self.iface)
-        fileName = u.getFileName("DXF exportieren", "DXF (*.dxf)")
+        fileName = u.getFileName("DXF exportieren", "DXF (*.dxf)", self.filePath)
         if fileName == '':
             return
-
+        fInfo = QFileInfo(fileName)
+        self.filePath = fInfo.path()
         exDxf = ExportDxf(self.iface, fileName, self.settings, self.profiles)
         if asPnt is True:
             exDxf.exportPoint()
@@ -321,7 +351,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             rect = fig.patch
             rect.set_facecolor((0.9, 0.9, 0.9))
 
-            self.subplot = fig.add_axes((0.05, 0.15, 0.92, 0.82))
+            self.subplot = fig.add_axes((0.08, 0.15, 0.92, 0.82))
             self.subplot.set_xbound(pltExt.xmin, pltExt.xmax)
             self.subplot.set_ybound(pltExt.ymin, pltExt.ymax)
             self.__setupAxes(self.subplot)

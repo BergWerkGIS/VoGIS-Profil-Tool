@@ -30,6 +30,8 @@ from ui.ui_vogisprofiltoolmain import Ui_VoGISProfilToolMain
 from util.u import Util
 from bo.settings import enumModeLine, enumModeVertices
 from util.ptmaptool import ProfiletoolMapTool
+from util.createProfile import CreateProfile
+from vogisprofiltoolplot import VoGISProfilToolPlotDialog
 
 
 class VoGISProfilToolMainDialog(QDialog):
@@ -82,6 +84,10 @@ class VoGISProfilToolMainDialog(QDialog):
         self.savedTool = self.canvas.mapTool()
         self.polygon = False
         self.rubberband = QgsRubberBand(self.canvas, self.polygon)
+        #self.rubberband.setBrushStyle()
+        #self.rubberband.setColor()
+        #http://www.qgis.org/api/classQgsRubberBand.html#a6f7cdabfcf69b65dfc6c164ce2d01fab
+        #self.rubberband.setLineStyle()
         self.pointsToDraw = []
         self.dblclktemp = None
         self.drawnLine = None
@@ -103,8 +109,24 @@ class VoGISProfilToolMainDialog(QDialog):
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Keine Profillinie vorhanden!")
             return
 
-        self.rubberband.reset(self.polygon)
-        QDialog.accept(self)
+        #self.rubberband.reset(self.polygon)
+        #QDialog.accept(self)
+
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+
+        createProf = CreateProfile(self.iface, self.settings)
+        profiles = createProf.create()
+        QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
+
+        if len(profiles) < 1:
+            QApplication.restoreOverrideCursor()
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
+            return
+
+        dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
+        dlg.show()
+        #result = self.dlg.exec_()
+        dlg.exec_()
 
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
@@ -131,6 +153,27 @@ class VoGISProfilToolMainDialog(QDialog):
                         r.selected = True
                         item.setCheckState(Qt.Checked)
         self.selectingVisibleRasters = False
+
+    def lineLayerChanged(self, idx):
+        if self.ui.IDC_rbShapeLine.isChecked() is False:
+            self.ui.IDC_rbShapeLine.setChecked(True)
+        lineLyr = (self.ui.IDC_cbLineLayers.itemData(self.ui.IDC_cbLineLayers.currentIndex()).toPyObject())
+        lyr = lineLyr.line
+        #QgsMessageLog.logMessage('{0}'.format(lyr.selectedFeatureCount()), 'VoGis')
+        #QgsMessageLog.logMessage('{0}'.format(dir(lyr)), 'VoGis')
+        if hasattr(lyr, 'selectedFeatureCount'):
+            if(lyr.selectedFeatureCount() < 1):
+                self.ui.IDC_chkOnlySelectedFeatures.setChecked(False)
+            else:
+                self.ui.IDC_chkOnlySelectedFeatures.setChecked(True)
+
+    def valueChangedEquiDistance(self, val):
+        if self.ui.IDC_rbEquiDistance.isChecked() is False:
+            self.ui.IDC_rbEquiDistance.setChecked(True)
+
+    def valueChangedVertexCount(self, val):
+        if self.ui.IDC_rbVertexCount.isChecked() is False:
+            self.ui.IDC_rbVertexCount.setChecked(True)
 
     def lvRasterItemChanged(self, item):
         if self.selectingVisibleRasters is True: return
