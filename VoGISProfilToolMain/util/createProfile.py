@@ -241,7 +241,11 @@ class CreateProfile:
 
         #letzter, echter Punkt der Geometrie
         qgLastPnt = qgLineVertices[len(qgLineVertices)-1]
-        distSegment = sqrt(qgLastPnt.sqrDist(qgPntOld))
+        #keine echten Knoten, nur berechnete -> letzter Pkt entspricht kompletter Laenge der Geometrie
+        if self.settings.nodesAndVertices is False:
+            distSegment = shplyGeom.length
+        else:
+            distSegment = sqrt(qgLastPnt.sqrDist(qgPntOld))
         vtxType = enumVertexType.node
         vtxId += 1
         newVtx = Vertex(fields,

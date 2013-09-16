@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Mon Sep  2 23:57:05 2013
+# Created: Mon Sep 16 12:44:00 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_VoGISProfilToolMain(object):
     def setupUi(self, VoGISProfilToolMain):
         VoGISProfilToolMain.setObjectName(_fromUtf8("VoGISProfilToolMain"))
-        VoGISProfilToolMain.resize(458, 893)
+        VoGISProfilToolMain.resize(463, 893)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -53,10 +53,13 @@ class Ui_VoGISProfilToolMain(object):
         sizePolicy.setHeightForWidth(self.IDC_listRasters.sizePolicy().hasHeightForWidth())
         self.IDC_listRasters.setSizePolicy(sizePolicy)
         self.IDC_listRasters.setObjectName(_fromUtf8("IDC_listRasters"))
-        self.gridLayout_3.addWidget(self.IDC_listRasters, 1, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.IDC_listRasters, 2, 0, 1, 1)
         self.IDC_bSelectVisibleRasters = QtGui.QPushButton(self.IDC_grpRaster)
         self.IDC_bSelectVisibleRasters.setObjectName(_fromUtf8("IDC_bSelectVisibleRasters"))
         self.gridLayout_3.addWidget(self.IDC_bSelectVisibleRasters, 0, 0, 1, 1)
+        self.IDC_bRefreshRasterList = QtGui.QPushButton(self.IDC_grpRaster)
+        self.IDC_bRefreshRasterList.setObjectName(_fromUtf8("IDC_bRefreshRasterList"))
+        self.gridLayout_3.addWidget(self.IDC_bRefreshRasterList, 1, 0, 1, 1)
         self.gridLayout_2.addWidget(self.IDC_grpRaster, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.IDC_widRaster)
         self.IDC_widProfilLinien = QtGui.QWidget(VoGISProfilToolMain)
@@ -198,6 +201,7 @@ class Ui_VoGISProfilToolMain(object):
         self.gridLayout_6.addWidget(self.IDC_grpVertices, 0, 0, 1, 1)
         self.verticalLayout.addWidget(self.IDC_widVertices)
         self.buttonBox = QtGui.QDialogButtonBox(VoGISProfilToolMain)
+        self.buttonBox.setEnabled(True)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
@@ -213,12 +217,14 @@ class Ui_VoGISProfilToolMain(object):
         QtCore.QObject.connect(self.IDC_dblspinDistance, QtCore.SIGNAL(_fromUtf8("valueChanged(double)")), VoGISProfilToolMain.valueChangedEquiDistance)
         QtCore.QObject.connect(self.IDC_dblspinVertexCnt, QtCore.SIGNAL(_fromUtf8("valueChanged(double)")), VoGISProfilToolMain.valueChangedVertexCount)
         QtCore.QObject.connect(self.IDC_cbLineLayers, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), VoGISProfilToolMain.lineLayerChanged)
+        QtCore.QObject.connect(self.IDC_bRefreshRasterList, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolMain.refreshRasterList)
         QtCore.QMetaObject.connectSlotsByName(VoGISProfilToolMain)
 
     def retranslateUi(self, VoGISProfilToolMain):
         VoGISProfilToolMain.setWindowTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "VoGIS Profil Tool", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_grpRaster.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Rastermodell(e) auswählen", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bSelectVisibleRasters.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Im aktuellen Extent sichtbare Raster auswählen", None, QtGui.QApplication.UnicodeUTF8))
+        self.IDC_bRefreshRasterList.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Raster aktualisieren", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_grpProfilLinien.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Lage der Profillinie(n) festlegen", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bDrawLine.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profillinie (neu) digitalisieren", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_chkOnlySelectedFeatures.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "nur selektierte Elemente verwenden", None, QtGui.QApplication.UnicodeUTF8))
@@ -236,5 +242,5 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_grpVertices.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Stützstellen festlegen", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_rbEquiDistance.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Abstand zwischen den Profilpunkten", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_rbVertexCount.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Anzahl Profilpunkte pro Profil", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkNodesAndVertices.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profilpunkte erstellen an Knoten und Sützstellen", None, QtGui.QApplication.UnicodeUTF8))
+        self.IDC_chkNodesAndVertices.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profilpunkte erstellen an Knoten und Stützstellen", None, QtGui.QApplication.UnicodeUTF8))
 

@@ -8,5 +8,6 @@
         <file>icons/zoomnext.png</file>
         <file>icons/zoomrectangle.png</file>
         <file>icons/zoomselect.png</file>
+        <file>icons/identify.png</file>
     </qresource>
 </RCC>

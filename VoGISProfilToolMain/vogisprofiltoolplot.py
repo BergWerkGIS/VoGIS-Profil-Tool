@@ -48,7 +48,16 @@ class VoGISProfilToolPlotDialog(QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_VoGISProfilToolPlot()
         self.ui.setupUi(self)
-        self.filePath = ''
+
+        if self.settings.onlyHektoMode is True:
+            self.ui.IDC_frPlot.hide()
+            self.ui.IDC_frToolbar.hide()
+            self.adjustSize()
+            self.ui.IDC_chkHekto.setCheckState(Qt.Checked)
+            self.ui.IDC_chkHekto.setEnabled(False)
+
+        #self.filePath = ''
+        self.filePath = QSettings().value("vogisprofiltoolmain/savepath", "").toString()
 
         #nimmt die Locale vom System, nicht von QGIS
         #kein Weg gefunden, um QGIS Locale: QSettings().value("locale/userLocale")
@@ -93,11 +102,18 @@ class VoGISProfilToolPlotDialog(QDialog):
         lstActions[9].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/save.png"))
         pltToolbar.removeAction(lstActions[7])
         pltToolbar.removeAction(lstActions[8])
+        #insert 1:1 zoom button
         self.one2one = QPushButton()
         self.one2one.setText('1:1')
         self.one2one.clicked.connect(self.__one2oneClicked)
         #pltToolbar.addWidget(self.one2one)
+        #insert identify button -> deactivate all tools
         pltToolbar.insertWidget(lstActions[0], self.one2one)
+        self.identify = QPushButton()
+        self.identify.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/identify.png"))
+        self.identify.clicked.connect(self.__identify)
+        pltToolbar.insertWidget(lstActions[0], self.identify)
+        #insert identify label to show name of clicked dhm
         self.dhmLbl = QLabel()
         pltToolbar.insertWidget(lstActions[0], self.dhmLbl)
 
@@ -122,10 +138,10 @@ class VoGISProfilToolPlotDialog(QDialog):
                   (1, 1, 0.521568627, 1.0),
                   ]
 
-        idxCol = 0
+        #idxCol = 0
         for idx, p in enumerate(self.profiles):
-            if idxCol > len(colors) - 1:
-                idxCol = 0
+            #if idxCol > len(colors) - 1:
+            #    idxCol = 0
             #x, pltSegs = p.getPlotSegments()
             #QgsMessageLog.logMessage('x: {0}'.format(x), 'VoGis')
             pltSegs = p.getPlotSegments()
@@ -134,18 +150,20 @@ class VoGISProfilToolPlotDialog(QDialog):
                                       linewidths=2,
                                       linestyles='solid',
                                       #colors=colors[randrange(len(colors))],
-                                      colors=colors[idxCol],
+                                      #colors=colors[idxCol],
+                                      colors=colors[:len(settings.mapData.rasters.selectedRasters())],
                                       picker=True,
                                       label='LBL'
                                       )
             #lineColl.set_array(x)
             #lineColl.text.set_text('line label')
             self.subplot.add_collection(lineColl)
-            idxCol += 1
-        #save inital view
+            #idxCol += 1
+        #save inital view in history
         pltToolbar.push_current()
         #select pan tool
         pltToolbar.pan()
+        self.pltToolbar = pltToolbar
         QApplication.restoreOverrideCursor()
 
     def accept(self):
@@ -174,6 +192,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             return
         fInfo = QFileInfo(fileName)
         self.filePath = fInfo.path()
+        QSettings().setValue("vogisprofiltoolmain/savepath", self.filePath)
         expShp = ExportShape(self.iface,
                              (self.ui.IDC_chkHekto.checkState() == Qt.Checked),
                              (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked),
@@ -195,6 +214,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             return
         fInfo = QFileInfo(fileName)
         self.filePath = fInfo.path()
+        QSettings().setValue("vogisprofiltoolmain/savepath", self.filePath)
         hekto = (self.ui.IDC_chkHekto.checkState() == Qt.Checked)
         attribs = (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked)
         delimiter = ';'
@@ -227,6 +247,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             return
         fInfo = QFileInfo(fileName)
         self.filePath = fInfo.path()
+        QSettings().setValue("vogisprofiltoolmain/savepath", self.filePath)
         hekto = (self.ui.IDC_chkHekto.checkState() == Qt.Checked)
         attribs = (self.ui.IDC_chkLineAttributes.checkState() == Qt.Checked)
         txt = open(fileName, 'w')
@@ -252,6 +273,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             return
         fInfo = QFileInfo(fileName)
         self.filePath = fInfo.path()
+        QSettings().setValue("vogisprofiltoolmain/savepath", self.filePath)
         txt = open(fileName, 'w')
         for p in self.profiles:
             txt.write(p.toACadTxt(' ', '.'))
@@ -270,11 +292,19 @@ class VoGISProfilToolPlotDialog(QDialog):
             return
         fInfo = QFileInfo(fileName)
         self.filePath = fInfo.path()
+        QSettings().setValue("vogisprofiltoolmain/savepath", self.filePath)
         exDxf = ExportDxf(self.iface, fileName, self.settings, self.profiles)
         if asPnt is True:
             exDxf.exportPoint()
         else:
             exDxf.exportLine()
+
+    def __identify(self):
+        #dirty hack: deselect all tool
+        #selecting a tool twice deselects it
+        self.pltToolbar.pan()
+        self.pltToolbar.zoom()
+        self.pltToolbar.zoom()
 
     def __one2oneClicked(self):
         QgsMessageLog.logMessage('1:1 clicked', 'VoGis')
@@ -297,6 +327,7 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def __plotPicked(self, event):
         #QgsMessageLog.logMessage('artist:{0}'.format(type(event.artist)), 'VoGis')
+        self.dhmLbl.setText(' ? ')
         if isinstance(event.artist, Line2D):
             QgsMessageLog.logMessage('Line2D', 'VoGis')
             line = event.artist

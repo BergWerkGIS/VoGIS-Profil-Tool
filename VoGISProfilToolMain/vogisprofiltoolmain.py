@@ -87,7 +87,7 @@ class VoGISProfilToolMain:
         if self.settings.mapData.rasters.count() < 1:
             retVal = QMessageBox.warning(self.iface.mainWindow(),
                                          "VoGIS-Profiltool",
-                                         "Keine Rasterebene vorhanden! Nur hektometrieren?",
+                                         "Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?",
                                          QMessageBox.Yes | QMessageBox.No,
                                          QMessageBox.Yes)
             if retVal == QMessageBox.No:
@@ -125,26 +125,28 @@ class VoGISProfilToolMain:
 
     def __getMapData(self):
 
-        availLayers = self.iface.legendInterface().layers()
+        legend = self.iface.legendInterface()
+        availLayers = legend.layers()
 
         rColl = RasterCollection()
         lColl = LineCollection()
 
         for lyr in availLayers:
-            lyrType = lyr.type()
-            lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
-            #lyrName = unicodedata.normalize('NFKD', unicode(lyr.name()))
-            if lyrType == 0:
-                #vector
-                if lyr.geometryType() == 1:
-                    #Line
-                    l = Line(lyr.id(), lyrName, lyr)
-                    #QgsMessageLog.logMessage(l.toStr(), 'VoGis')
-                    lColl.addLine(l)
-            elif lyrType == 1:
-                #Raster
-                r = Raster(lyr.id(), lyrName, lyr)
-                rColl.addRaster(r)
+            if legend.isLayerVisible(lyr):
+                lyrType = lyr.type()
+                lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
+                #lyrName = unicodedata.normalize('NFKD', unicode(lyr.name()))
+                if lyrType == 0:
+                    #vector
+                    if lyr.geometryType() == 1:
+                        #Line
+                        l = Line(lyr.id(), lyrName, lyr)
+                        #QgsMessageLog.logMessage(l.toStr(), 'VoGis')
+                        lColl.addLine(l)
+                elif lyrType == 1:
+                    #Raster
+                    r = Raster(lyr.id(), lyrName, lyr)
+                    rColl.addRaster(r)
 
         mapData = MapData()
         mapData.lines = lColl

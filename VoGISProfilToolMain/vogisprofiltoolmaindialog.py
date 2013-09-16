@@ -19,7 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 """
-
+import unicodedata
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import QgsMessageLog
@@ -29,6 +29,8 @@ from ui.ui_vogisprofiltoolmain import Ui_VoGISProfilToolMain
 #from bo.raster import Raster
 from util.u import Util
 from bo.settings import enumModeLine, enumModeVertices
+from bo.rasterCollection import RasterCollection
+from bo.raster import Raster
 from util.ptmaptool import ProfiletoolMapTool
 from util.createProfile import CreateProfile
 from vogisprofiltoolplot import VoGISProfilToolPlotDialog
@@ -56,18 +58,7 @@ class VoGISProfilToolMainDialog(QDialog):
         self.ui.IDC_tbToX.setText('-20000')
         self.ui.IDC_tbToY.setText('230000')
 
-        check = Qt.Unchecked
-
-        if self.settings.mapData.rasters.count() == 1:
-            check = Qt.Checked
-            self.settings.mapData.rasters.rasters()[0].selected = True
-
-        for rLyr in self.settings.mapData.rasters.rasters():
-            item = QListWidgetItem(rLyr.name)
-            item.setData(Qt.UserRole, rLyr)
-            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            item.setCheckState(check)
-            self.ui.IDC_listRasters.addItem(item)
+        self.__addRastersToGui()
 
         for lLyr in self.settings.mapData.lines.lines():
             self.ui.IDC_cbLineLayers.addItem(lLyr.name, lLyr)
@@ -94,6 +85,24 @@ class VoGISProfilToolMainDialog(QDialog):
 
     def accept(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
+        if self.settings.onlyHektoMode is True and self.settings.mapData.rasters.count() > 0:
+            self.settings.onlyHektoMode = False
+
+        if self.settings.onlyHektoMode is False:
+            if self.settings.mapData.rasters.count() < 1:
+                #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"Keine Raster vorhanden. Zum Hektometrieren Dialog neu öffnen.")
+                #return
+                retVal = QMessageBox.warning(self.iface.mainWindow(),
+                                             "VoGIS-Profiltool",
+                                             "Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?",
+                                             QMessageBox.Yes | QMessageBox.No,
+                                             QMessageBox.Yes)
+                if retVal == QMessageBox.No:
+                    return
+                else:
+                    self.settings.onlyHektoMode = True
+                    self.settings.createHekto = True
+
         if self.__getSettingsFromGui() is False:
             return
 
@@ -134,6 +143,7 @@ class VoGISProfilToolMainDialog(QDialog):
         QDialog.reject(self)
 
     def selectVisibleRasters(self):
+        self.refreshRasterList()
         self.selectingVisibleRasters = True
         extCanvas = self.iface.mapCanvas().extent()
         #alle raster in den einstellunge deselektieren
@@ -185,6 +195,36 @@ class VoGISProfilToolMainDialog(QDialog):
         iData = item.data(Qt.UserRole)
         rl = iData.toPyObject()
         self.settings.mapData.rasters.getById(rl.id).selected = selected
+
+    def refreshRasterList(self):
+        legend = self.iface.legendInterface()
+        availLayers = legend.layers()
+        rColl = RasterCollection()
+
+        for lyr in availLayers:
+            if legend.isLayerVisible(lyr):
+                lyrType = lyr.type()
+                lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
+                if lyrType == 1:
+                    r = Raster(lyr.id(), lyrName, lyr)
+                    rColl.addRaster(r)
+
+        self.settings.mapData.rasters = rColl
+        self.__addRastersToGui()
+
+    def __addRastersToGui(self):
+        self.ui.IDC_listRasters.clear()
+        check = Qt.Unchecked
+        if self.settings.mapData.rasters.count() == 1:
+            check = Qt.Checked
+            self.settings.mapData.rasters.rasters()[0].selected = True
+
+        for rLyr in self.settings.mapData.rasters.rasters():
+            item = QListWidgetItem(rLyr.name)
+            item.setData(Qt.UserRole, rLyr)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(check)
+            self.ui.IDC_listRasters.addItem(item)
 
     def drawLine(self):
         if self.ui.IDC_rbDigi.isChecked() is False:
