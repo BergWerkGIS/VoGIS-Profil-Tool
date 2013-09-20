@@ -19,14 +19,18 @@
  *                                                                         *
  ***************************************************************************/
 """
-# Import the PyQt and QGIS libraries
+import unicodedata
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-# Initialize Qt resources from file resources.py
 import resources_rc
-# Import the code for the dialog
 from vogisprofiltoolmaindialog import VoGISProfilToolMainDialog
+from bo.raster import Raster
+from bo.line import Line
+from bo.rasterCollection import RasterCollection
+from bo.lineCollection import LineCollection
+from bo.mapdata import MapData
+from bo.settings import Settings
 
 
 class VoGISProfilToolMain:
@@ -38,10 +42,10 @@ class VoGISProfilToolMain:
         self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/vogisprofiltoolmain"
         # initialize locale
         localePath = ""
-        locale = QSettings().value("locale/userLocale").toString()[0:2]
+        loc = QSettings().value("locale/userLocale").toString()[0:2]
 
         if QFileInfo(self.plugin_dir).exists():
-            localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + locale + ".qm"
+            localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + loc + ".qm"
 
         if QFileInfo(localePath).exists():
             self.translator = QTranslator()
@@ -50,13 +54,13 @@ class VoGISProfilToolMain:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = VoGISProfilToolMainDialog()
+        self.settings = None
 
     def initGui(self):
         # Create action that will start plugin configuration
         self.action = QAction(
-            QIcon(":/plugins/vogisprofiltoolmain/icon.png"),
+            QIcon(":/plugins/vogisprofiltoolmain/icons/icon.png"),
+            #QIcon(":/plugins/vogisprofiltoolmain/icons/home.png"),
             u"VoGIS Profil Tool", self.iface.mainWindow())
         # connect the action to the run method
         QObject.connect(self.action, SIGNAL("triggered()"), self.run)
@@ -72,12 +76,80 @@ class VoGISProfilToolMain:
 
     # run method that performs all the real work
     def run(self):
+
+        self.settings = Settings(self.__getMapData())
+        #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "lines:" + str(self.settings.mapData.lines.count()) + " rasters:" + str(self.settings.mapData.rasters.count()))
+
+        #checken ob raster und oder lines vorhanden sind
+        #if self.settings.mapData.lines.count() < 1:
+        #    QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Keine Linienebene vorhanden")
+        #    return 2
+        if self.settings.mapData.rasters.count() < 1:
+            retVal = QMessageBox.warning(self.iface.mainWindow(),
+                                         "VoGIS-Profiltool",
+                                         "Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?",
+                                         QMessageBox.Yes | QMessageBox.No,
+                                         QMessageBox.Yes)
+            if retVal == QMessageBox.No:
+                return 2
+            else:
+                self.settings.onlyHektoMode = True
+                self.settings.createHekto = True
+
+        # Create the dialog (after translation) and keep reference
+        self.dlg = VoGISProfilToolMainDialog(self.iface, self.settings)
         # show the dialog
         self.dlg.show()
         # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result == 1:
-            # do something useful (delete the line containing pass and
-            # substitute with your code)
-            pass
+        #result = self.dlg.exec_()
+        self.dlg.exec_()
+        #QgsMessageLog.logMessage(str(result), 'VoGis')
+
+        # if result == 0:
+        #     return
+
+        # QApplication.setOverrideCursor(Qt.WaitCursor)
+
+        # createProf = CreateProfile(self.iface, self.settings)
+        # profiles = createProf.create()
+        # QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
+
+        # if len(profiles) < 1:
+        #     QApplication.restoreOverrideCursor()
+        #     QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
+        #     return
+
+        # self.dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
+        # self.dlg.show()
+        # result = self.dlg.exec_()
+
+    def __getMapData(self):
+
+        legend = self.iface.legendInterface()
+        availLayers = legend.layers()
+
+        rColl = RasterCollection()
+        lColl = LineCollection()
+
+        for lyr in availLayers:
+            if legend.isLayerVisible(lyr):
+                lyrType = lyr.type()
+                lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
+                #lyrName = unicodedata.normalize('NFKD', unicode(lyr.name()))
+                if lyrType == 0:
+                    #vector
+                    if lyr.geometryType() == 1:
+                        #Line
+                        l = Line(lyr.id(), lyrName, lyr)
+                        #QgsMessageLog.logMessage(l.toStr(), 'VoGis')
+                        lColl.addLine(l)
+                elif lyrType == 1:
+                    #Raster
+                    r = Raster(lyr.id(), lyrName, lyr)
+                    rColl.addRaster(r)
+
+        mapData = MapData()
+        mapData.lines = lColl
+        mapData.rasters = rColl
+
+        return mapData
