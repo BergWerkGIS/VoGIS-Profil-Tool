@@ -1,56 +1,27 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
- VoGISProfilToolMain
+ VoGisProfile
                                  A QGIS plugin
- VoGIS ProfilTool
+ VOGIS Profile Tool
                              -------------------
-        begin                : 2013-05-28
-        copyright            : (C) 2013 by BergWerk GIS
+        begin                : 2012-06-23
+        copyright            : (C) 2012 by BergWerk GIS EDV-Dienstleistungen e.U.
         email                : wb@BergWerk-GIS.at
  ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
-
-
 def name():
-    return "VoGIS Profiltool"
-
-
+    return "VoGIS-Profiltool"
 def description():
     return "VoGIS-Profiltool"
-
-
 def version():
-    return "Version 1.7.4"
-
-
-def icon():
-    return "icons/icon.png"
-
-
+    return "Version 0.6"
+#def icon():
+#    return "icon.png"
 def qgisMinimumVersion():
     return "1.8"
-
-
-def author():
-    return "BergWerk GIS"
-
-
-def email():
-    return "wb@BergWerk-GIS.at"
-
-
 def classFactory(iface):
-    # load VoGISProfilToolMain class from file VoGISProfilToolMain
-    from vogisprofiltoolmain import VoGISProfilToolMain
-    return VoGISProfilToolMain(iface)
+    # load VoGisProfile class from file VoGisProfile
+    from vogisprofile import VoGisProfile
+    return VoGisProfile(iface)

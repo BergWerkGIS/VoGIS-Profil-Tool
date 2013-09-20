@@ -1,0 +1,18 @@
+# This file contains metadata for your plugin. Beginning
+# with version 1.8 this is the preferred way to supply information about a
+# plugin. The current method of embedding metadata in __init__.py will
+# be supported until version 2.0
+
+# This file should be included when you package your plugin.
+
+[general]
+name=VoGIS-Profiltool
+description=VoGIS-Profiltool
+icon=icon.png
+version=0.6
+qgisMinimumVersion=1.8
+class_name=VoGisProfile
+website=http://www.BergWerk-GIS.at/
+[author]
+name=BergWerk GIS EDV-Dienstleistungen e.U.
+email=wb@BergWerk-GIS.at
