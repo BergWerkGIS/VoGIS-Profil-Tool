@@ -47,13 +47,6 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="7">
-      <widget class="QPushButton" name="IDC_bExcel">
-       <property name="text">
-        <string>csv (Excel)</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="5">
       <widget class="QPushButton" name="IDC_bShpLine">
        <property name="text">
@@ -65,13 +58,6 @@
       <widget class="QPushButton" name="IDC_bACadTxt">
        <property name="text">
         <string>Autocad Text</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QPushButton" name="IDC_bText">
-       <property name="text">
-        <string>Textdatei</string>
        </property>
       </widget>
      </item>
@@ -197,6 +183,33 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3"/>
       </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="IDC_bText">
+       <property name="text">
+        <string>Textdatei</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="IDC_bExcel">
+       <property name="text">
+        <string>csv (Excel)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="7">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

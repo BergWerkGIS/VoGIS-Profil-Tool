@@ -108,7 +108,10 @@ class VoGISProfilToolMainDialog(QDialog):
 
         if self.settings.onlyHektoMode is False:
             if len(self.settings.mapData.rasters.selectedRasters()) < 1:
-                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
+                #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
+                #msg = 
+                #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Kein Raster selektiert!', None, QApplication.UnicodeUTF8))
                 return
 
         QgsMessageLog.logMessage('modeLine!=line: {0}'.format(self.settings.modeLine != enumModeLine.line), 'VoGis')

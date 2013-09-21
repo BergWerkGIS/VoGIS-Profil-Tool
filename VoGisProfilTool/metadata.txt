@@ -12,7 +12,7 @@
 name=VoGIS ProfilTool
 qgisMinimumVersion=1.8
 description=VoGIS-Profiltool
-version=1.7.4
+version=1.7.5
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 

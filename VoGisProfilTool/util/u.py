@@ -17,16 +17,30 @@ from ..bo.linkedList import LinkedList
 
 class Util:
 
+    @staticmethod
+    def t(txt):
+        return QApplication.translate('code', txt, None, QApplication.UnicodeUTF8)
+
     def __init__(self, iface):
         self.iface = iface
 
     def isFloat(self, val, valName):
         try:
+            val = val.replace(',', '.')
             f = float(val)
             f += 0.01
             return True
         except:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "'" + valName + "' ist keine gültige Zahl!")
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"'" + valName + "' ist keine gültige Zahl!")
+            return False
+
+    def isInt(self, val, valName):
+        try:
+            i = int(val)
+            i += 1
+            return True
+        except:
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"'" + valName + "' ist keine gültige Ganzzahl!")
             return False
 
     def getFileName(self, text, filter, filePath):

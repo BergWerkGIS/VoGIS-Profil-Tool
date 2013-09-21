@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Tue Sep  3 00:09:43 2013
+# Created: Sat Sep 21 16:03:02 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,18 +35,12 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_bShpPnt = QtGui.QPushButton(VoGISProfilToolPlot)
         self.IDC_bShpPnt.setObjectName(_fromUtf8("IDC_bShpPnt"))
         self.gridLayout.addWidget(self.IDC_bShpPnt, 3, 3, 1, 1)
-        self.IDC_bExcel = QtGui.QPushButton(VoGISProfilToolPlot)
-        self.IDC_bExcel.setObjectName(_fromUtf8("IDC_bExcel"))
-        self.gridLayout.addWidget(self.IDC_bExcel, 3, 7, 1, 1)
         self.IDC_bShpLine = QtGui.QPushButton(VoGISProfilToolPlot)
         self.IDC_bShpLine.setObjectName(_fromUtf8("IDC_bShpLine"))
         self.gridLayout.addWidget(self.IDC_bShpLine, 3, 5, 1, 1)
         self.IDC_bACadTxt = QtGui.QPushButton(VoGISProfilToolPlot)
         self.IDC_bACadTxt.setObjectName(_fromUtf8("IDC_bACadTxt"))
         self.gridLayout.addWidget(self.IDC_bACadTxt, 3, 2, 1, 1)
-        self.IDC_bText = QtGui.QPushButton(VoGISProfilToolPlot)
-        self.IDC_bText.setObjectName(_fromUtf8("IDC_bText"))
-        self.gridLayout.addWidget(self.IDC_bText, 3, 1, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.label = QtGui.QLabel(VoGISProfilToolPlot)
@@ -99,6 +93,14 @@ class Ui_VoGISProfilToolPlot(object):
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.IDC_frToolbar)
         self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
         self.gridLayout.addWidget(self.IDC_frToolbar, 1, 0, 1, 9)
+        self.IDC_bText = QtGui.QPushButton(VoGISProfilToolPlot)
+        self.IDC_bText.setObjectName(_fromUtf8("IDC_bText"))
+        self.gridLayout.addWidget(self.IDC_bText, 3, 0, 1, 1)
+        self.IDC_bExcel = QtGui.QPushButton(VoGISProfilToolPlot)
+        self.IDC_bExcel.setObjectName(_fromUtf8("IDC_bExcel"))
+        self.gridLayout.addWidget(self.IDC_bExcel, 3, 1, 1, 1)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem1, 3, 7, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 10, 0, 1, 1)
 
         self.retranslateUi(VoGISProfilToolPlot)
@@ -118,10 +120,8 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_bDxfLine.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "DXF Linie", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bDxfPnt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "DXF Punkt", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bShpPnt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Shp Punkt", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bExcel.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "csv (Excel)", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bShpLine.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Shp Linie", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bACadTxt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Autocad Text", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bText.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Textdatei", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Dezimalzeichen (für Text, csv):", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDecimalDelimiter.setItemText(0, QtGui.QApplication.translate("VoGISProfilToolPlot", ",", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_cbDecimalDelimiter.setItemText(1, QtGui.QApplication.translate("VoGISProfilToolPlot", ".", None, QtGui.QApplication.UnicodeUTF8))
@@ -131,4 +131,6 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_cbDelimiter.setItemText(2, QtGui.QApplication.translate("VoGISProfilToolPlot", ",", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_chkHekto.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Hektometrie Attribute", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_chkLineAttributes.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Linien Attribute", None, QtGui.QApplication.UnicodeUTF8))
+        self.IDC_bText.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Textdatei", None, QtGui.QApplication.UnicodeUTF8))
+        self.IDC_bExcel.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "csv (Excel)", None, QtGui.QApplication.UnicodeUTF8))
 

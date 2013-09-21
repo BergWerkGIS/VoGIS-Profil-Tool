@@ -23,7 +23,11 @@ PLUGIN_UPLOAD = $(CURDIR)/plugin_upload.py
 # Makefile for a PyQGIS plugin 
 
 # translation
-SOURCES = vogisprofiltoolmain.py ui/ui_vogisprofiltoolmain.py __init__.py vogisprofiltoolmaindialog.py
+SOURCES = vogisprofiltoolmain.py\
+          ui/ui_vogisprofiltoolmain.py\
+          ui/ui_vogisprofiltoolplot.py\
+          __init__.py\
+          vogisprofiltoolmaindialog.py
 TRANSLATIONS = i18n/vogisprofiltoolmain_en.ts
 #TRANSLATIONS = 
 
@@ -105,7 +109,7 @@ upload: zip
 # transup
 # update .ts translation files
 transup:
-	pylupdate4 Makefile
+	pylupdate4 -noobsolete Makefile
 
 # transcompile
 # compile translation files into .qm binary format

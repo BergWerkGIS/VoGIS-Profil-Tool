@@ -22,10 +22,10 @@ Directory **Z_VoGISProfilTool** contains old version.
  
 ```
 * git clone https://github.com/BergWerkGIS/VoGIS-Profil-Tool.git
-* cd VoGISProfilTool
+* cd ./VoGISProfilTool
 * make clean #(clean temporary files)
 * make derase #(delete folder ~/.qgis/pyhton/plugins/VoGISProfilTool)
-* make deploy #(deploy to ~/.qgis/pyhton/plugins/VoGISProfilTool)
+* make deploy #(compile and deploy to ~/.qgis/pyhton/plugins/VoGISProfilTool)
 * make zip #(create plugin zip-file for deployment in local folder)
 ```
  
@@ -41,9 +41,10 @@ Interpolate vertices (equidistant or constant number of vertices per input geome
  
 Display profile plots. 
 
-Export to
-* point or line Shapefile
+Export to:
+* 2.5D point or 2.5D line Shapefile
 * point or line DXF
+* Autocad text
 * text
 * csv (optimized for MS Exel)
 * graphic (png, jpg, pdf)

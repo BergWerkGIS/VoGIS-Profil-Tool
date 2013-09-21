@@ -39,19 +39,22 @@ class VoGISProfilToolMain:
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
-        self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/vogisprofiltoolmain"
+        self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/VoGisProfilTool"
         # initialize locale
         localePath = ""
         loc = QSettings().value("locale/userLocale").toString()[0:2]
 
         if QFileInfo(self.plugin_dir).exists():
+            QgsMessageLog.logMessage('plugin_dir exits', 'VoGis')
             localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + loc + ".qm"
 
         if QFileInfo(localePath).exists():
+            QgsMessageLog.logMessage('localePath exits', 'VoGis')
             self.translator = QTranslator()
             self.translator.load(localePath)
 
             if qVersion() > '4.3.3':
+                QgsMessageLog.logMessage("qVersion() > '4.3.3'", 'VoGis')
                 QCoreApplication.installTranslator(self.translator)
 
         self.settings = None
