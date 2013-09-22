@@ -27,7 +27,11 @@ SOURCES = vogisprofiltoolmain.py\
           ui/ui_vogisprofiltoolmain.py\
           ui/ui_vogisprofiltoolplot.py\
           __init__.py\
-          vogisprofiltoolmaindialog.py
+          vogisprofiltoolmaindialog.py\
+          vogisprofiltoolplot.py\
+          util/u.py\
+          util/createProfile.py\
+          bo/profile.py
 TRANSLATIONS = i18n/vogisprofiltoolmain_en.ts
 #TRANSLATIONS = 
 

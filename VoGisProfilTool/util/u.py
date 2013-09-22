@@ -31,7 +31,9 @@ class Util:
             f += 0.01
             return True
         except:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"'" + valName + "' ist keine gültige Zahl!")
+            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", unicode(valName) + u' ' + unicode(QApplication.translate('code', u'ist keine gültige Zahl!', None, QApplication.UnicodeUTF8)))
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", '"' + valName + '" ' + QApplication.translate('code', 'ist keine gültige Zahl!', None, QApplication.UnicodeUTF8))
+            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", tr(u'ist keine gültige Zahl!'))
             return False
 
     def isInt(self, val, valName):
@@ -74,8 +76,8 @@ class Util:
         return qgPnt
 
     def prepareFeatures(self, settings, provider, origFeats):
-        """multipart explodieren"""
-        """linien mit gleichen end und start vertices verinden"""
+        """explode multipart features"""
+        """merge lines with same direction and same start and end vertices"""
 
         newFeats = None
 
@@ -251,16 +253,18 @@ class Util:
         if QgsVectorFileWriter.deleteShapeFile(fileName) is False:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                u'Konnte vorhandene Datei nicht löschen: {0}'.format(fileName)
+                                QApplication.translate('code', 'Konnte vorhandene Datei nicht löschen', None, QApplication.UnicodeUTF8) + ': ' + fileName
                                 )
             return False
         else:
             return True
 
     def loadVectorFile(self, fileName):
+        fileSaved = QApplication.translate('code', 'Datei gespeichert.', None, QApplication.UnicodeUTF8)
+        load =QApplication.translate('code', 'Laden?', None, QApplication.UnicodeUTF8)
         reply = QMessageBox.question(self.iface.mainWindow(),
                                      "VoGIS-Profiltool",
-                                     'Datei gespeichert.\r\n\r\n\r\nLaden?',
+                                     fileSaved + '\r\n\r\n\r\n' + load,
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.Yes
                                      )
@@ -276,7 +280,7 @@ class Util:
         if drv is None:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                unicode('{0} Treiber nicht verfügbar'.format(driverName))
+                                driverName + ' ' + QApplication.translate('code', 'Treiber nicht verfügbar', None, QApplication.UnicodeUTF8)
                                 )
             return None, None
 
@@ -284,7 +288,7 @@ class Util:
         if ds is None:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                'Konnte {0} nicht erstellen: {1}'.format(driverName, fileName)
+                                QApplication.translate('code', 'Konnte Datei nicht erstellen', None, QApplication.UnicodeUTF8) + ': ' + driverName + ', ' + fileName
                                 )
             return None, None
 
@@ -295,7 +299,7 @@ class Util:
             if spatialReference.ImportFromEPSG(epsg) != 0:
                 QMessageBox.warning(self.iface.mainWindow(),
                                     "VoGIS-Profiltool",
-                                    'Konnte Koordinatensystem nicht initialisieren! EPSG: {0}'.format(epsg)
+                                    QApplication.translate('code', 'Konnte Koordinatensystem nicht initialisieren!', None, QApplication.UnicodeUTF8) + ' EPSG: {0}'.format(epsg)
                                     )
                 return None, None
         #http://www.digital-geography.com/create-and-edit-shapefiles-with-python-only/
@@ -303,7 +307,7 @@ class Util:
         if lyr is None:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                'Konnte {0}-Layer nicht erstellen: {1}'.format(driverName, fileName)
+                                QApplication.translate('code', 'Konnte Layer nicht erstellen', None, QApplication.UnicodeUTF8) + ': {0}, {1}'.format(driverName, fileName)
                                 )
             return None, None
 

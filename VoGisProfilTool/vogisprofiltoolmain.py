@@ -90,7 +90,7 @@ class VoGISProfilToolMain:
         if self.settings.mapData.rasters.count() < 1:
             retVal = QMessageBox.warning(self.iface.mainWindow(),
                                          "VoGIS-Profiltool",
-                                         "Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?",
+                                         QApplication.translate('code', 'Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?', None, QApplication.UnicodeUTF8),
                                          QMessageBox.Yes | QMessageBox.No,
                                          QMessageBox.Yes)
             if retVal == QMessageBox.No:

@@ -102,7 +102,8 @@ class CreateProfile:
             for f in feats:
                 geom = f.geometry()
                 if geom.isMultipart():
-                    QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Multipart Feature vorhanden! Option zum Explodieren verwenden.")
+                    msg = QApplication.translate('code', 'Multipart Feature vorhanden! Option zum Explodieren verwenden.', None, QApplication.UnicodeUTF8)
+                    QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
                     return profiles
 
             featCnt = len(feats)

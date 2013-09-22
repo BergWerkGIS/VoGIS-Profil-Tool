@@ -94,7 +94,7 @@ class VoGISProfilToolMainDialog(QDialog):
                 #return
                 retVal = QMessageBox.warning(self.iface.mainWindow(),
                                              "VoGIS-Profiltool",
-                                             "Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?",
+                                             QApplication.translate('code', 'Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?', None, QApplication.UnicodeUTF8),
                                              QMessageBox.Yes | QMessageBox.No,
                                              QMessageBox.Yes)
                 if retVal == QMessageBox.No:
@@ -118,7 +118,7 @@ class VoGISProfilToolMainDialog(QDialog):
         QgsMessageLog.logMessage('customLine is None: {0}'.format(self.settings.mapData.customLine is None), 'VoGis')
 
         if self.settings.modeLine != enumModeLine.line and self.settings.mapData.customLine is None:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Keine Profillinie vorhanden!")
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Keine Profillinie vorhanden!', None, QApplication.UnicodeUTF8))
             return
 
         #self.rubberband.reset(self.polygon)
@@ -132,7 +132,7 @@ class VoGISProfilToolMainDialog(QDialog):
 
         if len(profiles) < 1:
             QApplication.restoreOverrideCursor()
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Es konnten keine Profile erstellt werden.', None, QApplication.UnicodeUTF8))
             return
 
         dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
@@ -254,7 +254,7 @@ class VoGISProfilToolMainDialog(QDialog):
             self.pointsToDraw = []
             self.dblclktemp = newPoint
             self.drawnLine = None
-            QMessageBox.warning(self, "VoGIS-Profiltool", "Profillinie digitalisieren abgebrochen!")
+            QMessageBox.warning(self, "VoGIS-Profiltool", QApplication.translate('code', 'Profillinie digitalisieren abgebrochen!', None, QApplication.UnicodeUTF8))
         self.drawnLine = self.__createDigiFeature(self.pointsToDraw)
         self.__cleanDigi()
 
@@ -325,7 +325,7 @@ class VoGISProfilToolMainDialog(QDialog):
                                                  )
 
         if self.settings.onlySelectedFeatures is True and self.settings.mapData.selectedLineLyr.line.selectedFeatureCount() < 1:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"Der gewählte Layer hat keine selektierten Elemente.")
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', u'Der gewählte Layer hat keine selektierten Elemente.', None, QApplication.UnicodeUTF8))
             return False
 
         if self.ui.IDC_rbDigi.isChecked():
@@ -343,19 +343,19 @@ class VoGISProfilToolMainDialog(QDialog):
 
         if self.ui.IDC_rbStraigthLine.isChecked():
             ut = Util(self.iface)
-            if ut.isFloat(self.ui.IDC_tbFromX.text(), "Rechtswert von") is False:
+            if ut.isFloat(self.ui.IDC_tbFromX.text(), QApplication.translate('code', 'Rechtswert von', None, QApplication.UnicodeUTF8)) is False:
                 return False
             else:
                 fromX = float(self.ui.IDC_tbFromX.text())
-            if ut.isFloat(self.ui.IDC_tbFromY.text(), "Hochwert von") is False:
+            if ut.isFloat(self.ui.IDC_tbFromY.text(), QApplication.translate('code', 'Hochwert von', None, QApplication.UnicodeUTF8)) is False:
                 return False
             else:
                 fromY = float(self.ui.IDC_tbFromY.text())
-            if ut.isFloat(self.ui.IDC_tbToX.text(), "Rechtswert nach") is False:
+            if ut.isFloat(self.ui.IDC_tbToX.text(), QApplication.translate('code', 'Rechtswert nach', None, QApplication.UnicodeUTF8)) is False:
                 return False
             else:
                 toX = float(self.ui.IDC_tbToX.text())
-            if ut.isFloat(self.ui.IDC_tbToY.text(), "Hochwert nach") is False:
+            if ut.isFloat(self.ui.IDC_tbToY.text(), QApplication.translate('code', 'Hochwert nach', None, QApplication.UnicodeUTF8)) is False:
                 return False
             else:
                 toY = float(self.ui.IDC_tbToY.text())

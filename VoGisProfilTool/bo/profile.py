@@ -1,6 +1,7 @@
 #from qgis.core import QgsMessageLog
 from plotExtent import PlotExtent
 #import itertools
+from PyQt4.QtGui import *
 
 
 class Profile:
@@ -54,10 +55,18 @@ class Profile:
         #Profilnummer;Segmentnummer;Punktnummer;Punktklasse;
         #Hektometer
         #ATTRIBUTE
-        hdr = '{1}{0}{2}{0}{3}{0}{4}'.format(delimiter, 'Profillaenge', 'Segmentlaenge', 'Rechtswert', 'Hochwert')
+        hdr_prof_len = QApplication.translate('code', 'Profillaenge', None, QApplication.UnicodeUTF8)
+        hdr_seg_len = QApplication.translate('code', 'Segmentlaenge', None, QApplication.UnicodeUTF8)
+        hdr_xval = QApplication.translate('code', 'Rechtswert', None, QApplication.UnicodeUTF8)
+        hdr_yval = QApplication.translate('code', 'Hochwert', None, QApplication.UnicodeUTF8)
+        hdr_prof_nr = QApplication.translate('code', 'Profilnummer', None, QApplication.UnicodeUTF8)
+        hdr_seg_nr = QApplication.translate('code', 'Segmentnummer', None, QApplication.UnicodeUTF8)
+        hdr_pnt_nr = QApplication.translate('code', 'Punktnummer', None, QApplication.UnicodeUTF8)
+        hdr_pnt_class = QApplication.translate('code', 'Punktklasse', None, QApplication.UnicodeUTF8)
+        hdr = '{1}{0}{2}{0}{3}{0}{4}'.format(delimiter, hdr_prof_len, hdr_seg_len, hdr_xval, hdr_yval)
         for r in selectedRasters:
             hdr += '{0}"{1}"'.format(delimiter, r.name)
-        hdr += '{0}{1}{0}{2}{0}{3}{0}{4}'.format(delimiter, 'Profilnummer', 'Segmentnummer', 'Punktnummer', 'Punktklasse')
+        hdr += '{0}{1}{0}{2}{0}{3}{0}{4}'.format(delimiter, hdr_prof_nr, hdr_seg_nr, hdr_pnt_nr, hdr_pnt_class)
         if hekto is True:
             hdr += '{0}{1}'.format(delimiter, 'Hektometer')
         if attribs is True:

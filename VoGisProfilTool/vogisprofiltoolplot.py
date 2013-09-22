@@ -208,9 +208,9 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         u = Util(self.iface)
         if asPnt is True:
-            caption = 'Punkt Shapefile exportieren'
+            caption = QApplication.translate('code', 'Punkt Shapefile exportieren', None, QApplication.UnicodeUTF8)
         else:
-            caption = 'Linien Shapefile exportieren'
+            caption = QApplication.translate('code', 'Linien Shapefile exportieren', None, QApplication.UnicodeUTF8)
         fileName = u.getFileName(caption, "SHP (*.shp)", self.filePath)
         if fileName == '':
             return
@@ -233,7 +233,8 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def exportCsvXls(self):
         u = Util(self.iface)
-        fileName = u.getFileName("CSV-datei exportieren", "CSV (*.csv)", self.filePath)
+        caption = QApplication.translate('code', 'CSV-datei exportieren', None, QApplication.UnicodeUTF8)
+        fileName = u.getFileName(caption, "CSV (*.csv)", self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -262,11 +263,13 @@ class VoGISProfilToolPlotDialog(QDialog):
         delimiter = self.__getDelimiter()
         decimalDelimiter = self.__getDecimalDelimiter()
         if delimiter == decimalDelimiter:
-            QMessageBox.warning(self.iface.mainWindow(), 'VoGIS-Profiltool', u'Gleiches Dezimal- und Spaltentrennzeichen gewählt!')
+            msg = QApplication.translate('code', 'Gleiches Dezimal- und Spaltentrennzeichen gewählt!', None, QApplication.UnicodeUTF8)
+            QMessageBox.warning(self.iface.mainWindow(), 'VoGIS-Profiltool', msg)
             return
 
         u = Util(self.iface)
-        fileName = u.getFileName("Textdatei exportieren", "TXT (*.txt)", self.filePath)
+        caption = QApplication.translate('code', 'Textdatei exportieren', None, QApplication.UnicodeUTF8)
+        fileName = u.getFileName(caption, "TXT (*.txt)", self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -292,7 +295,8 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def exportAutoCadTxt(self):
         u = Util(self.iface)
-        fileName = u.getFileName("AutoCad Textdatei exportieren", "TXT (*.txt)", self.filePath)
+        caption = QApplication.translate('code', 'AutoCad Textdatei exportieren', None, QApplication.UnicodeUTF8)
+        fileName = u.getFileName(caption, "TXT (*.txt)", self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -311,7 +315,8 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def __exportDxf(self, asPnt):
         u = Util(self.iface)
-        fileName = u.getFileName("DXF exportieren", "DXF (*.dxf)", self.filePath)
+        caption = QApplication.translate('code', 'DXF exportieren', None, QApplication.UnicodeUTF8)
+        fileName = u.getFileName(caption, "DXF (*.dxf)", self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -352,7 +357,8 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.exaggerationEdited = True
         #QgsMessageLog.logMessage('__exaggerationEdited: {0}'.format(self.exaggerationEdited), 'VoGis')
         ut = Util(self.iface)
-        if ut.isFloat(self.editExaggeration.text(), "Überhöhung") is False:
+        txtExa = QApplication.translate('code', 'Überhöhung', None, QApplication.UnicodeUTF8)
+        if ut.isFloat(self.editExaggeration.text(), txtExa) is False:
             return False
         #clear focus of lineedit, otherwise it gets called even when the user wants to close the dialog
         self.editExaggeration.clearFocus()
