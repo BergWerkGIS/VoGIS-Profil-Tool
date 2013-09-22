@@ -474,6 +474,7 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def __setupAxes(self, axe1):
         axe1.grid()
+        axe1.ticklabel_format(style='plain', useOffset=False)
         axe1.tick_params(axis="both",
                          which="major",
                          direction="out",
