@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"hdr_pn",
+				"hdr_pnt_class	(local, instance)"
+			],
+			[
+				"hdr_se",
+				"hdr_seg_nr	(local, instance)"
+			],
+			[
+				"hdr_pr",
+				"hdr_prof_nr	(local, instance)"
+			],
+			[
 				"ui_",
 				"ui_vogisprofiltoolplot"
 			],
@@ -299,7 +311,7 @@
 			"file": "/var/www/en/plugins/repo.xml",
 			"settings":
 			{
-				"buffer_size": 548,
+				"buffer_size": 836,
 				"line_ending": "Unix"
 			}
 		},
@@ -331,23 +343,7 @@
 			"file": "VoGisProfilTool/Makefile",
 			"settings":
 			{
-				"buffer_size": 4808,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGisProfilTool/i18n/vogisprofiltoolmain_en.ts",
-			"settings":
-			{
-				"buffer_size": 8314,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGisProfilTool/vogisprofiltoolplot.py",
-			"settings":
-			{
-				"buffer_size": 23642,
+				"buffer_size": 4921,
 				"line_ending": "Unix"
 			}
 		},
@@ -355,39 +351,15 @@
 			"file": "VoGisProfilTool/vogisprofiltoolmain.py",
 			"settings":
 			{
-				"buffer_size": 6500,
+				"buffer_size": 6564,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "VoGisProfilTool/vogisprofiltoolmaindialog.py",
+			"file": "VoGisProfilTool/vogisprofiltoolplot.py",
 			"settings":
 			{
-				"buffer_size": 16198,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGisProfilTool/util/u.py",
-			"settings":
-			{
-				"buffer_size": 12925,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGisProfilTool/bo/vertex.py",
-			"settings":
-			{
-				"buffer_size": 7660,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "VoGisProfilTool/ui/ui_vogisprofiltoolmain.py",
-			"settings":
-			{
-				"buffer_size": 18008,
+				"buffer_size": 24365,
 				"line_ending": "Unix"
 			}
 		}
@@ -440,8 +412,25 @@
 	},
 	"file_history":
 	[
-		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/i18n/vogisprofiltoolplot_en.ts",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/segment.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/settings.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/vertex.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/profile.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/i18n/vogisprofiltoolmain_en.ts",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/lineCollection.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/line.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/__init__.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/linkedList.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/mapdata.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/node.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/bo/plotExtent.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/util/createProfile.py",
 		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/ui/ui_vogisprofiltoolmain.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/util/u.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/vogisprofiltoolmaindialog.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/vogisprofiltoolmain.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/vogisprofiltoolplot.py",
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/i18n/vogisprofiltoolplot_en.ts",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/vogisprofiltoolplot.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/bo/vertex.py",
 		"/home/user/VoGIS-Profil-Tool/VoGISProfilToolMain/util/u.py",
@@ -509,6 +498,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"transl",
 			"kein raster sel",
 			"translate",
 			"i18n",
@@ -618,7 +608,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -626,15 +616,15 @@
 					"file": "/var/www/en/plugins/repo.xml",
 					"settings":
 					{
-						"buffer_size": 548,
+						"buffer_size": 836,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								548,
-								548
+								0,
+								0
 							]
 						],
 						"settings":
@@ -686,8 +676,8 @@
 						"selection":
 						[
 							[
-								1287,
-								1287
+								672,
+								672
 							]
 						],
 						"settings":
@@ -735,15 +725,15 @@
 					"file": "VoGisProfilTool/Makefile",
 					"settings":
 					{
-						"buffer_size": 4808,
+						"buffer_size": 4921,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4512,
-								4512
+								1426,
+								1426
 							]
 						],
 						"settings":
@@ -752,36 +742,35 @@
 							"wrap_width": 0.0
 						},
 						"translation.x": 0.0,
-						"translation.y": 1148.0,
+						"translation.y": 158.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 5,
-					"file": "VoGisProfilTool/i18n/vogisprofiltoolmain_en.ts",
+					"file": "VoGisProfilTool/vogisprofiltoolmain.py",
 					"settings":
 					{
-						"buffer_size": 8314,
+						"buffer_size": 6564,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7593,
-								7593
+								1135,
+								1135
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/XML/XML.tmLanguage",
+							"syntax": "Packages/Python/Python.tmLanguage",
 							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2775.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -789,7 +778,7 @@
 			]
 		},
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -797,44 +786,15 @@
 					"file": "VoGisProfilTool/vogisprofiltoolplot.py",
 					"settings":
 					{
-						"buffer_size": 23642,
+						"buffer_size": 24365,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6105,
-								6105
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 114.857142857
-						},
-						"translation.x": 0.0,
-						"translation.y": 1557.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 7,
-					"file": "VoGisProfilTool/vogisprofiltoolmain.py",
-					"settings":
-					{
-						"buffer_size": 6500,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1481,
-								1481
+								23069,
+								23069
 							]
 						],
 						"settings":
@@ -845,123 +805,7 @@
 							"wrap_width": 0.0
 						},
 						"translation.x": 0.0,
-						"translation.y": 1125.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "VoGisProfilTool/vogisprofiltoolmaindialog.py",
-					"settings":
-					{
-						"buffer_size": 16198,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3853,
-								3853
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 114.857142857
-						},
-						"translation.x": 0.0,
-						"translation.y": 450.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "VoGisProfilTool/util/u.py",
-					"settings":
-					{
-						"buffer_size": 12925,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								502,
-								502
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "VoGisProfilTool/bo/vertex.py",
-					"settings":
-					{
-						"buffer_size": 7660,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								796,
-								796
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 180.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "VoGisProfilTool/ui/ui_vogisprofiltoolmain.py",
-					"settings":
-					{
-						"buffer_size": 18008,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								14687,
-								14687
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
-						},
-						"translation.x": 0.0,
-						"translation.y": 2948.0,
+						"translation.y": 6750.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1040,6 +884,6 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 252.0,
+	"side_bar_width": 179.0,
 	"status_bar_visible": true
 }

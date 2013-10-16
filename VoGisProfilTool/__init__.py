@@ -23,15 +23,15 @@
 
 
 def name():
-    return "VoGIS Profiltool"
-
-
-def description():
     return "VoGIS-Profiltool"
 
 
+def description():
+    return "Create profiles from DHMs using vector geometries or a digitized line."
+
+
 def version():
-    return "Version 1.7.5"
+    return "Version 1.7.6"
 
 
 def icon():
