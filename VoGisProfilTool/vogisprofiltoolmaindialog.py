@@ -22,6 +22,7 @@
 import unicodedata
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import QGis
 from qgis.core import QgsMessageLog
 from qgis.core import QgsPoint
 from qgis.gui import QgsRubberBand
@@ -159,7 +160,10 @@ class VoGISProfilToolMainDialog(QDialog):
         #Raster im Extent selektieren
         for idx in xrange(self.ui.IDC_listRasters.count()):
             item = self.ui.IDC_listRasters.item(idx)
-            raster = item.data(Qt.UserRole).toPyObject()
+            if QGis.QGIS_VERSION_INT < 10900:
+                raster = item.data(Qt.UserRole).toPyObject()
+            else:
+                raster = item.data(Qt.UserRole)
             for r in self.settings.mapData.rasters.rasters():
                 if extCanvas.intersects(r.grid.extent()):
                     if r.id == raster.id:
@@ -170,7 +174,10 @@ class VoGISProfilToolMainDialog(QDialog):
     def lineLayerChanged(self, idx):
         if self.ui.IDC_rbShapeLine.isChecked() is False:
             self.ui.IDC_rbShapeLine.setChecked(True)
-        lineLyr = (self.ui.IDC_cbLineLayers.itemData(self.ui.IDC_cbLineLayers.currentIndex()).toPyObject())
+        if QGis.QGIS_VERSION_INT < 10900:
+            lineLyr = (self.ui.IDC_cbLineLayers.itemData(self.ui.IDC_cbLineLayers.currentIndex()).toPyObject())
+        else:
+            lineLyr = (self.ui.IDC_cbLineLayers.itemData(self.ui.IDC_cbLineLayers.currentIndex()))
         lyr = lineLyr.line
         #QgsMessageLog.logMessage('{0}'.format(lyr.selectedFeatureCount()), 'VoGis')
         #QgsMessageLog.logMessage('{0}'.format(dir(lyr)), 'VoGis')
@@ -195,8 +202,11 @@ class VoGISProfilToolMainDialog(QDialog):
         if item.checkState() == Qt.Unchecked:
             selected = False
 
-        iData = item.data(Qt.UserRole)
-        rl = iData.toPyObject()
+        if QGis.QGIS_VERSION_INT < 10900:
+            iData = item.data(Qt.UserRole)
+            rl = iData.toPyObject()
+        else:
+            rl = iData.toPyObject()
         self.settings.mapData.rasters.getById(rl.id).selected = selected
 
     def refreshRasterList(self):
@@ -319,10 +329,13 @@ class VoGISProfilToolMainDialog(QDialog):
         #self.settings.createHekto = (self.ui.IDC_chkCreateHekto.checkState() == Qt.Checked)
         self.settings.nodesAndVertices = (self.ui.IDC_chkNodesAndVertices.checkState() == Qt.Checked)
 
-        self.settings.mapData.selectedLineLyr = (self.ui.IDC_cbLineLayers.itemData(
-                                                 self.ui.IDC_cbLineLayers.currentIndex()
-                                                 ).toPyObject()
-                                                 )
+        if QGis.QGIS_VERSION_INT < 10900:
+            self.settings.mapData.selectedLineLyr = (self.ui.IDC_cbLineLayers.itemData(
+                                                     self.ui.IDC_cbLineLayers.currentIndex()
+                                                     ).toPyObject()
+                                                     )
+        else:
+            self.settings.mapData.selectedLineLyr = (self.ui.IDC_cbLineLayers.itemData(self.ui.IDC_cbLineLayers.currentIndex()))
 
         if self.settings.onlySelectedFeatures is True and self.settings.mapData.selectedLineLyr.line.selectedFeatureCount() < 1:
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', u'Der gewählte Layer hat keine selektierten Elemente.', None, QApplication.UnicodeUTF8))

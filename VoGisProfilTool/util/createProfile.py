@@ -16,6 +16,8 @@ from u import Util
 from qgis.core import *
 from math import *
 from PyQt4.QtGui import QMessageBox
+#if QGis.QGIS_VERSION_INT >= 10900:
+#    import processing
 
 
 class CreateProfile:
@@ -75,26 +77,36 @@ class CreateProfile:
             feats = []
 
             #Alle Attribute holen
-            provider.select(provider.attributeIndexes())
+            if QGis.QGIS_VERSION_INT < 10900: provider.select(provider.attributeIndexes())
 
             if self.settings.onlySelectedFeatures is True:
                 feats = self.settings.mapData.selectedLineLyr.line.selectedFeatures()
             else:
-                attrIndices = provider.attributeIndexes()
-                provider.select(attrIndices)
-                feat = QgsFeature()
-                while (provider.nextFeature(feat)):
-                    #geom = feat.geometry()
-                    #QgsMessageLog.logMessage( 'isMultipart: {0}'.format(str(geom.isMultipart())), 'VoGis')
-                    #attrs = feat.attributeMap()
-                    # attrs is a dictionary: key = field index, value = QgsFeatureAttribute
-                    # show all attributes and their values
-                    #for (k, attr) in feat.attributeMap().iteritems():
-                    #    QgsMessageLog.logMessage('{0}: {1}'.format(k, attr.toString()), 'VoGis')
-                    feats.append(feat)
-                    #neues Feature verwenden, weil sonst die Multiparts
-                    #nicht als solche erkannt werden
+                if QGis.QGIS_VERSION_INT < 10900:
+                    attrIndices = provider.attributeIndexes()
+                    provider.select(attrIndices)
                     feat = QgsFeature()
+                    while (provider.nextFeature(feat)):
+                        #geom = feat.geometry()
+                        #QgsMessageLog.logMessage( 'isMultipart: {0}'.format(str(geom.isMultipart())), 'VoGis')
+                        #attrs = feat.attributeMap()
+                        # attrs is a dictionary: key = field index, value = QgsFeatureAttribute
+                        # show all attributes and their values
+                        #for (k, attr) in feat.attributeMap().iteritems():
+                        #    QgsMessageLog.logMessage('{0}: {1}'.format(k, attr.toString()), 'VoGis')
+                        feats.append(feat)
+                        #neues Feature verwenden, weil sonst die Multiparts
+                        #nicht als solche erkannt werden
+                        feat = QgsFeature()
+                else:
+                    QgsMessageLog.logMessage('PROVIDER SELECT', 'VoGis')
+                    #processing.getfeatures: This will iterate over all the features in the layer, in case there is no selection, or over the selected features otherwise.
+                    #obviously not available with windows standalone installer
+                    #features = processing.getfeatures(self.settings.mapData.selectedLineLyr.line)
+                    features = self.settings.mapData.selectedLineLyr.line.getFeatures()
+                    for feat in features:
+                        feats.append(feat)
+
 
             ut = Util(self.iface)
             feats = ut.prepareFeatures(self.settings, provider, feats)
@@ -126,7 +138,10 @@ class CreateProfile:
 
         #QgsMessageLog.logMessage('processFeature', 'VoGis')
         geom = feat.geometry()
-        segments = self.processVertices(fields, feat.attributeMap(), profileId, geom, layerId, feat.id())
+        if QGis.QGIS_VERSION_INT < 10900:
+            segments = self.processVertices(fields, feat.attributeMap(), profileId, geom, layerId, feat.id())
+        else:
+            segments = self.processVertices(fields, feat.attributes(), profileId, geom, layerId, feat.id())
 
         return Profile(profileId, segments)
 
@@ -282,11 +297,15 @@ class CreateProfile:
 
             raster = rObj.grid
 
-            noDataVal, validNoData = raster.noDataValue()
-            if validNoData:
-                rasterVal = noDataVal
+            #TODO!!!! QGIS BUG: QGIS 2.0.1: raster.noDataValue() = > AttributeError: 'QgsRasterLayer' object has no attribute 'noDataValue'
+            if QGis.QGIS_VERSION_INT < 10900:
+                noDataVal, validNoData = raster.noDataValue()
+                if validNoData:
+                    rasterVal = noDataVal
+                else:
+                    #rasterVal = float('nan')
+                    rasterVal = -9999
             else:
-                #rasterVal = float('nan')
                 rasterVal = -9999
 
             #QgsMessageLog.logMessage('rasterVal VOR identify:' + str(rasterVal), 'VoGis')
@@ -305,16 +324,30 @@ class CreateProfile:
                                                        )
                     pnt = transform.transform(pnt)
 
-            result, identifyDic = raster.identify(pnt)
-            if result:
-                for bandName, pixelValue in identifyDic.iteritems():
-                    #QgsMessageLog.logMessage('bandName:' + str(bandName), 'VoGis')
-                    if str(bandName) == raster.bandName(1):
+            #QgsMessageLog.logMessage(str(pnt), 'VoGis')
+
+            if QGis.QGIS_VERSION_INT < 10900:
+                result, identifyDic = raster.identify(pnt)
+                if result:
+                    for bandName, pixelValue in identifyDic.iteritems():
+                        #QgsMessageLog.logMessage('bandName:' + str(bandName), 'VoGis')
+                        if str(bandName) == raster.bandName(1):
+                            try:
+                                #QgsMessageLog.logMessage('pixelValue:' + str(pixelValue), 'VoGis')
+                                rasterVal = float(pixelValue)
+                            except ValueError:
+                                #float('nan') #0
+                                rasterVal = -9999
+                                pass
+            else:
+                identifyResult = raster.dataProvider().identify(pnt, 1)
+                for bndNr, pixVal in identifyResult.results().iteritems():
+                    if 1 == bndNr:
                         try:
-                            #QgsMessageLog.logMessage('pixelValue:' + str(pixelValue), 'VoGis')
-                            rasterVal = float(pixelValue)
-                        except ValueError:
-                            #float('nan') #0
+                            rasterVal = float(pixVal)
+                        #except ValueError:
+                        except:
+                            QgsMessageLog.logMessage('pixVal Exception: ' + str(pixVal), 'VoGis')
                             rasterVal = -9999
                             pass
 

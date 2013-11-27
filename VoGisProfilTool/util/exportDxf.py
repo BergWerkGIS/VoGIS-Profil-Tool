@@ -3,9 +3,12 @@
 #from os.path import basename
 from PyQt4.QtCore import QVariant
 from PyQt4.QtGui import QMessageBox
-import ogr
-from qgis.core import QgsMessageLog
 from qgis.core import QGis
+if QGis.QGIS_VERSION_INT < 10900:
+    import ogr
+else:
+    from osgeo import ogr
+from qgis.core import QgsMessageLog
 from qgis.core import QgsVectorFileWriter
 from qgis.core import QgsField
 from qgis.core import QgsPoint

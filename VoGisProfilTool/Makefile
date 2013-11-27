@@ -38,6 +38,8 @@ TRANSLATIONS = i18n/vogisprofiltoolmain_en.ts
 # global
 
 PLUGINNAME = VoGisProfilTool
+#QGISPIDIR = .qgis
+QGISPIDIR = .qgis2
 
 PY_FILES = vogisprofiltoolmain.py vogisprofiltoolmaindialog.py vogisprofiltoolplot.py __init__.py
 EXTRAS = icons/icon.png icons/home.png icons/pan.png icons/save.png icons/zoomlast.png icons/zoomnext.png icons/zoomrectangle.png icons/zoomselect.png icons/identify.png
@@ -65,37 +67,38 @@ compile: $(UI_FILES) $(RESOURCE_FILES)
 # the Python plugin directory is located at:
 # $HOME/.qgis/python/plugins
 deploy: compile doc transcompile
-	mkdir -p $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	mkdir -p $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/bo
-	mkdir -p $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/util
-	mkdir -p $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/ui
-	mkdir -p $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/icons
+	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
+	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/bo
+	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/util
+	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
+	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/icons
 
-	cp -vf $(PY_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(BO_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/bo
-	cp -vf $(UTIL_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/util
-	cp -vf $(UI_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/ui
-	cp -vf __init__.py $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/ui
-	cp -vf $(RESOURCE_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(EXTRAS) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/icons
-	cp -vfr i18n $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vfr $(HELP) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)/help
+	cp -vf metadata.txt $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
+	cp -vf $(PY_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
+	cp -vf $(BO_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/bo
+	cp -vf $(UTIL_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/util
+	cp -vf $(UI_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
+	cp -vf __init__.py $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
+	cp -vf $(RESOURCE_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
+	cp -vf $(EXTRAS) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/icons
+	cp -vfr i18n $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
+	cp -vfr $(HELP) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/help
 
 # The dclean target removes compiled python files from plugin directory
 # also delets any .svn entry
 dclean:
-	find $(HOME)/.qgis/python/plugins/$(PLUGINNAME) -iname "*.pyc" -delete
-	find $(HOME)/.qgis/python/plugins/$(PLUGINNAME) -iname ".svn" -prune -exec rm -Rf {} \;
+	find $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME) -iname "*.pyc" -delete
+	find $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME) -iname ".svn" -prune -exec rm -Rf {} \;
 
 # The derase deletes deployed plugin
 derase:
-	rm -Rf $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
+	rm -Rf $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
 
 # The zip target deploys the plugin and creates a zip file with the deployed
 # content. You can then upload the zip file on http://plugins.qgis.org
 zip: deploy dclean 
 	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/.qgis/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME)
+	cd $(HOME)/$(QGISPIDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME)
 
 # Create a zip package of the plugin named $(PLUGINNAME).zip. 
 # This requires use of git (your plugin development directory must be a 

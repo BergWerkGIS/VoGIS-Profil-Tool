@@ -57,7 +57,10 @@ class VoGISProfilToolPlotDialog(QDialog):
             self.ui.IDC_chkHekto.setEnabled(False)
 
         #self.filePath = ''
-        self.filePath = QSettings().value("vogisprofiltoolmain/savepath", "").toString()
+        if QGis.QGIS_VERSION_INT < 10900:
+            self.filePath = QSettings().value("vogisprofiltoolmain/savepath", "").toString()
+        else:
+            self.filePath = QSettings().value("vogisprofiltoolmain/savepath", "")
 
         #nimmt die Locale vom System, nicht von QGIS
         #kein Weg gefunden, um QGIS Locale: QSettings().value("locale/userLocale")
@@ -211,7 +214,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             caption = QApplication.translate('code', 'Punkt Shapefile exportieren', None, QApplication.UnicodeUTF8)
         else:
             caption = QApplication.translate('code', 'Linien Shapefile exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, "SHP (*.shp)", self.filePath)
+        fileName = u.getFileName(caption, [["shp", "shp"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -234,7 +237,7 @@ class VoGISProfilToolPlotDialog(QDialog):
     def exportCsvXls(self):
         u = Util(self.iface)
         caption = QApplication.translate('code', 'CSV-datei exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, "CSV (*.csv)", self.filePath)
+        fileName = u.getFileName(caption, [["csv", "csv"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -269,7 +272,7 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         u = Util(self.iface)
         caption = QApplication.translate('code', 'Textdatei exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, "TXT (*.txt)", self.filePath)
+        fileName = u.getFileName(caption, [["txt", "txt"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -296,7 +299,7 @@ class VoGISProfilToolPlotDialog(QDialog):
     def exportAutoCadTxt(self):
         u = Util(self.iface)
         caption = QApplication.translate('code', 'AutoCad Textdatei exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, "TXT (*.txt)", self.filePath)
+        fileName = u.getFileName(caption, [["txt", "txt"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -316,7 +319,7 @@ class VoGISProfilToolPlotDialog(QDialog):
     def __exportDxf(self, asPnt):
         u = Util(self.iface)
         caption = QApplication.translate('code', 'DXF exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, "DXF (*.dxf)", self.filePath)
+        fileName = u.getFileName(caption, [["dxf", "dxf"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)

@@ -11,8 +11,9 @@
 [general]
 name=VoGIS-ProfilTool
 qgisMinimumVersion=1.8
+qgisMaximumVersion=2.0
 description=Create profiles from DHMs using vector geometries or a digitized line.
-version=1.7.6
+version=1.7.7
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 
@@ -31,7 +32,7 @@ tracker=https://github.com/BergWerkGIS/VoGIS-Profil-Tool/issues
 repository=https://github.com/BergWerkGIS/VoGIS-Profil-Tool/
 icon=icons/icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False

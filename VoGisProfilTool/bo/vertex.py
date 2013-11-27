@@ -3,6 +3,7 @@
 import unicodedata
 from PyQt4.QtCore import QVariant
 from settings import enumVertexType
+from qgis.core import QGis
 from qgis.core import QgsMessageLog
 
 
@@ -25,11 +26,17 @@ class Vertex:
                  ):
         self.attribNames = []
         self.attributes = []
-        for (k, attr) in attribMap.iteritems():
-            #QgsMessageLog.logMessage('new Vextex: {0}:{1}'.format(k, attr.toString()), 'VoGis')
-            if fields is not None:
-                self.attribNames.append(fields[k].name())
-            self.attributes.append(attr)
+        if QGis.QGIS_VERSION_INT < 10900:
+            for (k, attr) in attribMap.iteritems():
+                #QgsMessageLog.logMessage('new Vextex: {0}:{1}'.format(k, attr.toString()), 'VoGis')
+                if fields is not None:
+                    self.attribNames.append(fields[k].name())
+                self.attributes.append(attr)
+        else:
+            for k in range(len(attribMap)):
+                if fields is not None:
+                    self.attribNames.append(fields[k].name())
+                self.attributes.append(attribMap[k])
         self.vertexType = vertexType
         self.x = x
         self.y = y

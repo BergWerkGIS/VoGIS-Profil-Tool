@@ -42,7 +42,10 @@ class VoGISProfilToolMain:
         self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/VoGisProfilTool"
         # initialize locale
         localePath = ""
-        loc = QSettings().value("locale/userLocale").toString()[0:2]
+        if QGis.QGIS_VERSION_INT < 10900:
+            loc = QSettings().value("locale/userLocale").toString()[0:2]
+        else:
+            loc = QSettings().value("locale/userLocale")[0:2]
 
         if QFileInfo(self.plugin_dir).exists():
             QgsMessageLog.logMessage('plugin_dir exits', 'VoGis')

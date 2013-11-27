@@ -3,14 +3,18 @@
 from os.path import basename
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-import ogr
-import osr
+from qgis.core import QGis
+if QGis.QGIS_VERSION_INT < 10900:
+    import ogr
+    import osr
+else:
+    from osgeo import ogr
+    from osgeo import osr
 from qgis.core import QgsVectorFileWriter
 from qgis.core import QgsPoint
 from qgis.core import QgsGeometry
 from qgis.core import QgsFeature
 from qgis.core import QgsMessageLog
-from qgis.core import QGis
 from ..bo.node import Node
 from ..bo.linkedList import LinkedList
 
@@ -46,18 +50,41 @@ class Util:
             return False
 
     def getFileName(self, text, filter, filePath):
-        selectedFilter = QString()
+        """filter: [["Shapefile", "shp"], ["Keyhole Markup Language", "kml"]]"""
+        if QGis.QGIS_VERSION_INT < 10900:
+             selectedFilter = QString()
+        # else:
+        #     selectedFilter = u''
+        filters = []
+        for item in filter:
+            filters.append('%s (*.%s)' % (item[0], item[1]))
         fileDlg = QFileDialog(self.iface.mainWindow())
-        fileName = fileDlg.getSaveFileName(self.iface.mainWindow(),
-                                           text,
-                                           filePath,
-                                           filter,
-                                           selectedFilter,
-                                           )
-        if fileName.isEmpty():
-            return ''
-        fileExt = str(selectedFilter[:3]).lower()
-        #fileExt = fInfo.suffix()
+        if QGis.QGIS_VERSION_INT < 10900:
+            fileName = fileDlg.getSaveFileName(self.iface.mainWindow(),
+                                               text,
+                                               filePath,
+                                               ";;".join(filters),
+                                               selectedFilter
+                                               )
+        else:
+            fileName = fileDlg.getSaveFileName(self.iface.mainWindow(),
+                                               text,
+                                               filePath,
+                                               ";;".join(filters)
+                                               )
+        #QgsMessageLog.logMessage('{0}'.format(fileName), 'VoGis')
+        if fileName is None or fileName == '':
+            return u''
+        if QGis.QGIS_VERSION_INT < 10900:
+            #fileExt = fInfo.suffix()
+            fileExt = str(selectedFilter[:3]).lower()
+        else:
+            selectedFilter = fileDlg.filters().index(fileDlg.selectedFilter())
+            fileExt = filter[selectedFilter][1]
+
+        #QgsMessageLog.logMessage('selectedFilter: {0}'.format(selectedFilter), 'VoGis')
+        #QgsMessageLog.logMessage('fileExt: {0}'.format(fileExt), 'VoGis')
+
         fileName = unicode(fileName)
         if fileName.lower().endswith(fileExt) is False:
             fileName = fileName + '.' + fileExt
@@ -142,12 +169,18 @@ class Util:
             if prevToPnt is None:
                 #QgsMessageLog.logMessage('combining FIRST {0}'.format(currentGeom.asPolyline()), 'VoGis')
                 newGeom = newGeom.combine(currentGeom)
-                attrMap = feat.attributeMap()
+                if QGis.QGIS_VERSION_INT < 10900:
+                    attrMap = feat.attributeMap()
+                else:
+                    attrMap = feat.attributes()
             else:
                 if currentPnts[0] == prevToPnt:
                     #QgsMessageLog.logMessage('combining {0}'.format(currentGeom.asPolyline()), 'VoGis')
                     newGeom = newGeom.combine(currentGeom)
-                    attrMap = feat.attributeMap()
+                    if QGis.QGIS_VERSION_INT < 10900:
+                        attrMap = feat.attributeMap()
+                    else:
+                        attrMap = feat.attributes();
                 else:
                     #QgsMessageLog.logMessage('creating {0}'.format(newGeom.asPolyline()), 'VoGis')
                     featNew = self.createQgLineFeature(newGeom.asPolyline())
@@ -156,7 +189,10 @@ class Util:
                     #feat = QgsFeature()
                     #newGeom = QgsGeometry()
                     newGeom = QgsGeometry().fromPolyline(currentPnts)
-                    attrMap = feat.attributeMap()
+                    if QGis.QGIS_VERSION_INT < 10900:
+                        attrMap = feat.attributeMap()
+                    else:
+                        attrMap = feat.attributes()
                 #newGeom = QgsGeometry.fromPolyline([QgsPoint(1, 1), QgsPoint(2, 2)])
 
             prevToPnt = currentPnts[len(currentPnts) - 1]
@@ -177,11 +213,11 @@ class Util:
 
         return newFeats
 
-    def __printAttribs(self, attributeMap):
-        txt = ''
-        for (k, attr) in attributeMap.iteritems():
-            txt += '({0}: {1}) '.format(k, attr.toString())
-        return txt
+    # def __printAttribs(self, attributeMap):
+    #     txt = ''
+    #     for (k, attr) in attributeMap.iteritems():
+    #         txt += '({0}: {1}) '.format(k, attr.toString())
+    #     return txt
 
     def __explodeMultiPartFeatures(self, provider, origFeats):
 
@@ -242,7 +278,7 @@ class Util:
         else:
             newAttribs = attrMap
             for j in range(newAttribs.__len__()):
-                if not provider.defaultValue(j).isNull():
+                if not provider.defaultValue(j) is None:
                     newAttribs[j] = provider.defaultValue(j)
             featNew.setAttributes(newAttribs)
 

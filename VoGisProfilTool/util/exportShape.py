@@ -2,9 +2,12 @@
 
 from PyQt4.QtCore import QVariant
 from PyQt4.QtGui import QMessageBox
-import ogr
-from qgis.core import QgsMessageLog
 from qgis.core import QGis
+if QGis.QGIS_VERSION_INT < 10900:
+    import ogr
+else:
+    from osgeo import ogr
+from qgis.core import QgsMessageLog
 from qgis.core import QgsVectorFileWriter
 from qgis.core import QgsField
 from qgis.core import QgsPoint
@@ -33,8 +36,13 @@ class ExportShape:
             return
 
         #self.settings.mapData.selectedLineLyr.line.crs().epsg()
-        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
-        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, crs.epsg(), ogr.wkbPoint25D)
+        if QGis.QGIS_VERSION_INT < 10900:
+            epsg = self.iface.mapCanvas().mapRenderer().destinationCrs().epsg()
+        else:
+            #u'EPSG:31254'
+            authid = self.iface.mapCanvas().mapRenderer().destinationCrs().authid().split(":")[1]
+            epsg = int(authid)
+        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, epsg, ogr.wkbPoint25D)
         if ds is None:
             return
 
@@ -69,6 +77,7 @@ class ExportShape:
             return
 
         if self.hekto is True:
+            QgsMessageLog.logMessage('Creating HEKTO field', 'VoGis')
             fldDfn = ogr.FieldDefn('Hekto', ogr.OFTString)
             fldDfn.SetWidth(10)
             if lyr.CreateField(fldDfn) != 0:
@@ -79,18 +88,32 @@ class ExportShape:
             #QgsMessageLog.logMessage('EXPORT POINT attribs TRUE', 'VoGis')
             if self.settings.modeLine == enumModeLine.line:
                 provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
-                for(idx, fld) in provider.fields().iteritems():
-                    fldTyp = fld.type()
-                    if fldTyp == QVariant.Double:
-                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTReal)
-                    elif fldTyp == QVariant.Int:
-                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTInteger)
-                    else:
-                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTString)
-                        fldDfn.SetWidth(50)
-                    if lyr.CreateField(fldDfn) != 0:
-                        QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
-                        return
+                if QGis.QGIS_VERSION_INT < 10900:
+                    for(idx, fld) in provider.fields().iteritems():
+                        fldTyp = fld.type()
+                        if fldTyp == QVariant.Double:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTReal)
+                        elif fldTyp == QVariant.Int:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTInteger)
+                        else:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTString)
+                            fldDfn.SetWidth(50)
+                        if lyr.CreateField(fldDfn) != 0:
+                            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
+                            return
+                else:
+                    for fld in provider.fields():
+                        fldTyp = fld.type()
+                        if fldTyp == QVariant.Double:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTReal)
+                        elif fldTyp == QVariant.Int:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTInteger)
+                        else:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTString)
+                            fldDfn.SetWidth(50)
+                        if lyr.CreateField(fldDfn) != 0:
+                            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
+                            return
         else:
             QgsMessageLog.logMessage('attribs FALSE', 'VoGis')
 
@@ -147,7 +170,12 @@ class ExportShape:
         feat.SetField(fldCnt, v.getType())
         fldCnt += 1
         if self.hekto is True:
-            feat.SetField(fldCnt, v.getHekto(self.decimalDelimiter))
+            #QgsMessageLog.logMessage('fldIdx:{0} {1}'.format(fldCnt, v.getHekto(self.decimalDelimiter)), 'VoGis')
+            #feat.SetField(fldCnt, 'HEKTO')
+            if QGis.QGIS_VERSION_INT < 10900:
+                feat.SetField(fldCnt, v.getHekto(self.decimalDelimiter))
+            else:
+                feat.SetField(fldCnt, str(v.getHekto(self.decimalDelimiter)))
             fldCnt += 1
         if self.attribs is True:
             #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
@@ -163,8 +191,13 @@ class ExportShape:
             return
 
         #self.settings.mapData.selectedLineLyr.line.crs().epsg()
-        crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
-        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, crs.epsg(), ogr.wkbLineString25D)
+        if QGis.QGIS_VERSION_INT < 10900:
+            epsg = self.iface.mapCanvas().mapRenderer().destinationCrs().epsg()
+        else:
+            #u'EPSG:31254'
+            authid = self.iface.mapCanvas().mapRenderer().destinationCrs().authid().split(":")[1]
+            epsg = int(authid)
+        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, epsg, ogr.wkbLineString25D)
         if ds is None:
             return
 
@@ -185,18 +218,32 @@ class ExportShape:
             QgsMessageLog.logMessage('EXPORT LINE attribs TRUE', 'VoGis')
             if self.settings.modeLine == enumModeLine.line:
                 provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
-                for(idx, fld) in provider.fields().iteritems():
-                    fldTyp = fld.type()
-                    if fldTyp == QVariant.Double:
-                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTReal)
-                    elif fldTyp == QVariant.Int:
-                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTInteger)
-                    else:
-                        fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTString)
-                        fldDfn.SetWidth(50)
-                    if lyr.CreateField(fldDfn) != 0:
-                        QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
-                        return
+                if QGis.QGIS_VERSION_INT < 10900:
+                    for(idx, fld) in provider.fields().iteritems():
+                        fldTyp = fld.type()
+                        if fldTyp == QVariant.Double:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTReal)
+                        elif fldTyp == QVariant.Int:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTInteger)
+                        else:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTString)
+                            fldDfn.SetWidth(50)
+                        if lyr.CreateField(fldDfn) != 0:
+                            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
+                            return
+                else:
+                    for fld in provider.fields():
+                        fldTyp = fld.type()
+                        if fldTyp == QVariant.Double:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTReal)
+                        elif fldTyp == QVariant.Int:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTInteger)
+                        else:
+                            fldDfn = ogr.FieldDefn(str(fld.name()), ogr.OFTString)
+                            fldDfn.SetWidth(50)
+                        if lyr.CreateField(fldDfn) != 0:
+                            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
+                            return
         else:
             QgsMessageLog.logMessage('attribs FALSE', 'VoGis')
 
