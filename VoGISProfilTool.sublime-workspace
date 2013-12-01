@@ -343,7 +343,23 @@
 			"file": "VoGisProfilTool/vogisprofiltoolmaindialog.py",
 			"settings":
 			{
-				"buffer_size": 17377,
+				"buffer_size": 17884,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VoGisProfilTool/metadata.txt",
+			"settings":
+			{
+				"buffer_size": 1055,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "VoGisProfilTool/__init__.py",
+			"settings":
+			{
+				"buffer_size": 1790,
 				"line_ending": "Unix"
 			}
 		},
@@ -517,6 +533,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"self.rubberband",
+			"qgsrubb",
 			"processing",
 			"fInfo",
 			"hekto",
@@ -646,7 +664,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -683,15 +701,15 @@
 					"file": "VoGisProfilTool/vogisprofiltoolmaindialog.py",
 					"settings":
 					{
-						"buffer_size": 17377,
+						"buffer_size": 17884,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								14775,
-								14775
+								1262,
+								1262
 							]
 						],
 						"settings":
@@ -702,7 +720,61 @@
 							"wrap_width": 0.0
 						},
 						"translation.x": 0.0,
-						"translation.y": 4497.0,
+						"translation.y": 855.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "VoGisProfilTool/metadata.txt",
+					"settings":
+					{
+						"buffer_size": 1055,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								494,
+								494
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "VoGisProfilTool/__init__.py",
+					"settings":
+					{
+						"buffer_size": 1790,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1341,
+								1341
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -714,7 +786,7 @@
 			"sheets":
 			[
 				{
-					"buffer": 2,
+					"buffer": 4,
 					"file": "VoGisProfilTool/vogisprofiltoolplot.py",
 					"settings":
 					{
@@ -743,7 +815,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 5,
 					"file": "VoGisProfilTool/util/createProfile.py",
 					"settings":
 					{
@@ -754,8 +826,8 @@
 						"selection":
 						[
 							[
-								547,
-								547
+								385,
+								385
 							]
 						],
 						"settings":
@@ -772,7 +844,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 6,
 					"file": "VoGisProfilTool/bo/vertex.py",
 					"settings":
 					{
@@ -801,7 +873,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 7,
 					"file": "VoGisProfilTool/util/exportShape.py",
 					"settings":
 					{
@@ -865,7 +937,7 @@
 		"rows":
 		[
 			0.0,
-			0.264452142891,
+			0.740586497635,
 			1.0
 		]
 	},

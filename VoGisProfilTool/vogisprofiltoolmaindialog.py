@@ -24,6 +24,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import QGis
 from qgis.core import QgsMessageLog
+from qgis.core import QgsGeometry
 from qgis.core import QgsPoint
 from qgis.gui import QgsRubberBand
 from ui.ui_vogisprofiltoolmain import Ui_VoGISProfilToolMain
@@ -76,10 +77,12 @@ class VoGISProfilToolMainDialog(QDialog):
         self.savedTool = self.canvas.mapTool()
         self.polygon = False
         self.rubberband = QgsRubberBand(self.canvas, self.polygon)
-        #self.rubberband.setBrushStyle()
-        #self.rubberband.setColor()
-        #http://www.qgis.org/api/classQgsRubberBand.html#a6f7cdabfcf69b65dfc6c164ce2d01fab
-        #self.rubberband.setLineStyle()
+        if QGis.QGIS_VERSION_INT >= 10900:
+            #self.rubberband.setBrushStyle()
+            self.rubberband.setLineStyle(Qt.SolidLine)
+            self.rubberband.setWidth(4.0)
+            self.rubberband.setColor(QColor(0,255,0))
+            #http://www.qgis.org/api/classQgsRubberBand.html#a6f7cdabfcf69b65dfc6c164ce2d01fab
         self.pointsToDraw = []
         self.dblclktemp = None
         self.drawnLine = None
@@ -202,11 +205,11 @@ class VoGISProfilToolMainDialog(QDialog):
         if item.checkState() == Qt.Unchecked:
             selected = False
 
+        iData = item.data(Qt.UserRole)
         if QGis.QGIS_VERSION_INT < 10900:
-            iData = item.data(Qt.UserRole)
             rl = iData.toPyObject()
         else:
-            rl = iData.toPyObject()
+            rl = iData
         self.settings.mapData.rasters.getById(rl.id).selected = selected
 
     def refreshRasterList(self):
@@ -288,15 +291,24 @@ class VoGISProfilToolMainDialog(QDialog):
         QObject.disconnect(self.tool, SIGNAL("leftClicked"), self.__leftClicked)
         QObject.disconnect(self.tool, SIGNAL("rightClicked"), self.__rightClicked)
         QObject.disconnect(self.tool, SIGNAL("doubleClicked"), self.__doubleClicked)
-        self.iface.mainWindow().statusBar().showMessage(QString(""))
+        if QGis.QGIS_VERSION_INT < 10900:
+            self.iface.mainWindow().statusBar().showMessage(QString(""))
+        else:
+            self.iface.mainWindow().statusBar().showMessage('')
 
     def __moved(self, position):
         if len(self.pointsToDraw) > 0:
             mapPos = self.canvas.getCoordinateTransform().toMapCoordinates(position["x"], position["y"])
             self.rubberband.reset(self.polygon)
-            for i in range(0, len(self.pointsToDraw)):
-                self.rubberband.addPoint(self.pointsToDraw[i])
-            self.rubberband.addPoint(QgsPoint(mapPos.x(), mapPos.y()))
+            newPnt = QgsPoint(mapPos.x(), mapPos.y())
+            if QGis.QGIS_VERSION_INT < 10900:
+                for i in range(0, len(self.pointsToDraw)):
+                    self.rubberband.addPoint(self.pointsToDraw[i])
+                self.rubberband.addPoint(newPnt)
+            else:
+                pnts = self.pointsToDraw + [newPnt]
+                self.rubberband.setToGeometry(QgsGeometry.fromPolyline(pnts),None)
+
 
     def __rightClicked(self, position):
         self.__lineFinished(position)
