@@ -1,5 +1,7 @@
 #VoGIS-Profil-Tool
  
+One plugin working with QGIS 1.8 and 2.0.
+ 
 ##Developed for
  
 Amt der Vorarlberger Landesregierung 
@@ -10,11 +12,11 @@ http://vorarlberg.at/vorarlberg/bauen_wohnen/bauen/vermessung_geoinformation/sta
  
 ##Developed on
  
-OSGeo-Live 6.0, QGIS 1.8 (not yet working with 2.0): 
+OSGeo-Live 7.0: 
 
 http://live.osgeo.org/en/index.html 
  
-#Check out code and create plugin
+#Build from source
  
 Directory **VoGISProfilTool** contains new enhanced version. 
 
@@ -31,6 +33,7 @@ Directory **Z_VoGISProfilTool** contains old version.
  
 #Download the ready-to-deploy PlugIn
  
+Download via QGIS Plugin Manager or directly from GitHub:
 https://github.com/BergWerkGIS/VoGIS-Profil-Tool/raw/master/VoGisProfilTool/VoGisProfilTool.zip
  
 #Description

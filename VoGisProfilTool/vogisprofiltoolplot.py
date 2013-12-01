@@ -132,8 +132,10 @@ class VoGISProfilToolPlotDialog(QDialog):
         #measure in figure
         self.click1 = None
         self.click2 = None
+        self.click1pnt = None
+        self.click2pnt = None
         self.measureLbl = QLabel()
-        self.measureLbl.setText(u' 1:? 2:? ')
+        self.measureLbl.setText(u'  ')
         pltToolbar.insertWidget(lstActions[0], self.measureLbl)
 
         #for less thatn 10 colors:
@@ -436,14 +438,35 @@ class VoGISProfilToolPlotDialog(QDialog):
         if self.click1 is None:
             self.click1 = [event.xdata, event.ydata]
             self.click2 = None
-            self.measureLbl.setText(u' 1:ok 2:? ')
+            #self.measureLbl.setText(u'')
+            self.measureLbl.setText(u' x:{0:.1f} y:{1:.1f} '.format(event.xdata, event.ydata))
+            if not self.click1pnt is None:
+                p = self.click1pnt.pop(0);
+                p.remove()
+                del p
+                self.click1pnt = None
+            if not self.click2pnt is None:
+                p = self.click2pnt.pop(0);
+                p.remove()
+                del p
+                self.click2pnt = None
+            self.click1pnt = self.subplot.plot(event.xdata, event.ydata, 'ro')
         elif self.click2 is None:
             self.click2 = [event.xdata, event.ydata]
-            deltaX = abs(self.click2[0] - self.click1[0])
-            deltaY = abs(self.click2[1] - self.click1[1])
-            dist = ((deltaX ** 2) + (deltaY ** 2)) ** 0.5
-            self.measureLbl.setText(u' dist: {0:.1f} '.format(dist))
+            #deltaX = abs(self.click2[0] - self.click1[0])
+            #deltaY = abs(self.click2[1] - self.click1[1])
+            #dist = ((deltaX ** 2) + (deltaY ** 2)) ** 0.5
+            #self.measureLbl.setText(u' dist: {0:.1f} '.format(dist))
+            deltaX = self.click2[0] - self.click1[0]
+            deltaY = self.click2[1] - self.click1[1]
+            self.measureLbl.setText(u' dx:{0:.1f} dy:{1:.1f} '.format(deltaX, deltaY))
             self.click1 = None
+            if not self.click2pnt is None:
+                p = self.click2pnt.pop(0);
+                p.remove()
+                del p
+                self.click2pnt = None
+            self.click2pnt = self.subplot.plot(event.xdata, event.ydata, 'go')
 
     def __createMatplotlibCanvas(self, pltExt):
             fig = Figure((1.0, 1.0),
