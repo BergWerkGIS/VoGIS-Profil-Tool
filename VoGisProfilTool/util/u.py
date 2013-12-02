@@ -1,5 +1,6 @@
 # -*- coding: iso-8859-15 -*-
 
+import os
 from os.path import basename
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -300,7 +301,8 @@ class Util:
         load =QApplication.translate('code', 'Laden?', None, QApplication.UnicodeUTF8)
         reply = QMessageBox.question(self.iface.mainWindow(),
                                      "VoGIS-Profiltool",
-                                     fileSaved + '\r\n\r\n\r\n' + load,
+                                     #fileSaved + os.linesep + os.linesep + os.linesep + load,
+                                     fileSaved + '\n\n\n' + load,
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.Yes
                                      )
@@ -310,7 +312,8 @@ class Util:
                                       'ogr'
                                       )
 
-    def createOgrDataSrcAndLyr(self, driverName, fileName, epsg, geomType):
+    #def createOgrDataSrcAndLyr(self, driverName, fileName, epsg, geomType):
+    def createOgrDataSrcAndLyr(self, driverName, fileName, wkt, geomType):
 
         drv = ogr.GetDriverByName(driverName)
         if drv is None:
@@ -328,11 +331,13 @@ class Util:
                                 )
             return None, None
 
-        if epsg is None:
+        #if epsg is None:
+        if wkt is None:
             spatialReference = None
         else:
             spatialReference = osr.SpatialReference()
-            if spatialReference.ImportFromEPSG(epsg) != 0:
+            #if spatialReference.ImportFromEPSG(epsg) != 0:
+            if spatialReference.ImportFromWkt(wkt) != 0:
                 QMessageBox.warning(self.iface.mainWindow(),
                                     "VoGIS-Profiltool",
                                     QApplication.translate('code', 'Konnte Koordinatensystem nicht initialisieren!', None, QApplication.UnicodeUTF8) + ' EPSG: {0}'.format(epsg)

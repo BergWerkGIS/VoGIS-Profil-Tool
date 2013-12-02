@@ -2,6 +2,7 @@
 from plotExtent import PlotExtent
 #import itertools
 from PyQt4.QtGui import *
+import os
 
 
 class Profile:
@@ -72,7 +73,9 @@ class Profile:
         if attribs is True:
             for fldName in self.segments[0].vertices[0].attribNames:
                 hdr += '{0}{1}'.format(delimiter, fldName)
-        hdr += '\r\n'
+        #hdr += '\r\n'
+        #hdr += os.linesep
+        hdr += '\n'
         return hdr
 
     def toString(self, hekto, attribs, delimiter, decimalDelimiter):

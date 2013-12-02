@@ -254,10 +254,10 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         txt.write(self.profiles[0].writeHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter))
         for p in self.profiles:
-            #txt.write('=====Profil {0}======\r\n'.format(p.id))
-            #txt.write('Segments:{0}\r\n'.format(len(p.segments)))
+            #txt.write('=====Profil {0}======{1}'.format(p.id, os.linesep))
+            #txt.write('Segments:{0}{1}'.format(len(p.segments), os.linesep))
             #for s in p.segments:
-            #    txt.write('Vertices:{0}\r\n'.format(len(s.vertices)))
+            #    txt.write('Vertices:{0}{1}'.format(len(s.vertices), os.linesep))
             txt.write(p.toString(hekto,
                                  attribs,
                                  delimiter,
@@ -286,10 +286,10 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         txt.write(self.profiles[0].writeHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter))
         for p in self.profiles:
-            #txt.write('=====Profil {0}======\r\n'.format(p.id))
-            #txt.write('Segments:{0}\r\n'.format(len(p.segments)))
+            #txt.write('=====Profil {0}======{1}'.format(p.id, os.linesep))
+            #txt.write('Segments:{0}{1}'.format(len(p.segments), os.linesep))
             #for s in p.segments:
-            #    txt.write('Vertices:{0}\r\n'.format(len(s.vertices)))
+            #    txt.write('Vertices:{0}{1}'.format(len(s.vertices), os.linesep))
             txt.write(p.toString(hekto,
                                  attribs,
                                  delimiter,
@@ -434,7 +434,9 @@ class VoGISProfilToolPlotDialog(QDialog):
             QgsMessageLog.logMessage('no Line2D or LineCollection', 'VoGis')
 
     def __buttonPressed(self, event):
-        #QgsMessageLog.logMessage('x:{0} y:{1} xdata:{2} ydata:{3}'.format(event.x, event.y, event.xdata, event.ydata), 'VoGis')
+        QgsMessageLog.logMessage(
+            'x:{0} y:{1} xdata:{2} ydata:{3} click1:{4} click2:{5} click1pnt:{6} click2pnt:{7}'.format(
+                event.x, event.y, event.xdata, event.ydata, self.click1, self.click2,self.click1pnt, self.click2pnt), 'VoGis')
         if self.click1 is None:
             self.click1 = [event.xdata, event.ydata]
             self.click2 = None

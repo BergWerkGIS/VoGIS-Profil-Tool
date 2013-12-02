@@ -31,7 +31,7 @@ def description():
 
 
 def version():
-    return "Version 1.7.8"
+    return "Version 1.7.9"
 
 
 def icon():
@@ -43,7 +43,7 @@ def qgisMinimumVersion():
 
 
 def qgisMaximumVersion():
-    return "2.0"
+    return "2.9"
 
 
 def experimental():

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import unicodedata
 from PyQt4.QtCore import QVariant
 from settings import enumVertexType
@@ -92,12 +93,14 @@ class Vertex:
         acadTxt = ''
         #profillaenge, rechtswert, hochwert hoehe
         for rVal in self.zvals:
-            acadTxt += '{1}{0}{2}{0}{3}{0}{4}\r\n'.format(delimiter,
-                                                         ('{0:.2f}'.format(self.distanceProfile)).replace('.', decimalDelimiter),
-                                                         ('{0:.2f}'.format(self.x)).replace('.', decimalDelimiter),
-                                                         ('{0:.2f}'.format(self.y)).replace('.', decimalDelimiter),
-                                                         ('{0:.2f}'.format(rVal)).replace('.', decimalDelimiter),
-                                                         )
+            acadTxt += '{1}{0}{2}{0}{3}{0}{4}'.format(delimiter,
+                                                      ('{0:.2f}'.format(self.distanceProfile)).replace('.', decimalDelimiter),
+                                                      ('{0:.2f}'.format(self.x)).replace('.', decimalDelimiter),
+                                                      ('{0:.2f}'.format(self.y)).replace('.', decimalDelimiter),
+                                                      ('{0:.2f}'.format(rVal)).replace('.', decimalDelimiter),
+                                                      )
+            #acadTxt += os.linesep
+            acadTxt += '\n'
         return acadTxt
 
     def __getAttribs(self, delimiter, decimalDelimiter):
@@ -160,7 +163,7 @@ class Vertex:
                 if zVal is None:
                     z += '-9999'
                 else:
-                    z += str(zVal).replace('.', decimalDelimiter)
+                    z += ('{0:.2f}'.format(zVal)).replace('.', decimalDelimiter)
                 if valCnter < len(self.zvals):
                     z += delimiter
                 valCnter += 1

@@ -4,6 +4,22 @@
 		"selected_items":
 		[
 			[
+				"cl",
+				"click1pnt	(attribute, instance)"
+			],
+			[
+				"click",
+				"click1pnt	(attribute, instance)"
+			],
+			[
+				"click1p",
+				"click1pnt	(attribute, instance)"
+			],
+			[
+				"delt",
+				"deltaY	(local, instance)"
+			],
+			[
 				"filter",
 				"filters	(local, instance)"
 			],
@@ -50,18 +66,6 @@
 			[
 				"delta",
 				"deltaY	(local, instance)"
-			],
-			[
-				"delt",
-				"deltaX	(local, instance)"
-			],
-			[
-				"click",
-				"click1	(attribute, instance)"
-			],
-			[
-				"cl",
-				"click1	(attribute, instance)"
 			],
 			[
 				"fig",
@@ -367,7 +371,7 @@
 			"file": "VoGisProfilTool/vogisprofiltoolplot.py",
 			"settings":
 			{
-				"buffer_size": 24522,
+				"buffer_size": 25535,
 				"line_ending": "Unix"
 			}
 		},
@@ -444,6 +448,7 @@
 	},
 	"file_history":
 	[
+		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/MActionZoomFullExtent.png",
 		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/metadata.txt",
 		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/__init__.py",
 		"/home/user/VoGIS-Profil-Tool/VoGisProfilTool/vogisprofiltoolmain.py",
@@ -533,6 +538,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"self.subplot",
+			"click1",
 			"self.rubberband",
 			"qgsrubb",
 			"processing",
@@ -782,7 +789,7 @@
 			]
 		},
 		{
-			"selected": 1,
+			"selected": 0,
 			"sheets":
 			[
 				{
@@ -790,15 +797,15 @@
 					"file": "VoGisProfilTool/vogisprofiltoolplot.py",
 					"settings":
 					{
-						"buffer_size": 24522,
+						"buffer_size": 25535,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								14832,
-								14832
+								6731,
+								6731
 							]
 						],
 						"settings":
@@ -806,10 +813,10 @@
 							"syntax": "Packages/Python/Python.tmLanguage",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true,
-							"wrap_width": 0.0
+							"wrap_width": 116.142857143
 						},
 						"translation.x": 0.0,
-						"translation.y": 3494.0,
+						"translation.y": 1502.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -937,7 +944,7 @@
 		"rows":
 		[
 			0.0,
-			0.740586497635,
+			0.299219379191,
 			1.0
 		]
 	},
@@ -975,6 +982,6 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 179.0,
+	"side_bar_width": 186.0,
 	"status_bar_visible": true
 }

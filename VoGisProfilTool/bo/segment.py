@@ -1,3 +1,6 @@
+import os
+
+
 class Segment:
 
     def __init__(self, id, vertices):
@@ -9,22 +12,26 @@ class Segment:
         txt = ''
         vCnt = len(self.vertices)
         for idxV in range(vCnt):
-            txt += '{0}\r\n'.format(self.vertices[idxV].toString(hekto,
-                                                                 attribs,
-                                                                 delimiter,
-                                                                 decimalDelimiter
-                                                                 ))
-
+            txt += '{0}'.format(self.vertices[idxV].toString(hekto,
+                                                             attribs,
+                                                             delimiter,
+                                                             decimalDelimiter
+                                                             ))
+            #txt += os.linesep
+            txt += '\n'
         return txt
 
     def toStringLastVertex(self, hekto, attribs, segmentId, delimiter, decimalDelimiter):
-        return '{0}\r\n'.format(self.vertices[len(self.vertices) - 1].toString2(hekto,
-                                                                                attribs,
-                                                                                0,
-                                                                                segmentId,
-                                                                                delimiter,
-                                                                                decimalDelimiter
-                                                                                ))
+        txt = '{0}'.format(self.vertices[len(self.vertices) - 1].toString2(hekto,
+                                                                           attribs,
+                                                                           0,
+                                                                           segmentId,
+                                                                           delimiter,
+                                                                           decimalDelimiter
+                                                                           ))
+        #txt += os.linesep
+        txt += '\n'
+        return txt
 
     def toACadTxt(self, delimiter, decimalDelimiter):
         acadTxt = ''
