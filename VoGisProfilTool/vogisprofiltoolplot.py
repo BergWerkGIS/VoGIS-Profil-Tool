@@ -89,22 +89,33 @@ class VoGISProfilToolPlotDialog(QDialog):
         layout.addWidget(self.pltWidget)
         pltToolbar = matplotlib.backends.backend_qt4agg.NavigationToolbar2QTAgg(self.pltWidget, self.ui.IDC_frPlot)
         self.ui.IDC_frToolbar.layout().addWidget(pltToolbar)
-        lstActions = pltToolbar.actions()
 
+        #adjust actions
         #QgsMessageLog.logMessage('{0}'.format(dir(lstActions[0])), 'VoGis')
-        #i = QIcon()
-        #i.addPixmap(QPixmap(":/plugins/vogisprofiltoolmain/icons/home.png"), QIcon.Normal, QIcon.Off)
-        #lstActions[0].setIcon(i)
-        lstActions[0].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/home.png"))
-        #lstActions[0].setWhatsThis("Configuration for test plugin")
-        #lstActions[0].setStatusTip("This is status tip")
-        lstActions[1].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomlast.png"))
-        lstActions[2].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomnext.png"))
-        lstActions[4].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/pan.png"))
-        lstActions[5].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomselect.png"))
-        lstActions[9].setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/save.png"))
-        pltToolbar.removeAction(lstActions[7])
-        pltToolbar.removeAction(lstActions[8])
+#        for a in pltToolbar.actions():
+#            QgsMessageLog.logMessage('{0}'.format(a.text()), 'VoGis')
+#        for t in pltToolbar.toolitems:
+#            QgsMessageLog.logMessage('{0}'.format(t), 'VoGis')
+        #lstActions = pltToolbar.actions()
+        firstaction = None
+        for a in pltToolbar.actions():
+            atxt = a.text()
+            if atxt == 'Home':
+                firstaction = a
+                a.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/home.png"))
+            elif atxt == 'Back':
+                a.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomlast.png"))
+            elif atxt == 'Forward':
+                a.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomnext.png"))
+            elif atxt == 'Pan':
+                a.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/pan.png"))
+            elif atxt == 'Zoom':
+                a.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/zoomselect.png"))
+            elif atxt == 'Save':
+                a.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/save.png"))
+            else:
+                pltToolbar.removeAction(a)
+
         #insert 1:1 zoom button
         self.one2one = QPushButton()
         self.one2one.setText('1:1')
@@ -118,17 +129,17 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.editExaggeration = QLineEdit()
         self.editExaggeration.setFixedWidth(60)
         self.editExaggeration.setMaximumWidth(60)
-        pltToolbar.insertWidget(lstActions[0], self.editExaggeration)
+        pltToolbar.insertWidget(firstaction, self.editExaggeration)
         self.editExaggeration.editingFinished.connect(self.__exaggerationEdited)
         #insert identify button -> deactivate all tools
-        pltToolbar.insertWidget(lstActions[0], self.one2one)
+        pltToolbar.insertWidget(firstaction, self.one2one)
         self.identify = QPushButton()
         self.identify.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/identify.png"))
         self.identify.clicked.connect(self.__identify)
-        pltToolbar.insertWidget(lstActions[0], self.identify)
+        pltToolbar.insertWidget(firstaction, self.identify)
         #insert identify label to show name of clicked dhm
         self.dhmLbl = QLabel()
-        pltToolbar.insertWidget(lstActions[0], self.dhmLbl)
+        pltToolbar.insertWidget(firstaction, self.dhmLbl)
         #measure in figure
         self.click1 = None
         self.click2 = None
@@ -136,7 +147,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.click2pnt = None
         self.measureLbl = QLabel()
         self.measureLbl.setText(u'  ')
-        pltToolbar.insertWidget(lstActions[0], self.measureLbl)
+        pltToolbar.insertWidget(firstaction, self.measureLbl)
 
         #for less thatn 10 colors:
         #alternative method: http://stackoverflow.com/a/14720445
