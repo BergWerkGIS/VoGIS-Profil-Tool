@@ -194,13 +194,8 @@ class ExportShape:
             return
 
         #self.settings.mapData.selectedLineLyr.line.crs().epsg()
-        if QGis.QGIS_VERSION_INT < 10900:
-            epsg = self.iface.mapCanvas().mapRenderer().destinationCrs().epsg()
-        else:
-            #u'EPSG:31254'
-            authid = self.iface.mapCanvas().mapRenderer().destinationCrs().authid().split(":")[1]
-            epsg = int(authid)
-        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, epsg, ogr.wkbLineString25D)
+        wkt = self.iface.mapCanvas().mapRenderer().destinationCrs().toWkt()
+        ds, lyr = self.u.createOgrDataSrcAndLyr('ESRI Shapefile', self.fileName, wkt, ogr.wkbLineString25D)
         if ds is None:
             return
 
