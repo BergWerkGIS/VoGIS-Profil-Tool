@@ -52,6 +52,8 @@ class ExportShape:
         flds = ['Profillaenge', 'Segmentlaenge', 'Rechtswert', 'Hochwert']
         for fld in flds:
             fldDfn = ogr.FieldDefn(fld, ogr.OFTReal)
+            fldDfn.SetWidth(12)
+            fldDfn.SetPrecision(3)
             if lyr.CreateField(fldDfn) != 0:
                 QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld))
                 return
@@ -60,6 +62,8 @@ class ExportShape:
         for r in self.settings.mapData.rasters.selectedRasters():
             #QgsMessageLog.logMessage('rasterName: {0}'.format(r.name), 'VoGis')
             fldDfn = ogr.FieldDefn(r.name, ogr.OFTReal)
+            fldDfn.SetWidth(8)
+            fldDfn.SetPrecision(2)
             if lyr.CreateField(fldDfn) != 0:
                 QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(r.name))
                 return
@@ -151,7 +155,8 @@ class ExportShape:
             feat.SetField(1, round(v.distanceSegment, 3))
         else:
             feat.SetField(1, 0)
-        feat.SetField(2, round(v.x, 3))
+        #feat.SetField(2, round(v.x, 3))
+        feat.SetField(2, v.x * 1000 / 1000)
         feat.SetField(3, round(v.y, 3))
         fldCnt = 4
         if len(v.zvals) > 0:
@@ -201,6 +206,8 @@ class ExportShape:
 
         fld = 'Profillaenge'
         fldDfn = ogr.FieldDefn(fld, ogr.OFTReal)
+        fldDfn.SetWidth(12)
+        fldDfn.SetPrecision(3)
         if lyr.CreateField(fldDfn) != 0:
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld))
             return

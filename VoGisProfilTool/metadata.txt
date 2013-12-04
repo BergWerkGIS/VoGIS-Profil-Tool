@@ -11,9 +11,9 @@
 [general]
 name=VoGIS-ProfilTool
 qgisMinimumVersion=1.8
-qgisMaximumVersion=2.9
+qgisMaximumVersion=2.99
 description=Create profiles from DHMs using vector geometries or a digitized line.
-version=1.7.9
+version=1.8.0
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 
