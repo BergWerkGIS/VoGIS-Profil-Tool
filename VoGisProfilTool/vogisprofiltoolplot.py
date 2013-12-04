@@ -31,6 +31,7 @@ from util.exportShape import ExportShape
 from util.exportDxf import ExportDxf
 import locale
 #import ogr
+from math import floor
 import matplotlib
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
@@ -43,6 +44,8 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         QDialog.__init__(self, interface.mainWindow())
         self.iface = interface
+        #output debug Log Messages: mainly for debugging matplotlib
+        self.debug = True
         self.settings = settings
         self.profiles = profiles
         # Set up the user interface from Designer.
@@ -196,6 +199,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         #select pan tool
         pltToolbar.pan()
         self.pltToolbar = pltToolbar
+        #(matplotlib.pyplot).tight_layout(True)
         QApplication.restoreOverrideCursor()
 
     def accept(self):
@@ -352,24 +356,31 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.pltToolbar.zoom()
 
     def __figureDrawn(self, event):
-        #QgsMessageLog.logMessage('draw_event: {0}'.format(self.exaggerationEdited), 'VoGis')
+        if self.debug: QgsMessageLog.logMessage('__figureDrawn, drawEventFired:{0} exaggerationEdited: {1}'.format(self.drawEventFired, self.exaggerationEdited), 'VoGis')
+        #draw event seems to get fired twice?????
+        if self.drawEventFired == True: return
+        self.drawEventFired = True
         axes = self.pltWidget.figure.get_axes()[0]
         xlim = axes.get_xlim()
         ylim = axes.get_ylim()
-        #QgsMessageLog.logMessage('draw_event: xlim:{0} ylim:{1}'.format(xlim, ylim), 'VoGis')
+        if self.debug: QgsMessageLog.logMessage('__figureDrawn: xlim:{0} ylim:{1}'.format(xlim, ylim), 'VoGis')
         dpi = self.pltWidget.figure.get_dpi()
         figWidth = self.pltWidget.figure.get_figwidth() * dpi
         figHeight = self.pltWidget.figure.get_figheight() * dpi
         deltaX = xlim[1] - xlim[0]
         deltaY = ylim[1] - ylim[0]
         ratio = (deltaX / figWidth) / (deltaY / figHeight)
-        self.drawEventFired = True
+        ratio = floor(ratio * 10) / 10
+        if self.debug: QgsMessageLog.logMessage('__figureDrawn: figWidth:{0} figHeight:{1} dpi:{2} deltaX:{3} deltaY:{4}, ratio:{5}'.format(figWidth, figHeight, dpi, deltaX, deltaY, ratio), 'VoGis')
+        if self.debug: QgsMessageLog.logMessage('__figureDrawn: axes.get_data_ratio:{0}'.format(axes.get_data_ratio()), 'VoGis')
         self.editExaggeration.setText('{0:.1f}'.format(ratio))
         self.drawEventFired = False
 
     def __exaggerationEdited(self, *args):
-        if self.drawEventFired is True:
-            return
+        if self.debug: QgsMessageLog.logMessage('__exaggerationEdited, exaggerationEdited:{0} drawEventFired: {1}'.format(self.exaggerationEdited, self.drawEventFired), 'VoGis')
+        #this event handler seems to get called twice????
+        if self.drawEventFired == True: return
+        if self.exaggerationEdited == True: return
         self.exaggerationEdited = True
         #QgsMessageLog.logMessage('__exaggerationEdited: {0}'.format(self.exaggerationEdited), 'VoGis')
         ut = Util(self.iface)
@@ -382,16 +393,18 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.__adjustAxes(exa)
 
     def __one2oneClicked(self):
-        #QgsMessageLog.logMessage('1:1 clicked', 'VoGis')
+        if self.debug: QgsMessageLog.logMessage('1:1 clicked', 'VoGis')
         #QgsMessageLog.logMessage('axes:{0}'.format(self.pltWidget.figure.get_axes()), 'VoGis')
         self.__adjustAxes(1.0)
 
     def __adjustAxes(self, exaggeration):
+        exaggeration = floor(exaggeration * 10) / 10
+        if self.debug: QgsMessageLog.logMessage('__adjustAxes, exaggeration: {0}'.format(exaggeration), 'VoGis')
         dpi = self.pltWidget.figure.get_dpi()
         figWidth = self.pltWidget.figure.get_figwidth() * dpi
         figHeight = self.pltWidget.figure.get_figheight() * dpi
-        QgsMessageLog.logMessage('dataExtent:{0}'.format(self.origPltExt.toString()), 'VoGis')
-        QgsMessageLog.logMessage('fig size:{0}/{1}'.format(figWidth, figHeight), 'VoGis')
+        if self.debug: QgsMessageLog.logMessage('__adjustAxes, dataExtent:{0}'.format(self.origPltExt.toString()), 'VoGis')
+        if self.debug: QgsMessageLog.logMessage('__adjustAxes, fig size:{0}/{1}'.format(figWidth, figHeight), 'VoGis')
         mPerPixH = self.origPltExt.xmax / figWidth
         deltaVnew = figHeight * mPerPixH / exaggeration
         newYmax = self.origPltExt.ymin + deltaVnew
@@ -482,22 +495,28 @@ class VoGISProfilToolPlotDialog(QDialog):
             self.click2pnt = self.subplot.plot(event.xdata, event.ydata, 'go')
 
     def __createMatplotlibCanvas(self, pltExt):
-            fig = Figure((1.0, 1.0),
-                         linewidth=0.0,
-                         subplotpars=matplotlib.figure.SubplotParams(left=0,
-                                                                     bottom=0,
-                                                                     right=1,
-                                                                     top=1,
-                                                                     wspace=0,
-                                                                     hspace=0
-                                                                     )
-                         )
+            # fig = Figure((1.0, 1.0),
+            #              tight_layout=True,
+            #              linewidth=0.0,
+            #              subplotpars=matplotlib.figure.SubplotParams(left=0,
+            #                                                          bottom=0,
+            #                                                          right=1,
+            #                                                          top=1,
+            #                                                          wspace=0,
+            #                                                          hspace=0
+            #                                                          )
+            #              )
+            #fig = Figure((24, 24), tight_layout=True)
+            fig = Figure(tight_layout=True)
+            #fig = matplotlib.pyplot.figure()
+            #fig.set_tight_layout(True)
             #font = {'family': 'arial', 'weight': 'normal', 'size': 12}
             #rc('font', **font)
             rect = fig.patch
             rect.set_facecolor((0.9, 0.9, 0.9))
 
             self.subplot = fig.add_axes((0.08, 0.15, 0.92, 0.82))
+            #self.subplot.plot.tight_layout(True)
             self.subplot.set_xbound(pltExt.xmin, pltExt.xmax)
             self.subplot.set_ybound(pltExt.ymin, pltExt.ymax)
             self.__setupAxes(self.subplot)

@@ -48,16 +48,16 @@ class VoGISProfilToolMain:
             loc = QSettings().value("locale/userLocale")[0:2]
 
         if QFileInfo(self.plugin_dir).exists():
-            QgsMessageLog.logMessage('plugin_dir exits', 'VoGis')
+            #QgsMessageLog.logMessage('plugin_dir exits', 'VoGis')
             localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + loc + ".qm"
 
         if QFileInfo(localePath).exists():
-            QgsMessageLog.logMessage('localePath exits', 'VoGis')
+            #QgsMessageLog.logMessage('localePath exits', 'VoGis')
             self.translator = QTranslator()
             self.translator.load(localePath)
 
             if qVersion() > '4.3.3':
-                QgsMessageLog.logMessage("qVersion() > '4.3.3'", 'VoGis')
+                #QgsMessageLog.logMessage("qVersion() > '4.3.3'", 'VoGis')
                 QCoreApplication.installTranslator(self.translator)
 
         self.settings = None
