@@ -40,6 +40,10 @@ from matplotlib.lines import Line2D
 from matplotlib.collections import LineCollection
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 
+LEFT_MARGIN = 0.08
+BOTTOM_MARGIN = 0.15
+RIGHT_MARGIN = 0.92
+TOP_MARGIN = 0.82
 
 class VoGISProfilToolPlotDialog(QDialog):
     def __init__(self, interface, settings, profiles):
@@ -369,10 +373,12 @@ class VoGISProfilToolPlotDialog(QDialog):
         ylim = axes.get_ylim()
         if self.debug: QgsMessageLog.logMessage('__figureDrawn: xlim:{0} ylim:{1}'.format(xlim, ylim), 'VoGis')
         dpi = self.pltWidget.figure.get_dpi()
-        #figWidth = self.pltWidget.figure.get_figwidth() * dpi
-        #figHeight = self.pltWidget.figure.get_figheight() * dpi
-        bbox = axes.get_window_extent().transformed(self.pltWidget.figure.dpi_scale_trans.inverted())
-        figWidth, figHeight = bbox.width * dpi, bbox.height * dpi
+        figWidth = self.pltWidget.figure.get_figwidth() * dpi
+        figHeight = self.pltWidget.figure.get_figheight() * dpi
+        #bbox = axes.get_window_extent().transformed(self.pltWidget.figure.dpi_scale_trans.inverted())
+        #figWidth, figHeight = bbox.width * dpi, bbox.height * dpi
+        figWidth *= (TOP_MARGIN - BOTTOM_MARGIN)
+        figHeight *= (RIGHT_MARGIN - LEFT_MARGIN)
         deltaX = xlim[1] - xlim[0]
         deltaY = ylim[1] - ylim[0]
         ratio = (deltaX / figWidth) / (deltaY / figHeight)
@@ -407,11 +413,13 @@ class VoGISProfilToolPlotDialog(QDialog):
         exaggeration = floor(exaggeration * 10) / 10
         if self.debug: QgsMessageLog.logMessage('__adjustAxes, exaggeration: {0}'.format(exaggeration), 'VoGis')
         dpi = self.pltWidget.figure.get_dpi()
-        #figWidth = self.pltWidget.figure.get_figwidth() * dpi
-        #figHeight = self.pltWidget.figure.get_figheight() * dpi
-        axes = self.pltWidget.figure.get_axes()[0]
-        bbox = axes.get_window_extent().transformed(self.pltWidget.figure.dpi_scale_trans.inverted())
-        figWidth, figHeight = bbox.width * dpi, bbox.height * dpi
+        figWidth = self.pltWidget.figure.get_figwidth() * dpi
+        figHeight = self.pltWidget.figure.get_figheight() * dpi
+        #axes = self.pltWidget.figure.get_axes()[0]
+        #bbox = axes.get_window_extent().transformed(self.pltWidget.figure.dpi_scale_trans.inverted())
+        #figWidth, figHeight = bbox.width * dpi, bbox.height * dpi
+        figWidth *= (TOP_MARGIN - BOTTOM_MARGIN)
+        figHeight *= (RIGHT_MARGIN - LEFT_MARGIN)
         if self.debug: QgsMessageLog.logMessage('__adjustAxes, dataExtent:{0}'.format(self.origPltExt.toString()), 'VoGis')
         if self.debug: QgsMessageLog.logMessage('__adjustAxes, fig size:{0}/{1}'.format(figWidth, figHeight), 'VoGis')
         mPerPixH = self.origPltExt.xmax / figWidth
@@ -504,23 +512,24 @@ class VoGISProfilToolPlotDialog(QDialog):
             self.click2pnt = self.subplot.plot(event.xdata, event.ydata, 'go')
 
     def __createMatplotlibCanvas(self, pltExt):
-            # fig = Figure((1.0, 1.0),
-            #              tight_layout=True,
-            #              linewidth=0.0,
-            #              subplotpars=matplotlib.figure.SubplotParams(left=0,
-            #                                                          bottom=0,
-            #                                                          right=1,
-            #                                                          top=1,
-            #                                                          wspace=0,
-            #                                                          hspace=0
-            #                                                          )
-            #              )
+            fig = Figure((1, 1),
+                         #tight_layout=True,
+                         linewidth=0.0,
+                         subplotpars=matplotlib.figure.SubplotParams(left=0,
+                                                                     bottom=0,
+                                                                     right=1,
+                                                                     top=1,
+                                                                     wspace=0,
+                                                                     hspace=0
+                                                                     )
+                         )
+            #fig.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None, hspace=None)
             #fig = Figure((24, 24), tight_layout=True)
-            try:
-                fig = Figure(tight_layout=True)
-            except:
-                #tight layout not available
-                fig = Figure()
+            # try:
+            #     fig = Figure(tight_layout=True)
+            # except:
+            #     #tight layout not available
+            #     fig = Figure()
             #fig = plt.figure()
             #fig.set_tight_layout(True)
             #font = {'family': 'arial', 'weight': 'normal', 'size': 12}
@@ -528,7 +537,14 @@ class VoGISProfilToolPlotDialog(QDialog):
             rect = fig.patch
             rect.set_facecolor((0.9, 0.9, 0.9))
 
-            self.subplot = fig.add_axes((0.08, 0.15, 0.92, 0.82))
+            # self.subplot = fig.add_axes(
+            #                             #(0.08, 0.15, 0.92, 0.82),
+            #                             (0.0, 0.0, 1.0, 1.0),
+            #                             anchor='SW',
+            #                             adjustable='box-forced'
+            #                             )
+            #left bottom right top
+            self.subplot = fig.add_axes((LEFT_MARGIN, BOTTOM_MARGIN, RIGHT_MARGIN, TOP_MARGIN))
             #self.subplot.plot.tight_layout(True)
             self.subplot.set_xbound(pltExt.xmin, pltExt.xmax)
             self.subplot.set_ybound(pltExt.ymin, pltExt.ymax)
