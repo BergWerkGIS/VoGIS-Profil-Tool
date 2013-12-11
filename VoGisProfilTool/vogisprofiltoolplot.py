@@ -221,9 +221,9 @@ class VoGISProfilToolPlotDialog(QDialog):
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
         QgsMessageLog.logMessage('reject: {0}'.format(self.exaggerationEdited), 'VoGis')
-        #if self.exaggerationEdited is True:
-        #    self.exaggerationEdited = False
-        #    return
+        if self.exaggerationEdited is True:
+            self.exaggerationEdited = False
+            return
         QDialog.reject(self)
 
     def exportShpPnt(self):
