@@ -221,9 +221,9 @@ class VoGISProfilToolPlotDialog(QDialog):
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
         QgsMessageLog.logMessage('reject: {0}'.format(self.exaggerationEdited), 'VoGis')
-        if self.exaggerationEdited is True:
-            self.exaggerationEdited = False
-            return
+        #if self.exaggerationEdited is True:
+        #    self.exaggerationEdited = False
+        #    return
         QDialog.reject(self)
 
     def exportShpPnt(self):
@@ -385,7 +385,8 @@ class VoGISProfilToolPlotDialog(QDialog):
         ratio = floor(ratio * 10) / 10
         if self.debug: QgsMessageLog.logMessage('__figureDrawn: figWidth:{0} figHeight:{1} dpi:{2} deltaX:{3} deltaY:{4}, ratio:{5}'.format(figWidth, figHeight, dpi, deltaX, deltaY, ratio), 'VoGis')
         if self.debug: QgsMessageLog.logMessage('__figureDrawn: axes.get_data_ratio:{0}'.format(axes.get_data_ratio()), 'VoGis')
-        self.editExaggeration.setText('{0:.1f}'.format(ratio))
+        #self.editExaggeration.setText('{0:.1f}'.format(ratio))
+        self.editExaggeration.setText('{0:.1f}'.format(axes.get_aspect()))
         self.drawEventFired = False
 
     def __exaggerationEdited(self, *args):
@@ -411,27 +412,31 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def __adjustAxes(self, exaggeration):
         exaggeration = floor(exaggeration * 10) / 10
-        if self.debug: QgsMessageLog.logMessage('__adjustAxes, exaggeration: {0}'.format(exaggeration), 'VoGis')
-        dpi = self.pltWidget.figure.get_dpi()
-        figWidth = self.pltWidget.figure.get_figwidth() * dpi
-        figHeight = self.pltWidget.figure.get_figheight() * dpi
-        #axes = self.pltWidget.figure.get_axes()[0]
-        #bbox = axes.get_window_extent().transformed(self.pltWidget.figure.dpi_scale_trans.inverted())
-        #figWidth, figHeight = bbox.width * dpi, bbox.height * dpi
-        figWidth *= (TOP_MARGIN - BOTTOM_MARGIN)
-        figHeight *= (RIGHT_MARGIN - LEFT_MARGIN)
-        if self.debug: QgsMessageLog.logMessage('__adjustAxes, dataExtent:{0}'.format(self.origPltExt.toString()), 'VoGis')
-        if self.debug: QgsMessageLog.logMessage('__adjustAxes, fig size:{0}/{1}'.format(figWidth, figHeight), 'VoGis')
-        mPerPixH = self.origPltExt.xmax / figWidth
-        deltaVnew = figHeight * mPerPixH / exaggeration
-        newYmax = self.origPltExt.ymin + deltaVnew
-        #QgsMessageLog.logMessage('mPerPixH:{0} deltaV:{1} deltaVnew:{2} newYmax:{3}'.format(mPerPixH, deltaV, deltaVnew, newYmax), 'VoGis')
-        #self.pltWidget.figure.get_axes()[0].set_xbound(self.origPltExt.xmin, self.origPltExt.xmax)
-        #self.pltWidget.figure.get_axes()[0].set_ybound(self.origPltExt.ymin, newYmax)
-        self.pltWidget.figure.get_axes()[0].set_xlim((self.origPltExt.xmin, self.origPltExt.xmax))
-        self.pltWidget.figure.get_axes()[0].set_ylim((self.origPltExt.ymin, newYmax))
-        self.pltWidget.figure.get_axes()[0].redraw_in_frame()
+        axes = self.pltWidget.figure.get_axes()[0]
+        axes.set_aspect(exaggeration)
         self.pltWidget.draw()
+        # if self.debug: QgsMessageLog.logMessage('__adjustAxes, exaggeration: {0}'.format(exaggeration), 'VoGis')
+        # dpi = self.pltWidget.figure.get_dpi()
+        # figWidth = self.pltWidget.figure.get_figwidth() * dpi
+        # figHeight = self.pltWidget.figure.get_figheight() * dpi
+        # axes = self.pltWidget.figure.get_axes()[0]
+        # if self.debug: QgsMessageLog.logMessage('__adjustAxes, imgextextent:{0}'.format(axes.get_aspect()), 'VoGis')
+        # #bbox = axes.get_window_extent().transformed(self.pltWidget.figure.dpi_scale_trans.inverted())
+        # #figWidth, figHeight = bbox.width * dpi, bbox.height * dpi
+        # figWidth *= (TOP_MARGIN - BOTTOM_MARGIN)
+        # figHeight *= (RIGHT_MARGIN - LEFT_MARGIN)
+        # if self.debug: QgsMessageLog.logMessage('__adjustAxes, dataExtent:{0}'.format(self.origPltExt.toString()), 'VoGis')
+        # if self.debug: QgsMessageLog.logMessage('__adjustAxes, fig size:{0}/{1}'.format(figWidth, figHeight), 'VoGis')
+        # mPerPixH = self.origPltExt.xmax / figWidth
+        # deltaVnew = figHeight * mPerPixH / exaggeration
+        # newYmax = self.origPltExt.ymin + deltaVnew
+        # #QgsMessageLog.logMessage('mPerPixH:{0} deltaV:{1} deltaVnew:{2} newYmax:{3}'.format(mPerPixH, deltaV, deltaVnew, newYmax), 'VoGis')
+        # #self.pltWidget.figure.get_axes()[0].set_xbound(self.origPltExt.xmin, self.origPltExt.xmax)
+        # #self.pltWidget.figure.get_axes()[0].set_ybound(self.origPltExt.ymin, newYmax)
+        # self.pltWidget.figure.get_axes()[0].set_xlim((self.origPltExt.xmin, self.origPltExt.xmax))
+        # self.pltWidget.figure.get_axes()[0].set_ylim((self.origPltExt.ymin, newYmax))
+        # self.pltWidget.figure.get_axes()[0].redraw_in_frame()
+        # self.pltWidget.draw()
 
     def __plotPicked(self, event):
         #QgsMessageLog.logMessage('artist:{0}'.format(type(event.artist)), 'VoGis')
@@ -544,7 +549,11 @@ class VoGISProfilToolPlotDialog(QDialog):
             #                             adjustable='box-forced'
             #                             )
             #left bottom right top
-            self.subplot = fig.add_axes((LEFT_MARGIN, BOTTOM_MARGIN, RIGHT_MARGIN, TOP_MARGIN))
+            self.subplot = fig.add_axes(
+                                        (LEFT_MARGIN, BOTTOM_MARGIN, RIGHT_MARGIN, TOP_MARGIN), 
+                                        adjustable='datalim',
+                                        aspect=1
+                                        )
             #self.subplot.plot.tight_layout(True)
             self.subplot.set_xbound(pltExt.xmin, pltExt.xmax)
             self.subplot.set_ybound(pltExt.ymin, pltExt.ymax)
