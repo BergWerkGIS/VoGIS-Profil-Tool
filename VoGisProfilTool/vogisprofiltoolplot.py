@@ -51,7 +51,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         QDialog.__init__(self, interface.mainWindow())
         self.iface = interface
         #output debug Log Messages: mainly for debugging matplotlib
-        self.debug = True
+        self.debug = False
         self.settings = settings
         self.profiles = profiles
         # Set up the user interface from Designer.
