@@ -31,7 +31,7 @@ from util.exportShape import ExportShape
 from util.exportDxf import ExportDxf
 import locale
 #import ogr
-from math import floor
+from math import floor, pow, sqrt
 import matplotlib
 #not available on Windows by default
 #import matplotlib.pyplot as plt
@@ -141,6 +141,8 @@ class VoGISProfilToolPlotDialog(QDialog):
         pltToolbar.insertWidget(firstaction, self.editExaggeration)
         self.editExaggeration.editingFinished.connect(self.__exaggerationEdited)
         #insert identify button -> deactivate all tools
+        #HACK: picked event gets fired before click event
+        self.plotpicked = False
         pltToolbar.insertWidget(firstaction, self.one2one)
         self.identify = QPushButton()
         self.identify.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/identify.png"))
@@ -413,8 +415,28 @@ class VoGISProfilToolPlotDialog(QDialog):
     def __adjustAxes(self, exaggeration):
         exaggeration = floor(exaggeration * 10) / 10
         axes = self.pltWidget.figure.get_axes()[0]
-        axes.set_aspect(exaggeration)
+        #axes.set_aspect(exaggeration)
+        #axes.set_autoscalex_on(False)
+        #axes.set_autoscaley_on(True)
+        if self.debug: 
+            QgsMessageLog.logMessage('__adjustAxes, get_aspect:{0}'.format(axes.get_aspect()), 'VoGis')
+            QgsMessageLog.logMessage('__adjustAxes, get_position:{0}'.format(axes.get_position()), 'VoGis')
+            QgsMessageLog.logMessage('__adjustAxes, xBound:{0} xlim:{1}'.format(axes.get_xbound(),axes.get_xlim()), 'VoGis')
+            QgsMessageLog.logMessage('__adjustAxes, yBound:{0} ylim:{1}'.format(axes.get_ybound(),axes.get_ylim()), 'VoGis')
+        oldexa = axes.get_aspect()
+        ratioexa = oldexa / exaggeration
+        ylim = axes.get_ylim()
+        deltaYold = ylim[1] - ylim[0]
+        deltaYnew = deltaYold * ratioexa
+        centerY = ylim[0] + (deltaYold / 2)
+        axes.set_ylim(centerY - deltaYnew/2,centerY + deltaYnew/2)
+        axes.set_aspect(exaggeration, 'datalim', 'C')
         self.pltWidget.draw()
+        if self.debug: 
+            QgsMessageLog.logMessage('__adjustAxes, get_aspect:{0}'.format(axes.get_aspect()), 'VoGis')
+            QgsMessageLog.logMessage('__adjustAxes, get_position:{0}'.format(axes.get_position()), 'VoGis')
+            QgsMessageLog.logMessage('__adjustAxes, xBound:{0} xlim:{1}'.format(axes.get_xbound(),axes.get_xlim()), 'VoGis')
+            QgsMessageLog.logMessage('__adjustAxes, yBound:{0} ylim:{1}'.format(axes.get_ybound(),axes.get_ylim()), 'VoGis')
         # if self.debug: QgsMessageLog.logMessage('__adjustAxes, exaggeration: {0}'.format(exaggeration), 'VoGis')
         # dpi = self.pltWidget.figure.get_dpi()
         # figWidth = self.pltWidget.figure.get_figwidth() * dpi
@@ -439,6 +461,8 @@ class VoGISProfilToolPlotDialog(QDialog):
         # self.pltWidget.draw()
 
     def __plotPicked(self, event):
+        self.plotpicked = True
+        if self.debug: QgsMessageLog.logMessage('__plotPicked', 'VoGis')
         #QgsMessageLog.logMessage('artist:{0}'.format(type(event.artist)), 'VoGis')
         self.dhmLbl.setText(' ? ')
         if isinstance(event.artist, Line2D):
@@ -479,7 +503,10 @@ class VoGISProfilToolPlotDialog(QDialog):
         else:
             QgsMessageLog.logMessage('no Line2D or LineCollection', 'VoGis')
 
+
     def __buttonPressed(self, event):
+        if self.debug: QgsMessageLog.logMessage('__buttonPressed', 'VoGis')
+        if self.plotpicked is False: self.dhmLbl.setText(' ? ')
         QgsMessageLog.logMessage(
             'x:{0} y:{1} xdata:{2} ydata:{3} click1:{4} click2:{5} click1pnt:{6} click2pnt:{7}'.format(
                 event.x, event.y, event.xdata, event.ydata, self.click1, self.click2,self.click1pnt, self.click2pnt), 'VoGis')
@@ -507,7 +534,8 @@ class VoGISProfilToolPlotDialog(QDialog):
             #self.measureLbl.setText(u' dist: {0:.1f} '.format(dist))
             deltaX = self.click2[0] - self.click1[0]
             deltaY = self.click2[1] - self.click1[1]
-            self.measureLbl.setText(u' dx:{0:.1f} dy:{1:.1f} '.format(deltaX, deltaY))
+            dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
+            self.measureLbl.setText(u' dx:{0:.1f} dy:{1:.1f} d:{2:.1f}'.format(deltaX, deltaY, dist))
             self.click1 = None
             if not self.click2pnt is None:
                 p = self.click2pnt.pop(0);
@@ -515,6 +543,13 @@ class VoGISProfilToolPlotDialog(QDialog):
                 del p
                 self.click2pnt = None
             self.click2pnt = self.subplot.plot(event.xdata, event.ydata, 'go')
+        #refresh plot to show points, when identify tool active
+        #if self.debug: QgsMessageLog.logMessage('__buttonPressed: active: {0}'.format(self.pltToolbar._active), 'VoGis')
+        #if self.plotpicked is True:
+        if self.pltToolbar._active is None:
+            self.pltWidget.draw()
+        self.plotpicked = False
+
 
     def __createMatplotlibCanvas(self, pltExt):
             fig = Figure((1, 1),
