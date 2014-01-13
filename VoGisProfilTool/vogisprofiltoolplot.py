@@ -507,9 +507,15 @@ class VoGISProfilToolPlotDialog(QDialog):
     def __buttonPressed(self, event):
         if self.debug: QgsMessageLog.logMessage('__buttonPressed', 'VoGis')
         if self.plotpicked is False: self.dhmLbl.setText(' ? ')
-        QgsMessageLog.logMessage(
-            'x:{0} y:{1} xdata:{2} ydata:{3} click1:{4} click2:{5} click1pnt:{6} click2pnt:{7}'.format(
-                event.x, event.y, event.xdata, event.ydata, self.click1, self.click2,self.click1pnt, self.click2pnt), 'VoGis')
+        if self.debug:
+            QgsMessageLog.logMessage('{0}'.format(dir(event)), 'VoGis')
+            QgsMessageLog.logMessage('{0}'.format(dir(event.xdata)), 'VoGis')
+            QgsMessageLog.logMessage('{0}'.format(dir(event.ydata)), 'VoGis')
+            QgsMessageLog.logMessage(
+                'x:{0} y:{1} xdata:{2} ydata:{3} click1:{4} click2:{5} click1pnt:{6} click2pnt:{7}'.format(
+                    event.x, event.y, event.xdata, event.ydata, self.click1, self.click2,self.click1pnt, self.click2pnt), 'VoGis')
+        if event.xdata is None or event.ydata is None:
+            return
         if self.click1 is None:
             self.click1 = [event.xdata, event.ydata]
             self.click2 = None
