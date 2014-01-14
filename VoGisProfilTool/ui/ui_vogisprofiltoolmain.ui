@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>463</width>
-    <height>893</height>
+    <height>612</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,17 +20,53 @@
    <string>VoGIS Profil Tool</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <widget class="QWidget" name="IDC_widRaster" native="true">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>110</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>180</height>
+        </size>
+       </property>
        <layout class="QGridLayout" name="gridLayout_2">
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>2</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>0</number>
+        </property>
         <item row="0" column="0">
          <widget class="QGroupBox" name="IDC_grpRaster">
           <property name="sizePolicy">
@@ -43,6 +79,15 @@
            <string>Rastermodell(e) auswählen</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>2</number>
+           </property>
            <item row="2" column="0">
             <widget class="QListWidget" name="IDC_listRasters">
              <property name="sizePolicy">
@@ -50,6 +95,12 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>100</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -76,12 +127,30 @@
      <item>
       <widget class="QWidget" name="IDC_widProfilLinien" native="true">
        <layout class="QGridLayout" name="gridLayout_4">
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
+         <number>2</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>0</number>
+        </property>
         <item row="0" column="0">
          <widget class="QGroupBox" name="IDC_grpProfilLinien">
           <property name="title">
            <string>Lage der Profillinie(n) festlegen</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
+           <property name="topMargin">
+            <number>2</number>
+           </property>
+           <property name="bottomMargin">
+            <number>2</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>1</number>
+           </property>
            <item row="4" column="0">
             <widget class="QPushButton" name="IDC_bDrawLine">
              <property name="sizePolicy">
@@ -151,6 +220,15 @@
               <string>Linie</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_7">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <property name="verticalSpacing">
+               <number>0</number>
+              </property>
               <item row="1" column="1">
                <widget class="QLineEdit" name="IDC_tbFromX"/>
               </item>
@@ -236,12 +314,30 @@
         </sizepolicy>
        </property>
        <layout class="QGridLayout" name="gridLayout_6">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <property name="verticalSpacing">
+         <number>0</number>
+        </property>
         <item row="0" column="0">
          <widget class="QGroupBox" name="IDC_grpVertices">
           <property name="title">
            <string>Stützstellen festlegen</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>0</number>
+           </property>
            <item row="0" column="0">
             <widget class="QRadioButton" name="IDC_rbEquiDistance">
              <property name="sizePolicy">
