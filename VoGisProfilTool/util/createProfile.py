@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from shapely.wkb import loads
-from shapely.wkb import dumps
-from shapely.geometry import Point
-import shapely.geos
+try:
+    from shapely.wkb import loads
+    from shapely.wkb import dumps
+    from shapely.geometry import Point
+    import shapely.geos
+except ImportError:
+    pass
 from ..bo.settings import enumModeLine
 from ..bo.settings import enumModeVertices
 from ..bo.settings import enumVertexType

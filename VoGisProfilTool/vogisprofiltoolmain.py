@@ -83,6 +83,14 @@ class VoGISProfilToolMain:
     # run method that performs all the real work
     def run(self):
 
+        try:
+            import shapely
+        except ImportError:
+            QMessageBox.warning(self.iface.mainWindow(),
+                                "VoGIS-Profiltool",
+                                'Library "shapely" not found. Please install!')
+            return
+
         self.settings = Settings(self.__getMapData())
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "lines:" + str(self.settings.mapData.lines.count()) + " rasters:" + str(self.settings.mapData.rasters.count()))
 
