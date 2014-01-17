@@ -7,6 +7,8 @@ try:
     import shapely.geos
 except ImportError:
     pass
+except:
+    pass
 from ..bo.settings import enumModeLine
 from ..bo.settings import enumModeVertices
 from ..bo.settings import enumVertexType

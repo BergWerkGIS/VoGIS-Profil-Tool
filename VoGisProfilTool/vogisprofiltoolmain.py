@@ -90,6 +90,11 @@ class VoGISProfilToolMain:
                                 "VoGIS-Profiltool",
                                 'Library "shapely" not found. Please install!')
             return
+        except:
+            QMessageBox.warning(self.iface.mainWindow(),
+                                "VoGIS-Profiltool",
+                                'There seems to be a problem with your shapely/geos install.\nSee:\nhttp://comments.gmane.org/gmane.linux.debian.devel.bugs.general/1111838!')
+            return
 
         self.settings = Settings(self.__getMapData())
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "lines:" + str(self.settings.mapData.lines.count()) + " rasters:" + str(self.settings.mapData.rasters.count()))
