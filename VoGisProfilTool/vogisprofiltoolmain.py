@@ -73,7 +73,8 @@ class VoGISProfilToolMain:
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu(u"&VoGIS ProfilTool", self.action)
+        #self.iface.addPluginToMenu(u"&VoGIS ProfilTool", self.action)
+        self.iface.addPluginToRasterMenu(u"&VoGIS ProfilTool", self.action)
 
     def unload(self):
         # Remove the plugin menu item and icon

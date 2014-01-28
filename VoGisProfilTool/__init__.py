@@ -31,12 +31,14 @@ def description():
 
 
 def version():
-    return "Version 1.8.5"
+    return "1.8.5"
 
 
 def icon():
     return "icons/icon.png"
 
+def category():
+    return 'Raster'
 
 def qgisMinimumVersion():
     return "1.8"
