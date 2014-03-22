@@ -21,6 +21,7 @@ from u import Util
 from qgis.core import *
 from math import *
 from PyQt4.QtGui import QMessageBox
+from PyQt4.QtGui import QApplication
 #if QGis.QGIS_VERSION_INT >= 10900:
 #    import processing
 

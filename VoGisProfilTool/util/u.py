@@ -4,6 +4,7 @@ import os
 from os.path import basename
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+import pdb
 from qgis.core import QGis
 if QGis.QGIS_VERSION_INT < 10900:
     import ogr
@@ -251,10 +252,13 @@ class Util:
                     newAttribs[j] = provider.defaultValue(j)
             tmpFeat.setAttributeMap(newAttribs)
         else:
+            #pyqtRemoveInputHook()
+            #pdb.set_trace()
             newAttribs = feat.attributes()
             for j in range(newAttribs.__len__()):
-                if not provider.defaultValue(j).isNull():
-                    newAttribs[j] = provider.defaultValue(j)
+                #if not provider.defaultValue(j).isNull():
+                #    newAttribs[j] = provider.defaultValue(j)
+                newAttribs[j] = provider.defaultValue(j)
             tmpFeat.setAttributes(newAttribs)
 
         parts = feat.geometry().asGeometryCollection()
