@@ -19,6 +19,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+import traceback
 import unicodedata
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -88,61 +89,67 @@ class VoGISProfilToolMainDialog(QDialog):
         self.drawnLine = None
 
     def accept(self):
-        #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
-        if self.settings.onlyHektoMode is True and self.settings.mapData.rasters.count() > 0:
-            self.settings.onlyHektoMode = False
+        try:
+            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
+            if self.settings.onlyHektoMode is True and self.settings.mapData.rasters.count() > 0:
+                self.settings.onlyHektoMode = False
 
-        if self.settings.onlyHektoMode is False:
-            if self.settings.mapData.rasters.count() < 1:
-                #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"Keine Raster vorhanden. Zum Hektometrieren Dialog neu öffnen.")
-                #return
-                retVal = QMessageBox.warning(self.iface.mainWindow(),
-                                             "VoGIS-Profiltool",
-                                             QApplication.translate('code', 'Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?', None, QApplication.UnicodeUTF8),
-                                             QMessageBox.Yes | QMessageBox.No,
-                                             QMessageBox.Yes)
-                if retVal == QMessageBox.No:
-                    return
-                else:
-                    self.settings.onlyHektoMode = True
-                    self.settings.createHekto = True
+            if self.settings.onlyHektoMode is False:
+                if self.settings.mapData.rasters.count() < 1:
+                    #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"Keine Raster vorhanden. Zum Hektometrieren Dialog neu öffnen.")
+                    #return
+                    retVal = QMessageBox.warning(self.iface.mainWindow(),
+                                                 "VoGIS-Profiltool",
+                                                 QApplication.translate('code', 'Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?', None, QApplication.UnicodeUTF8),
+                                                 QMessageBox.Yes | QMessageBox.No,
+                                                 QMessageBox.Yes)
+                    if retVal == QMessageBox.No:
+                        return
+                    else:
+                        self.settings.onlyHektoMode = True
+                        self.settings.createHekto = True
 
-        if self.__getSettingsFromGui() is False:
-            return
-
-        if self.settings.onlyHektoMode is False:
-            if len(self.settings.mapData.rasters.selectedRasters()) < 1:
-                #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
-                #msg = 
-                #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
-                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Kein Raster selektiert!', None, QApplication.UnicodeUTF8))
+            if self.__getSettingsFromGui() is False:
                 return
 
-        QgsMessageLog.logMessage('modeLine!=line: {0}'.format(self.settings.modeLine != enumModeLine.line), 'VoGis')
-        QgsMessageLog.logMessage('customLine is None: {0}'.format(self.settings.mapData.customLine is None), 'VoGis')
+            if self.settings.onlyHektoMode is False:
+                if len(self.settings.mapData.rasters.selectedRasters()) < 1:
+                    #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
+                    #msg = 
+                    #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
+                    QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Kein Raster selektiert!', None, QApplication.UnicodeUTF8))
+                    return
 
-        if self.settings.modeLine != enumModeLine.line and self.settings.mapData.customLine is None:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Keine Profillinie vorhanden!', None, QApplication.UnicodeUTF8))
-            return
+            QgsMessageLog.logMessage('modeLine!=line: {0}'.format(self.settings.modeLine != enumModeLine.line), 'VoGis')
+            QgsMessageLog.logMessage('customLine is None: {0}'.format(self.settings.mapData.customLine is None), 'VoGis')
 
-        #self.rubberband.reset(self.polygon)
-        #QDialog.accept(self)
+            if self.settings.modeLine != enumModeLine.line and self.settings.mapData.customLine is None:
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Keine Profillinie vorhanden!', None, QApplication.UnicodeUTF8))
+                return
 
-        QApplication.setOverrideCursor(Qt.WaitCursor)
+            #self.rubberband.reset(self.polygon)
+            #QDialog.accept(self)
 
-        createProf = CreateProfile(self.iface, self.settings)
-        profiles = createProf.create()
-        QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
+            QApplication.setOverrideCursor(Qt.WaitCursor)
 
-        if len(profiles) < 1:
+            createProf = CreateProfile(self.iface, self.settings)
+            profiles = createProf.create()
+            QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
+
+            if len(profiles) < 1:
+                QApplication.restoreOverrideCursor()
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Es konnten keine Profile erstellt werden.', None, QApplication.UnicodeUTF8))
+                return
+
+            dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
+            dlg.show()
+            #result = self.dlg.exec_()
+            dlg.exec_()
+        except:
             QApplication.restoreOverrideCursor()
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Es konnten keine Profile erstellt werden.', None, QApplication.UnicodeUTF8))
-            return
-
-        dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
-        dlg.show()
-        #result = self.dlg.exec_()
-        dlg.exec_()
+            ex = u'{0}'.format(traceback.format_exc())
+            msg = 'Unexpected ERROR:\n\n{0}'.format(ex[:2000])
+            QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
 
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")

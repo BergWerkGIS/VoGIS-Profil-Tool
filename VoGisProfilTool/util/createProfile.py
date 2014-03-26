@@ -113,9 +113,17 @@ class CreateProfile:
                     for feat in features:
                         feats.append(feat)
 
+            #for feat in feats:
+            #    if feat.isValid() is False:
+            #        return []
 
             ut = Util(self.iface)
-            feats = ut.prepareFeatures(self.settings, provider, feats)
+            feats, err_msg = ut.prepareFeatures(self.settings, provider, feats)
+
+            if not err_msg is None:
+                #QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", err_msg)
+                QMessageBox.critical(self.iface.mainWindow(), 'PREPARE ERROR', err_msg)
+                return []
 
             for f in feats:
                 geom = f.geometry()

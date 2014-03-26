@@ -104,29 +104,61 @@ class Util:
         qgPnt.setGeometry(pnt)
         return qgPnt
 
-    def prepareFeatures(self, settings, provider, origFeats):
+    def prepareFeatures(self, settings, provider, feats):
         """explode multipart features"""
         """merge lines with same direction and same start and end vertices"""
 
-        newFeats = None
+        err_msg = 'Vector input not valid!\nPlease check message log and\n"Check Geometry Validity Tool".'
+
+        if self.valid(feats) is False:
+            return None, "Original features:\n" + err_msg
 
         if settings.linesExplode is True:
-            newFeats = self.__explodeMultiPartFeatures(provider, origFeats)
-            #self.__printAttribs(newFeats[0].attributeMap())
+            feats = self.__explodeMultiPartFeatures(provider, feats)
+            #self.__printAttribs(feats[0].attributeMap())
+            if self.valid(feats) is False:
+                return None, "Explode features:\n" + err_msg
 
         if settings.linesMerge is True:
-            newFeats = self.__mergeFeaturesAny(newFeats)
-            #self.__printAttribs(newFeats[0].attributeMap())
+            if len(feats) > 500:
+                QgsMessageLog.logMessage('+500 features: merging not possible', 'VoGis')
+            else:
+                feats = self.__mergeFeaturesAny(feats)
+                #self.__printAttribs(feats[0].attributeMap())
+                if self.valid(feats) is False:
+                    return None, "Merge features (any):\n" + err_msg
+                feats = self.__mergeFeaturesSimple(provider, feats)
+                #self.__printAttribs(feats[0].attributeMap())
+                if self.valid(feats) is False:
+                    return None, "Merge features (simple):\n" + err_msg
 
-            newFeats = self.__mergeFeaturesSimple(provider, newFeats)
-            #self.__printAttribs(newFeats[0].attributeMap())
+        return feats, None
 
-        if newFeats is None:
-            return origFeats
-        else:
-            return newFeats
+    def valid(self, feats):
+        #QgsMessageLog.logMessage('check feat valid', 'VoGis')
+        err_cnt = 0
+        for feat in feats:
+            #QgsMessageLog.logMessage('feat', 'VoGis')
+            #if feat.isValid() is False:
+            #    return [], "Vector input not valid!\nPlease check using the check validity tool."
+            #geom = QgsGeometry(feat.geometry())
+            geom = feat.geometry()
+            if geom.isGeosEmpty():
+                err_cnt +=1
+                QgsMessageLog.logMessage(u'$id [{0}] Empty geometry'.format(feat.id()), 'VoGis')
+            else:
+                errors = geom.validateGeometry()
+                if len(errors) > 0:
+                    if len(errors) < 1:
+                        continue
+                    for err in errors:
+                        err_cnt += 1
+                        QgsMessageLog.logMessage(u'$id [{0}] {1}'.format(feat.id(), err.what()), 'VoGis')
+        return (1 > err_cnt)
 
     def __mergeFeaturesAny(self, origFeats):
+
+
         ll = LinkedList()
         for idx, feat in enumerate(origFeats):
             n = Node(idx)
@@ -150,12 +182,24 @@ class Util:
         for idx in orderedIds:
             newFeats.append(origFeats[idx])
 
+        tmpFeats = []
+        for feat in newFeats:
+            if feat.geometry().isGeosEmpty() is True:
+                QgsMessageLog.logMessage('dropping empty geometry', 'VoGis')
+                continue
+            else:
+                tmpFeats.append(feat)
+        newFeats = tmpFeats
+
         return newFeats
 
     def __mergeFeaturesSimple(self, provider, origFeats):
 
         newFeats = []
         QgsMessageLog.logMessage('---- Merge Simple: {0} features'.format(len(origFeats)), 'VoGis')
+
+        if len(origFeats) < 1:
+            return []
 
         prevToPnt = None
         #newGeom = QgsGeometry()
@@ -203,6 +247,15 @@ class Util:
         self.__transferAttributes(provider, attrMap, featNew)
         #newFeats.append(self.createQgLineFeature(newGeom.asPolyline()))
         newFeats.append(featNew)
+
+        tmpFeats = []
+        for feat in newFeats:
+            if feat.geometry().isGeosEmpty() is True:
+                QgsMessageLog.logMessage('dropping empty geometry', 'VoGis')
+                continue
+            else:
+                tmpFeats.append(feat)
+        newFeats = tmpFeats
 
         QgsMessageLog.logMessage('---- {0} features after Merge Simple'.format(len(newFeats)), 'VoGis')
 
@@ -264,9 +317,12 @@ class Util:
         parts = feat.geometry().asGeometryCollection()
 
         newFeats = []
-        for i in range(len(parts)):
-            tmpFeat.setGeometry(parts[i])
-            newFeats.append(QgsFeature(tmpFeat))
+        for part in parts:
+            if part.isGeosEmpty() is False:
+                tmpFeat.setGeometry(part)
+                newFeat = QgsFeature(tmpFeat)
+                #if newFeat.isValid() is True:
+                newFeats.append(newFeat)
 
         return newFeats
 
