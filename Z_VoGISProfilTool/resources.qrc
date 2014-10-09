@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/plugins/VoGisProfilTool" >
-        <file>icon.png</file>
-    </qresource>
-</RCC>
