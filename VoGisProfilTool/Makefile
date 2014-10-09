@@ -1,13 +1,13 @@
 #/***************************************************************************
 # VoGISProfilToolMain
-# 
+#
 # VoGIS ProfilTool
 #                             -------------------
 #        begin                : 2013-05-28
 #        copyright            : (C) 2013 by BergWerk GIS
 #        email                : wb@BergWerk-GIS.at
 # ***************************************************************************/
-# 
+#
 #/***************************************************************************
 # *                                                                         *
 # *   This program is free software; you can redistribute it and/or modify  *
@@ -20,7 +20,7 @@
 # CONFIGURATION
 PLUGIN_UPLOAD = $(CURDIR)/plugin_upload.py
 
-# Makefile for a PyQGIS plugin 
+# Makefile for a PyQGIS plugin
 
 # translation
 SOURCES = vogisprofiltoolmain.py\
@@ -33,7 +33,7 @@ SOURCES = vogisprofiltoolmain.py\
           util/createProfile.py\
           bo/profile.py
 TRANSLATIONS = i18n/vogisprofiltoolmain_en.ts
-#TRANSLATIONS = 
+#TRANSLATIONS =
 
 # global
 
@@ -96,12 +96,12 @@ derase:
 
 # The zip target deploys the plugin and creates a zip file with the deployed
 # content. You can then upload the zip file on http://plugins.qgis.org
-zip: deploy dclean 
+zip: deploy dclean
 	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/$(QGISPIDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME)
+	cd $(HOME)/$(QGISPIDIR)/python/plugins; zip -9r $(CURDIR)/../$(PLUGINNAME).zip $(PLUGINNAME)
 
-# Create a zip package of the plugin named $(PLUGINNAME).zip. 
-# This requires use of git (your plugin development directory must be a 
+# Create a zip package of the plugin named $(PLUGINNAME).zip.
+# This requires use of git (your plugin development directory must be a
 # git repository).
 # To use, pass a valid commit or tag as follows:
 #   make package VERSION=Version_0.3.2
@@ -131,5 +131,5 @@ clean:
 	rm $(UI_FILES) $(RESOURCE_FILES)
 
 # build documentation with sphinx
-doc: 
+doc:
 	cd help; make html
