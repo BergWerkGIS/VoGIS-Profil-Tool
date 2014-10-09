@@ -45,3 +45,9 @@ Export to:
 
 ![Alt text](/screenshots/maindialog.png)
 ![Alt text](/screenshots/plotdialog.png)
+
+## Known issues
+
+If you get an error message about missing shapely, just do
+
+`sudo apt-get install python-shapely`.

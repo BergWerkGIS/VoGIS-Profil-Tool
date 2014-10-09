@@ -115,7 +115,7 @@ class VoGISProfilToolMainDialog(QDialog):
             if self.settings.onlyHektoMode is False:
                 if len(self.settings.mapData.rasters.selectedRasters()) < 1:
                     #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
-                    #msg = 
+                    #msg =
                     #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
                     QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Kein Raster selektiert!', None, QApplication.UnicodeUTF8))
                     return
@@ -229,8 +229,9 @@ class VoGISProfilToolMainDialog(QDialog):
                 lyrType = lyr.type()
                 lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
                 if lyrType == 1:
-                    r = Raster(lyr.id(), lyrName, lyr)
-                    rColl.addRaster(r)
+                    if lyr.bandCount() < 2:
+                        r = Raster(lyr.id(), lyrName, lyr)
+                        rColl.addRaster(r)
 
         self.settings.mapData.rasters = rColl
         self.__addRastersToGui()

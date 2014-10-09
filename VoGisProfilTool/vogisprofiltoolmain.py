@@ -165,8 +165,9 @@ class VoGISProfilToolMain:
                         lColl.addLine(l)
                 elif lyrType == 1:
                     #Raster
-                    r = Raster(lyr.id(), lyrName, lyr)
-                    rColl.addRaster(r)
+                    if lyr.bandCount() < 2:
+                        r = Raster(lyr.id(), lyrName, lyr)
+                        rColl.addRaster(r)
 
         mapData = MapData()
         mapData.lines = lColl
