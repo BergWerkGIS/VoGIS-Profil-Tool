@@ -317,9 +317,9 @@ class CreateProfile:
 
             #TODO!!!! QGIS BUG: QGIS 2.0.1: raster.noDataValue() = > AttributeError: 'QgsRasterLayer' object has no attribute 'noDataValue'
             if QGis.QGIS_VERSION_INT < 10900:
-                noDataVal, validNoData = raster.noDataValue()
-                if validNoData:
-                    raster_val = noDataVal
+                nodata_val, valid_nodata = raster.noDataValue()
+                if valid_nodata:
+                    raster_val = nodata_val
                 else:
                     #raster_val = float('nan')
                     raster_val = self.settings.nodata_value

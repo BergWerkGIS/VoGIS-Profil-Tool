@@ -52,6 +52,7 @@ class Vertex:
         self.zvals = zvals
         self.nodata_value = nodata_value
 
+
     def toString(self, hekto, attribs, delimiter, decimalDelimiter):
         #dirty HACK! toString() replace, um unabhaengig von LOCALE Dezimaltrenner setzen zu können
         txt = '{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}'.format(delimiter,

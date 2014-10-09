@@ -56,7 +56,7 @@ class VoGISProfilToolMainDialog(QDialog):
             self.ui.IDC_widRaster.hide()
             self.adjustSize()
 
-        validator = QIntValidator(-9999, 9999)
+        validator = QIntValidator(-32768, 32768)
         self.ui.IDC_tbNoDataExport.setValidator(validator)
 
         self.ui.IDC_tbFromX.setText('-30000')
@@ -93,8 +93,12 @@ class VoGISProfilToolMainDialog(QDialog):
 
     def accept(self):
         try:
-            self.settings.nodata_value = int(self.ui.IDC_tbNoDataExport.text())
             #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
+
+            #QgsMessageLog.logMessage('nodata: {0}'.format(self.settings.nodata_value), 'VoGis')
+            self.settings.nodata_value = int(self.ui.IDC_tbNoDataExport.text())
+            QgsMessageLog.logMessage('maindlg: nodata: {0}'.format(self.settings.nodata_value), 'VoGis')
+
             if self.settings.onlyHektoMode is True and self.settings.mapData.rasters.count() > 0:
                 self.settings.onlyHektoMode = False
 
