@@ -56,6 +56,9 @@ class VoGISProfilToolMainDialog(QDialog):
             self.ui.IDC_widRaster.hide()
             self.adjustSize()
 
+        validator = QIntValidator(-9999, 9999)
+        self.ui.IDC_tbNoDataExport.setValidator(validator)
+
         self.ui.IDC_tbFromX.setText('-30000')
         self.ui.IDC_tbFromY.setText('240000')
         self.ui.IDC_tbToX.setText('-20000')
@@ -82,7 +85,7 @@ class VoGISProfilToolMainDialog(QDialog):
             #self.rubberband.setBrushStyle()
             self.rubberband.setLineStyle(Qt.SolidLine)
             self.rubberband.setWidth(4.0)
-            self.rubberband.setColor(QColor(0,255,0))
+            self.rubberband.setColor(QColor(0, 255, 0))
             #http://www.qgis.org/api/classQgsRubberBand.html#a6f7cdabfcf69b65dfc6c164ce2d01fab
         self.pointsToDraw = []
         self.dblclktemp = None
@@ -90,6 +93,7 @@ class VoGISProfilToolMainDialog(QDialog):
 
     def accept(self):
         try:
+            self.settings.nodata_value = int(self.ui.IDC_tbNoDataExport.text())
             #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
             if self.settings.onlyHektoMode is True and self.settings.mapData.rasters.count() > 0:
                 self.settings.onlyHektoMode = False

@@ -23,7 +23,8 @@ class Vertex:
                  vertexId,
                  distanceProfile,
                  distanceSegment,
-                 zvals
+                 zvals,
+                 nodata_value=-9999
                  ):
         self.attribNames = []
         self.attributes = []
@@ -49,6 +50,7 @@ class Vertex:
         self.distanceProfile = distanceProfile
         self.distanceSegment = distanceSegment
         self.zvals = zvals
+        self.nodata_value = nodata_value
 
     def toString(self, hekto, attribs, delimiter, decimalDelimiter):
         #dirty HACK! toString() replace, um unabhaengig von LOCALE Dezimaltrenner setzen zu können
@@ -161,7 +163,7 @@ class Vertex:
             valCnter = 1
             for zVal in self.zvals:
                 if zVal is None:
-                    z += '-9999'
+                    z += str(self.nodata_value)
                 else:
                     z += ('{0:.2f}'.format(zVal)).replace('.', decimalDelimiter)
                 if valCnter < len(self.zvals):

@@ -161,7 +161,7 @@ class ExportShape:
         fldCnt = 4
         if len(v.zvals) > 0:
             for z in v.zvals:
-                zVal = -9999
+                zVal = self.settings.nodata_value
                 if z is not None:
                     zVal = z
                 feat.SetField(fldCnt, round(zVal, 3))

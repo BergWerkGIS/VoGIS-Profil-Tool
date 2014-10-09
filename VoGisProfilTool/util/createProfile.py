@@ -201,7 +201,8 @@ class CreateProfile:
                         vtxId,
                         distTotal,
                         distSegment,
-                        self.__getValsAtPoint(qgLineVertices[0])
+                        self.__getValsAtPoint(qgLineVertices[0]),
+                        self.settings.nodata_value
                         )
         segmentvertices.append(newVtx)
 
@@ -237,7 +238,8 @@ class CreateProfile:
                                             vtxId,
                                             vDist,
                                             distQgVertices,
-                                            self.__getValsAtPoint(qgPnt)
+                                            self.__getValsAtPoint(qgPnt),
+                                            self.settings.nodata_value
                                             )
                             segmentvertices.append(newVtx)
                             segments.append(Segment(segmentCnter, segmentvertices))
@@ -265,7 +267,8 @@ class CreateProfile:
                                 vtxId,
                                 distTotal,
                                 distSegment,
-                                self.__getValsAtPoint(self.__qgPntFromShplyPnt(shplyPnt))
+                                self.__getValsAtPoint(self.__qgPntFromShplyPnt(shplyPnt)),
+                                self.settings.nodata_value
                                 )
                 segmentvertices.append(newVtx)
 
@@ -290,7 +293,8 @@ class CreateProfile:
                         vtxId,
                         shplyGeom.length,
                         distSegment,
-                        self.__getValsAtPoint(qgLastPnt)
+                        self.__getValsAtPoint(qgLastPnt),
+                        self.settings.nodata_value
                         )
         segmentvertices.append(newVtx)
         segments.append(Segment(segmentCnter, segmentvertices))
@@ -298,10 +302,10 @@ class CreateProfile:
         return segments
 
     def __qgPntFromShplyPnt(self, shapelyPnt):
-        wkbPnt = dumps(shapelyPnt)
-        qgGeom = QgsGeometry()
-        qgGeom.fromWkb(wkbPnt)
-        return qgGeom.asPoint()
+        wkb_pnt = dumps(shapelyPnt)
+        qg_geom = QgsGeometry()
+        qg_geom.fromWkb(wkb_pnt)
+        return qg_geom.asPoint()
 
     def __getValsAtPoint(self, pnt):
 
@@ -315,14 +319,14 @@ class CreateProfile:
             if QGis.QGIS_VERSION_INT < 10900:
                 noDataVal, validNoData = raster.noDataValue()
                 if validNoData:
-                    rasterVal = noDataVal
+                    raster_val = noDataVal
                 else:
-                    #rasterVal = float('nan')
-                    rasterVal = -9999
+                    #raster_val = float('nan')
+                    raster_val = self.settings.nodata_value
             else:
-                rasterVal = -9999
+                raster_val = self.settings.nodata_value
 
-            #QgsMessageLog.logMessage('rasterVal VOR identify:' + str(rasterVal), 'VoGis')
+            #QgsMessageLog.logMessage('raster_val VOR identify:' + str(raster_val), 'VoGis')
 
             #check if coordinate systems match
             if self.settings.modeLine == enumModeLine.line:
@@ -341,33 +345,33 @@ class CreateProfile:
             #QgsMessageLog.logMessage(str(pnt), 'VoGis')
 
             if QGis.QGIS_VERSION_INT < 10900:
-                result, identifyDic = raster.identify(pnt)
+                result, identify_dic = raster.identify(pnt)
                 if result:
-                    for bandName, pixelValue in identifyDic.iteritems():
-                        #QgsMessageLog.logMessage('bandName:' + str(bandName), 'VoGis')
-                        if str(bandName) == raster.bandName(1):
+                    for band_name, pixel_value in identify_dic.iteritems():
+                        #QgsMessageLog.logMessage('band_name:' + str(band_name), 'VoGis')
+                        if str(band_name) == raster.band_name(1):
                             try:
-                                #QgsMessageLog.logMessage('pixelValue:' + str(pixelValue), 'VoGis')
-                                rasterVal = float(pixelValue)
+                                #QgsMessageLog.logMessage('pixel_value:' + str(pixel_value), 'VoGis')
+                                raster_val = float(pixel_value)
                             except ValueError:
                                 #float('nan') #0
-                                rasterVal = -9999
+                                raster_val = self.settings.nodata_value
                                 pass
             else:
-                identifyResult = raster.dataProvider().identify(pnt, 1)
-                for bndNr, pixVal in identifyResult.results().iteritems():
-                    if 1 == bndNr:
+                identify_result = raster.dataProvider().identify(pnt, 1)
+                for bnd_nr, pix_val in identify_result.results().iteritems():
+                    if 1 == bnd_nr:
                         try:
-                            rasterVal = float(pixVal)
+                            raster_val = float(pix_val)
                         #except ValueError:
                         except:
-                            QgsMessageLog.logMessage('pixVal Exception: ' + str(pixVal), 'VoGis')
-                            rasterVal = -9999
+                            QgsMessageLog.logMessage('pix_val Exception: ' + str(pix_val), 'VoGis')
+                            raster_val = self.settings.nodata_value
                             pass
 
-            #QgsMessageLog.logMessage('rasterVal NACH identify:' + str(rasterVal), 'VoGis')
+            #QgsMessageLog.logMessage('raster_val NACH identify:' + str(raster_val), 'VoGis')
 
-            vals.append(rasterVal)
+            vals.append(raster_val)
 
         #QMessageBox.warning(self.InterFace.mainWindow(), "VoGIS-Profiltool", str(vals))
         return vals
