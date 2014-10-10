@@ -27,8 +27,10 @@ import resources_rc
 from vogisprofiltoolmaindialog import VoGISProfilToolMainDialog
 from bo.raster import Raster
 from bo.line import Line
+from bo.polygon import Polygon
 from bo.rasterCollection import RasterCollection
 from bo.lineCollection import LineCollection
+from bo.polygonCollection import PolygonCollection
 from bo.mapdata import MapData
 from bo.settings import Settings
 
@@ -123,54 +125,41 @@ class VoGISProfilToolMain:
         # Run the dialog event loop
         #result = self.dlg.exec_()
         self.dlg.exec_()
-        #QgsMessageLog.logMessage(str(result), 'VoGis')
 
-        # if result == 0:
-        #     return
-
-        # QApplication.setOverrideCursor(Qt.WaitCursor)
-
-        # createProf = CreateProfile(self.iface, self.settings)
-        # profiles = createProf.create()
-        # QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
-
-        # if len(profiles) < 1:
-        #     QApplication.restoreOverrideCursor()
-        #     QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
-        #     return
-
-        # self.dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
-        # self.dlg.show()
-        # result = self.dlg.exec_()
 
     def __getMapData(self):
 
         legend = self.iface.legendInterface()
-        availLayers = legend.layers()
+        avail_lyrs = legend.layers()
 
-        rColl = RasterCollection()
-        lColl = LineCollection()
+        raster_coll = RasterCollection()
+        line_coll = LineCollection()
+        poly_coll = PolygonCollection()
 
-        for lyr in availLayers:
+        for lyr in avail_lyrs:
             if legend.isLayerVisible(lyr):
-                lyrType = lyr.type()
-                lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
-                #lyrName = unicodedata.normalize('NFKD', unicode(lyr.name()))
-                if lyrType == 0:
+                lyr_type = lyr.type()
+                lyr_name = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
+                #lyr_name = unicodedata.normalize('NFKD', unicode(lyr.name()))
+                if lyr_type == 0:
                     #vector
                     if lyr.geometryType() == 1:
                         #Line
-                        l = Line(lyr.id(), lyrName, lyr)
-                        #QgsMessageLog.logMessage(l.toStr(), 'VoGis')
-                        lColl.addLine(l)
-                elif lyrType == 1:
+                        new_line = Line(lyr.id(), lyr_name, lyr)
+                        line_coll.addLine(new_line)
+                    elif lyr.geometryType() == 2:
+                        #Polygon
+                        new_poly = Polygon(lyr.id(), lyr_name, lyr)
+                        poly_coll.addPolygon(new_poly)
+                elif lyr_type == 1:
                     #Raster
                     if lyr.bandCount() < 2:
-                        r = Raster(lyr.id(), lyrName, lyr)
-                        rColl.addRaster(r)
+                        new_raster = Raster(lyr.id(), lyr_name, lyr)
+                        raster_coll.addRaster(new_raster)
 
-        mapData = MapData()
-        mapData.lines = lColl
-        mapData.rasters = rColl
+        map_data = MapData()
+        map_data.lines = line_coll
+        map_data.rasters = raster_coll
+        map_data.polygons = poly_coll
 
-        return mapData
+        return map_data

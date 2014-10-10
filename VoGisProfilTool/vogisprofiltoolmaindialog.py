@@ -66,9 +66,10 @@ class VoGISProfilToolMainDialog(QDialog):
         self.ui.IDC_tbToY.setText('230000')
 
         self.__addRastersToGui()
+        self.__addPolygonsToGui()
 
-        for lLyr in self.settings.mapData.lines.lines():
-            self.ui.IDC_cbLineLayers.addItem(lLyr.name, lLyr)
+        for line_lyr in self.settings.mapData.lines.lines():
+            self.ui.IDC_cbLineLayers.addItem(line_lyr.name, line_lyr)
 
         if self.settings.mapData.lines.count() < 1:
             self.ui.IDC_rbDigi.setChecked(True)
@@ -230,6 +231,7 @@ class VoGISProfilToolMainDialog(QDialog):
                         item.setCheckState(Qt.Checked)
         self.selectingVisibleRasters = False
 
+
     def lineLayerChanged(self, idx):
         if self.ui.IDC_rbShapeLine.isChecked() is False:
             self.ui.IDC_rbShapeLine.setChecked(True)
@@ -246,43 +248,62 @@ class VoGISProfilToolMainDialog(QDialog):
             else:
                 self.ui.IDC_chkOnlySelectedFeatures.setChecked(True)
 
+
     def valueChangedEquiDistance(self, val):
         if self.ui.IDC_rbEquiDistance.isChecked() is False:
             self.ui.IDC_rbEquiDistance.setChecked(True)
+
 
     def valueChangedVertexCount(self, val):
         if self.ui.IDC_rbVertexCount.isChecked() is False:
             self.ui.IDC_rbVertexCount.setChecked(True)
 
+
     def lvRasterItemChanged(self, item):
-        if self.selectingVisibleRasters is True: return
+        if self.selectingVisibleRasters is True:
+            return
         if item.checkState() == Qt.Checked:
             selected = True
         if item.checkState() == Qt.Unchecked:
             selected = False
 
-        iData = item.data(Qt.UserRole)
+        item_data = item.data(Qt.UserRole)
         if QGis.QGIS_VERSION_INT < 10900:
-            rl = iData.toPyObject()
+            raster_lyr = item_data.toPyObject()
         else:
-            rl = iData
-        self.settings.mapData.rasters.getById(rl.id).selected = selected
+            raster_lyr = item_data
+        self.settings.mapData.rasters.getById(raster_lyr.id).selected = selected
+
+
+    def lvPolygonItemChanged(self, item):
+        if item.checkState() == Qt.Checked:
+            selected = True
+        if item.checkState() == Qt.Unchecked:
+            selected = False
+
+        item_data = item.data(Qt.UserRole)
+        if QGis.QGIS_VERSION_INT < 10900:
+            poly_lyr = item_data.toPyObject()
+        else:
+            poly_lyr = item_data
+        self.settings.mapData.polygons.getById(poly_lyr.id).selected = selected
+
 
     def refreshRasterList(self):
         legend = self.iface.legendInterface()
-        availLayers = legend.layers()
-        rColl = RasterCollection()
+        avail_lyrs = legend.layers()
+        raster_coll = RasterCollection()
 
-        for lyr in availLayers:
+        for lyr in avail_lyrs:
             if legend.isLayerVisible(lyr):
-                lyrType = lyr.type()
-                lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
-                if lyrType == 1:
+                lyr_type = lyr.type()
+                lyr_name = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
+                if lyr_type == 1:
                     if lyr.bandCount() < 2:
-                        r = Raster(lyr.id(), lyrName, lyr)
-                        rColl.addRaster(r)
+                        new_raster = Raster(lyr.id(), lyr_name, lyr)
+                        raster_coll.addRaster(new_raster)
 
-        self.settings.mapData.rasters = rColl
+        self.settings.mapData.rasters = raster_coll
         self.__addRastersToGui()
 
     def __addRastersToGui(self):
@@ -292,12 +313,24 @@ class VoGISProfilToolMainDialog(QDialog):
             check = Qt.Checked
             self.settings.mapData.rasters.rasters()[0].selected = True
 
-        for rLyr in self.settings.mapData.rasters.rasters():
-            item = QListWidgetItem(rLyr.name)
-            item.setData(Qt.UserRole, rLyr)
+        for raster_lyr in self.settings.mapData.rasters.rasters():
+            item = QListWidgetItem(raster_lyr.name)
+            item.setData(Qt.UserRole, raster_lyr)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(check)
             self.ui.IDC_listRasters.addItem(item)
+
+
+    def __addPolygonsToGui(self):
+        self.ui.IDC_listPolygons.clear()
+        check = Qt.Unchecked
+        for poly_lyr in self.settings.mapData.polygons.polygons():
+            item = QListWidgetItem(poly_lyr.name)
+            item.setData(Qt.UserRole, poly_lyr)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(check)
+            self.ui.IDC_listPolygons.addItem(item)
+
 
     def drawLine(self):
         if self.ui.IDC_rbDigi.isChecked() is False:
@@ -308,10 +341,12 @@ class VoGISProfilToolMainDialog(QDialog):
         self.__activateDigiTool()
         self.canvas.setMapTool(self.tool)
 
+
     def __createDigiFeature(self, pnts):
         u = Util(self.iface)
         f = u.createQgLineFeature(pnts)
         self.settings.mapData.customLine = f
+
 
     def __lineFinished(self, position):
         mapPos = self.canvas.getCoordinateTransform().toMapCoordinates(position["x"], position["y"])

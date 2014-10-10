@@ -43,7 +43,22 @@ QGISPIDIR = .qgis2
 
 PY_FILES = vogisprofiltoolmain.py vogisprofiltoolmaindialog.py vogisprofiltoolplot.py __init__.py
 EXTRAS = icons/icon.png icons/home.png icons/pan.png icons/save.png icons/zoomlast.png icons/zoomnext.png icons/zoomrectangle.png icons/zoomselect.png icons/identify.png
-BO_FILES = bo/__init__.py bo/line.py bo/lineCollection.py bo/mapdata.py bo/raster.py bo/rasterCollection.py bo/settings.py bo/profile.py bo/segment.py bo/vertex.py bo/zVal.py bo/node.py bo/linkedList.py bo/plotExtent.py
+BO_FILES = bo/__init__.py \
+           bo/line.py \
+           bo/lineCollection.py \
+           bo/polygon.py \
+           bo/polygonCollection.py \
+           bo/mapdata.py \
+           bo/raster.py \
+           bo/rasterCollection.py \
+           bo/settings.py \
+           bo/profile.py \
+           bo/segment.py \
+           bo/vertex.py \
+           bo/zVal.py \
+           bo/node.py \
+           bo/linkedList.py \
+           bo/plotExtent.py
 UTIL_FILES = util/__init__.py util/u.py util/createProfile.py util/exportShape.py util/ptmaptool.py util/exportDxf.py
 UI_FILES = ui/ui_vogisprofiltoolmain.py ui/ui_vogisprofiltoolplot.py
 RESOURCE_FILES = resources_rc.py
