@@ -22,131 +22,126 @@ from qgis.core import *
 from math import *
 from PyQt4.QtGui import QMessageBox
 from PyQt4.QtGui import QApplication
+from PyQt4.QtCore import QObject
+from PyQt4.QtCore import pyqtSignal
+import traceback
 #if QGis.QGIS_VERSION_INT >= 10900:
 #    import processing
 
 
-class CreateProfile:
+class CreateProfile(QObject):
 
     def __init__(self, interface, settings):
+        QObject.__init__(self)
         self.iface = interface
         self.settings = settings
+        self.stop = False
+
+
+    def abort(self):
+        self.stop = True
+
+
+    finished = pyqtSignal(object)
+    error = pyqtSignal(basestring)
+    progress = pyqtSignal(basestring)
+
 
     def create(self):
 
         profiles = []
 
-        #Line aus den Textboxwerten erstellen
-        if self.settings.modeLine == enumModeLine.straightLine:
-            profiles.append(self.processFeature(None,
-                                                1,
-                                                1,
-                                                self.settings.mapData.customLine
-                                                )
-                            )
-            return profiles
-
-        #Line aus gezeichneter Linie erstellen
-        if self.settings.modeLine == enumModeLine.customLine:
-            profiles.append(self.processFeature(None,
-                                                1,
-                                                1,
-                                                self.settings.mapData.customLine
-                                                )
-                            )
-            return profiles
-
-        #Shapefile Geometrien abarbeiten
-        if self.settings.modeLine == enumModeLine.line:
-
-            #feat = QgsFeature()
-            #if self.settings.onlySelectedFeatures is True:
-            #    for feat in self.settings.mapData.selectedLineLyr.line.selectedFeatures():
-            #        profiles.append(self.processFeature(len(profiles) + 1,
-            #                                            self.settings.mapData.selectedLineLyr.line.id(),
-            #                                            feat
-            #                                            )
-            #                        )
-            #else:
-            #    provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
-            #    attrIndices = provider.attributeIndexes()
-            #    provider.select(attrIndices)
-            #    while (provider.nextFeature(feat)):
-            #        #QgsMessageLog.logMessage(str(self.settings.mapData.selectedLineLyr.line.id()), 'VoGis')
-            #        profiles.append(self.processFeature(len(profiles) + 1,
-            #                                            self.settings.mapData.selectedLineLyr.line.id(),
-            #                                            feat
-            #                                            )
-            #                        )
-
-            provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
-            feats = []
-
-            #Alle Attribute holen
-            if QGis.QGIS_VERSION_INT < 10900: provider.select(provider.attributeIndexes())
-
-            if self.settings.onlySelectedFeatures is True:
-                feats = self.settings.mapData.selectedLineLyr.line.selectedFeatures()
-            else:
-                if QGis.QGIS_VERSION_INT < 10900:
-                    attrIndices = provider.attributeIndexes()
-                    provider.select(attrIndices)
-                    feat = QgsFeature()
-                    while (provider.nextFeature(feat)):
-                        #geom = feat.geometry()
-                        #QgsMessageLog.logMessage( 'isMultipart: {0}'.format(str(geom.isMultipart())), 'VoGis')
-                        #attrs = feat.attributeMap()
-                        # attrs is a dictionary: key = field index, value = QgsFeatureAttribute
-                        # show all attributes and their values
-                        #for (k, attr) in feat.attributeMap().iteritems():
-                        #    QgsMessageLog.logMessage('{0}: {1}'.format(k, attr.toString()), 'VoGis')
-                        feats.append(feat)
-                        #neues Feature verwenden, weil sonst die Multiparts
-                        #nicht als solche erkannt werden
-                        feat = QgsFeature()
-                else:
-                    QgsMessageLog.logMessage('PROVIDER SELECT', 'VoGis')
-                    #processing.getfeatures: This will iterate over all the features in the layer, in case there is no selection, or over the selected features otherwise.
-                    #obviously not available with windows standalone installer
-                    #features = processing.getfeatures(self.settings.mapData.selectedLineLyr.line)
-                    features = self.settings.mapData.selectedLineLyr.line.getFeatures()
-                    for feat in features:
-                        feats.append(feat)
-
-            #for feat in feats:
-            #    if feat.isValid() is False:
-            #        return []
-
-            ut = Util(self.iface)
-            feats, err_msg = ut.prepareFeatures(self.settings, provider, feats)
-
-            if not err_msg is None:
-                #QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", err_msg)
-                QMessageBox.critical(self.iface.mainWindow(), 'PREPARE ERROR', err_msg)
-                return []
-
-            for f in feats:
-                geom = f.geometry()
-                if geom.isMultipart():
-                    msg = QApplication.translate('code', 'Multipart Feature vorhanden! Option zum Explodieren verwenden.', None, QApplication.UnicodeUTF8)
-                    QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
-                    return profiles
-
-            featCnt = len(feats)
-            for idx, feat in enumerate(feats):
-                #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
-                #http://acaciaecho.wordpress.com/2011/01/11/pyqtprogressbar/
-                self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, Element: {0}/{1}'.format(idx, featCnt))
-                profiles.append(self.processFeature(provider.fields(),
-                                                    len(profiles) + 1,
-                                                    self.settings.mapData.selectedLineLyr.line.id(),
-                                                    feat
+        try:
+            #Line aus den Textboxwerten erstellen
+            if self.settings.modeLine == enumModeLine.straightLine:
+                profiles.append(self.processFeature(None,
+                                                    1,
+                                                    1,
+                                                    self.settings.mapData.customLine
                                                     )
                                 )
+                self.finished.emit(profiles)
+                return
 
-        #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
-        self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, {0} Profile'.format(len(profiles)))
-        return profiles
+            #Line aus gezeichneter Linie erstellen
+            if self.settings.modeLine == enumModeLine.customLine:
+                profiles.append(self.processFeature(None,
+                                                    1,
+                                                    1,
+                                                    self.settings.mapData.customLine
+                                                    )
+                                )
+                self.finished.emit(profiles)
+                return
+
+            #Shapefile Geometrien abarbeiten
+            if self.settings.modeLine == enumModeLine.line:
+
+                provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
+                feats = []
+
+                #Alle Attribute holen
+                if QGis.QGIS_VERSION_INT < 10900:
+                    provider.select(provider.attributeIndexes())
+
+                if self.settings.onlySelectedFeatures is True:
+                    feats = self.settings.mapData.selectedLineLyr.line.selectedFeatures()
+                else:
+                    if QGis.QGIS_VERSION_INT < 10900:
+                        attrib_indices = provider.attributeIndexes()
+                        provider.select(attrib_indices)
+                        feat = QgsFeature()
+                        while provider.nextFeature(feat):
+                            feats.append(feat)
+                            #neues Feature verwenden, weil sonst die Multiparts
+                            #nicht als solche erkannt werden
+                            feat = QgsFeature()
+                    else:
+                        #processing.getfeatures: This will iterate over all the features in the layer, in case there is no selection, or over the selected features otherwise.
+                        #obviously not available with windows standalone installer
+                        #features = processing.getfeatures(self.settings.mapData.selectedLineLyr.line)
+                        features = self.settings.mapData.selectedLineLyr.line.getFeatures()
+                        for feat in features:
+                            feats.append(feat)
+
+                util = Util(self.iface)
+                feats, err_msg = util.prepareFeatures(self.settings, provider, feats)
+
+                if not err_msg is None:
+                    #QMessageBox.critical(self.iface.mainWindow(), 'PREPARE ERROR', err_msg)
+                    self.error.emit(err_msg)
+                    self.finished.emit([])
+                    return
+
+                for feat in feats:
+                    geom = feat.geometry()
+                    if geom.isMultipart():
+                        msg = QApplication.translate('code', 'Multipart Feature vorhanden! Option zum Explodieren verwenden.', None, QApplication.UnicodeUTF8)
+                        self.error.emit(msg)
+                        self.finished.emit([])
+                        return
+
+                feat_cnt = len(feats)
+                for idx, feat in enumerate(feats):
+                    if self.stop is True:
+                        profiles = []
+                        break
+                    if idx == 0 or idx % 5 == 0:
+                        msg = 'Profil {0}/{1}'.format(idx+1, feat_cnt)
+                        self.progress.emit(msg)
+                    profiles.append(self.processFeature(provider.fields(),
+                                                        len(profiles) + 1,
+                                                        self.settings.mapData.selectedLineLyr.line.id(),
+                                                        feat
+                                                        )
+                                    )
+                msg = 'Profil {0}/{1}'.format(idx+1, feat_cnt)
+                self.progress.emit(msg)
+
+            self.finished.emit(profiles)
+        except Exception, ex:
+            self.error.emit(traceback.format_exc())
+            self.finished.emit(profiles)
 
     def processFeature(self, fields, profileId, layerId, feat):
 
@@ -362,7 +357,10 @@ class CreateProfile:
                 for bnd_nr, pix_val in identify_result.results().iteritems():
                     if 1 == bnd_nr:
                         try:
-                            raster_val = float(pix_val)
+                            if pix_val is None:
+                                raster_val = self.settings.nodata_value
+                            else:
+                                raster_val = float(pix_val)
                         #except ValueError:
                         except:
                             QgsMessageLog.logMessage('pix_val Exception: ' + str(pix_val), 'VoGis')

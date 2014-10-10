@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Thu Oct  9 15:58:09 2014
+# Created: Fri Oct 10 11:51:07 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -242,6 +242,9 @@ class Ui_VoGISProfilToolMain(object):
         self.gridLayout_9.addWidget(self.label_5, 0, 0, 1, 1)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.gridLayout_9.addItem(spacerItem, 0, 2, 1, 1)
+        self.IDC_lblCreateStatus = QtGui.QLabel(self.widget)
+        self.IDC_lblCreateStatus.setObjectName(_fromUtf8("IDC_lblCreateStatus"))
+        self.gridLayout_9.addWidget(self.IDC_lblCreateStatus, 0, 3, 1, 1)
         self.verticalLayout.addWidget(self.widget)
         self.buttonBox = QtGui.QDialogButtonBox(VoGISProfilToolMain)
         self.buttonBox.setEnabled(True)
@@ -288,4 +291,5 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_chkNodesAndVertices.setText(_translate("VoGISProfilToolMain", "Profilpunkte erstellen an Knoten und Stützstellen", None))
         self.IDC_tbNoDataExport.setText(_translate("VoGISProfilToolMain", "-9999", None))
         self.label_5.setText(_translate("VoGISProfilToolMain", "Nodata (Export)", None))
+        self.IDC_lblCreateStatus.setText(_translate("VoGISProfilToolMain", "0/0", None))
 

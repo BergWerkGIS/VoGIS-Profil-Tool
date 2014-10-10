@@ -45,6 +45,7 @@ class VoGISProfilToolMainDialog(QDialog):
         self.settings = settings
         self.iface = interface
         self.selectingVisibleRasters = False
+        self.thread = None
 
         QDialog.__init__(self, interface.mainWindow())
 
@@ -140,29 +141,69 @@ class VoGISProfilToolMainDialog(QDialog):
 
             QApplication.setOverrideCursor(Qt.WaitCursor)
 
-            createProf = CreateProfile(self.iface, self.settings)
-            profiles = createProf.create()
-            QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
-
-            if len(profiles) < 1:
-                QApplication.restoreOverrideCursor()
-                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Es konnten keine Profile erstellt werden.', None, QApplication.UnicodeUTF8))
-                return
-
-            dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
-            dlg.show()
-            #result = self.dlg.exec_()
-            dlg.exec_()
+            create_profile = CreateProfile(self.iface, self.settings)
+            thread = QThread(self)
+            create_profile.moveToThread(thread)
+            create_profile.finished.connect(self.profiles_finished)
+            create_profile.error.connect(self.profiles_error)
+            create_profile.progress.connect(self.profiles_progress)
+            thread.started.connect(create_profile.create)
+            thread.start(QThread.LowestPriority)
+            self.thread = thread
+            self.create_profile = create_profile
+            self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         except:
             QApplication.restoreOverrideCursor()
             ex = u'{0}'.format(traceback.format_exc())
             msg = 'Unexpected ERROR:\n\n{0}'.format(ex[:2000])
             QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
 
+
+    def profiles_finished(self, profiles):
+        QApplication.restoreOverrideCursor()
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        #self.create_profile.deleteLater()
+        self.thread.quit()
+        self.thread.wait()
+        #self.thread.deleteLater()
+
+        #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
+        self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, {0} Profile'.format(len(profiles)))
+        QgsMessageLog.logMessage('Profile Count: ' + str(len(profiles)), 'VoGis')
+
+        if len(profiles) < 1:
+            QApplication.restoreOverrideCursor()
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Es konnten keine Profile erstellt werden.', None, QApplication.UnicodeUTF8))
+            return
+
+        dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
+        dlg.show()
+        #result = self.dlg.exec_()
+        dlg.exec_()
+
+
+    def profiles_error(self, exception_string):
+        QApplication.restoreOverrideCursor()
+        QgsMessageLog.logMessage(u'Error during profile creation: {0}'.format(exception_string), 'VoGis')
+        QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", exception_string)
+
+
+    def profiles_progress(self, msg):
+        self.iface.mainWindow().statusBar().showMessage(msg)
+        self.ui.IDC_lblCreateStatus.setText(msg)
+        #QgsMessageLog.logMessage(msg, 'VoGis')
+        QApplication.processEvents()
+
+
     def reject(self):
-        #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
+        if not self.thread is None:
+            if self.thread.isRunning():
+                self.create_profile.abort()
+                return
+
         self.rubberband.reset(self.polygon)
         QDialog.reject(self)
+
 
     def selectVisibleRasters(self):
         self.refreshRasterList()
