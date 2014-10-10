@@ -483,7 +483,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="s">
+      <widget class="QDialogButtonBox" name="buttonBox">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -518,7 +518,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>s</sender>
+   <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>VoGISProfilToolMain</receiver>
    <slot>reject()</slot>
@@ -534,7 +534,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>s</sender>
+   <sender>buttonBox</sender>
    <signal>accepted()</signal>
    <receiver>VoGISProfilToolMain</receiver>
    <slot>accept()</slot>
