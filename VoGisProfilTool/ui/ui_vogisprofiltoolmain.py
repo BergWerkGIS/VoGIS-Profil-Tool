@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Fri Oct 10 11:51:07 2014
+# Created: Fri Oct 10 13:13:58 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -246,18 +246,18 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_lblCreateStatus.setObjectName(_fromUtf8("IDC_lblCreateStatus"))
         self.gridLayout_9.addWidget(self.IDC_lblCreateStatus, 0, 3, 1, 1)
         self.verticalLayout.addWidget(self.widget)
-        self.buttonBox = QtGui.QDialogButtonBox(VoGISProfilToolMain)
-        self.buttonBox.setEnabled(True)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.verticalLayout.addWidget(self.buttonBox)
+        self.s = QtGui.QDialogButtonBox(VoGISProfilToolMain)
+        self.s.setEnabled(True)
+        self.s.setOrientation(QtCore.Qt.Horizontal)
+        self.s.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.s.setObjectName(_fromUtf8("s"))
+        self.verticalLayout.addWidget(self.s)
         self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
         self.retranslateUi(VoGISProfilToolMain)
         QtCore.QObject.connect(self.IDC_listRasters, QtCore.SIGNAL(_fromUtf8("itemChanged(QListWidgetItem*)")), VoGISProfilToolMain.lvRasterItemChanged)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), VoGISProfilToolMain.reject)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), VoGISProfilToolMain.accept)
+        QtCore.QObject.connect(self.s, QtCore.SIGNAL(_fromUtf8("rejected()")), VoGISProfilToolMain.reject)
+        QtCore.QObject.connect(self.s, QtCore.SIGNAL(_fromUtf8("accepted()")), VoGISProfilToolMain.accept)
         QtCore.QObject.connect(self.IDC_bSelectVisibleRasters, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolMain.selectVisibleRasters)
         QtCore.QObject.connect(self.IDC_bDrawLine, QtCore.SIGNAL(_fromUtf8("clicked()")), VoGISProfilToolMain.drawLine)
         QtCore.QObject.connect(self.IDC_dblspinDistance, QtCore.SIGNAL(_fromUtf8("valueChanged(double)")), VoGISProfilToolMain.valueChangedEquiDistance)
