@@ -61,6 +61,7 @@ class Util:
             #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", tr(u'ist keine gültige Zahl!'))
             return False
 
+
     def isInt(self, val, valName):
         try:
             i = int(val)
@@ -69,6 +70,7 @@ class Util:
         except:
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"'" + valName + "' ist keine gültige Ganzzahl!")
             return False
+
 
     def getFileName(self, text, filter, filePath):
         """filter: [["Shapefile", "shp"], ["Keyhole Markup Language", "kml"]]"""
@@ -143,11 +145,13 @@ class Util:
         qgFeat.setGeometry(line)
         return qgFeat
 
+
     def createQgPointFeature(self, vertex):
         pnt = QgsGeometry.fromPoint(QgsPoint(vertex.x, vertex.y))
         qgPnt = QgsFeature()
         qgPnt.setGeometry(pnt)
         return qgPnt
+
 
     def prepareFeatures(self, settings, provider, feats):
         """explode multipart features"""
@@ -179,6 +183,7 @@ class Util:
 
         return feats, None
 
+
     def valid(self, feats):
         #QgsMessageLog.logMessage('check feat valid', 'VoGis')
         err_cnt = 0
@@ -200,6 +205,7 @@ class Util:
                         err_cnt += 1
                         QgsMessageLog.logMessage(u'$id [{0}] {1}'.format(feat.id(), err.what()), 'VoGis')
         return (1 > err_cnt)
+
 
     def __mergeFeaturesAny(self, origFeats):
 
@@ -237,6 +243,7 @@ class Util:
         newFeats = tmpFeats
 
         return newFeats
+
 
     def __mergeFeaturesSimple(self, provider, origFeats):
 
@@ -313,11 +320,13 @@ class Util:
 
         return newFeats
 
+
     # def __printAttribs(self, attributeMap):
     #     txt = ''
     #     for (k, attr) in attributeMap.iteritems():
     #         txt += '({0}: {1}) '.format(k, attr.toString())
     #     return txt
+
 
     def __explodeMultiPartFeatures(self, provider, origFeats):
 
@@ -335,6 +344,7 @@ class Util:
 
         QgsMessageLog.logMessage('{0} features after exploding'.format(len(newFeats)), 'VoGis')
         return newFeats
+
 
     #https://github.com/SrNetoChan/MultipartSplit/blob/master/splitmultipart.py
     def explodeMultiPartFeature(self, provider, feat):
@@ -371,6 +381,7 @@ class Util:
 
         return newFeats
 
+
     def __transferAttributes(self, provider, attrMap, featNew):
         #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes OLD', self.__printAttribs(attrMap)), 'VoGis')
         #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW', self.__printAttribs(featNew.attributeMap())), 'VoGis')
@@ -391,6 +402,7 @@ class Util:
         #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW2', self.__printAttribs(featNew.attributeMap())), 'VoGis')
         return featNew
 
+
     def deleteVectorFile(self, fileName):
         if QgsVectorFileWriter.deleteShapeFile(fileName) is False:
             QMessageBox.warning(self.iface.mainWindow(),
@@ -400,6 +412,7 @@ class Util:
             return False
         else:
             return True
+
 
     def loadVectorFile(self, fileName):
         fileSaved = QApplication.translate('code', 'Datei gespeichert.', None, QApplication.UnicodeUTF8)
@@ -416,6 +429,7 @@ class Util:
                                       basename(str(fileName)),
                                       'ogr'
                                       )
+
 
     #def createOgrDataSrcAndLyr(self, driverName, fileName, epsg, geomType):
     def createOgrDataSrcAndLyr(self, driverName, fileName, wkt, geomType):
@@ -458,6 +472,7 @@ class Util:
             return None, None
 
         return ds, lyr
+
 
     def createOgrPointFeature(self, lyr, v):
         #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[0]), 'VoGis')

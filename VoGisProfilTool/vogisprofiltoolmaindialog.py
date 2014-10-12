@@ -137,6 +137,20 @@ class VoGISProfilToolMainDialog(QDialog):
                 QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Keine Profillinie vorhanden!', None, QApplication.UnicodeUTF8))
                 return
 
+            if len(self.settings.mapData.polygons.selected_polygons()) > 0 and len(self.settings.mapData.rasters.selectedRasters()) > 1:
+                raster_names = list(raster.name for raster in self.settings.mapData.rasters.selectedRasters())
+                sel_raster, ok_clicked = QInputDialog.getItem(
+                                                self.iface.mainWindow(),
+                                                u'DHM?',
+                                                u'Welches DHM soll zur Flächenverschneidung verwendet werden?',
+                                                raster_names,
+                                                0,
+                                                False
+                                                )
+                if ok_clicked is False:
+                    return
+                self.settings.intersection_dhm_idx = raster_names.index(sel_raster)
+
             #self.rubberband.reset(self.polygon)
             #QDialog.accept(self)
 

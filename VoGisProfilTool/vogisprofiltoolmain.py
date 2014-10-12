@@ -153,9 +153,11 @@ class VoGISProfilToolMain:
                         poly_coll.addPolygon(new_poly)
                 elif lyr_type == 1:
                     #Raster
-                    if lyr.bandCount() < 2:
-                        new_raster = Raster(lyr.id(), lyr_name, lyr)
-                        raster_coll.addRaster(new_raster)
+                    QgsMessageLog.logMessage(u'[{0}] provider type: {1}'.format(lyr.name(), lyr.providerType()), 'VoGis')
+                    if lyr.providerType() == 'gdal':
+                        if lyr.bandCount() < 2:
+                            new_raster = Raster(lyr.id(), lyr_name, lyr)
+                            raster_coll.addRaster(new_raster)
 
         map_data = MapData()
         map_data.lines = line_coll

@@ -209,7 +209,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         for intersection in self.intersections:
             self.subplot.plot(
                               (intersection.from_dist, intersection.to_dist),
-                              (intersection.from_z[0], intersection.to_z[0]),
+                              (intersection.from_z[self.settings.intersection_dhm_idx], intersection.to_z[self.settings.intersection_dhm_idx]),
                               'b-',
                               linewidth=4,
                               zorder=1,

@@ -346,11 +346,13 @@ class CreateProfile(QObject):
 
         return segments
 
+
     def __qgPntFromShplyPnt(self, shapelyPnt):
         wkb_pnt = dumps(shapelyPnt)
         qg_geom = QgsGeometry()
         qg_geom.fromWkb(wkb_pnt)
         return qg_geom.asPoint()
+
 
     def __getValsAtPoint(self, pnt):
 
@@ -402,7 +404,8 @@ class CreateProfile(QObject):
                                 #float('nan') #0
                                 raster_val = self.settings.nodata_value
             else:
-                identify_result = raster.dataProvider().identify(pnt, 1)
+                identify_result = raster.dataProvider().identify(pnt, QgsRaster.IdentifyFormatValue)
+                #QgsMessageLog.logMessage(u'identify_result: {0}'.format(identify_result.results()), 'VoGis')
                 for bnd_nr, pix_val in identify_result.results().iteritems():
                     if 1 == bnd_nr:
                         try:
