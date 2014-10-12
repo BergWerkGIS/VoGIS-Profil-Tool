@@ -183,9 +183,6 @@ class VoGISProfilToolPlotDialog(QDialog):
                   (1, 1, 0.521568627, 1.0),
                   ]
 
-#        for idx, intersection in enumerate(self.intersections):
-#            self.subplot.add_collection
-
         #idxCol = 0
         for idx, p in enumerate(self.profiles):
             #if idxCol > len(colors) - 1:
@@ -207,6 +204,17 @@ class VoGISProfilToolPlotDialog(QDialog):
             #lineColl.text.set_text('line label')
             self.subplot.add_collection(lineColl)
             #idxCol += 1
+
+        #LINE STYLES: http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
+        for intersection in self.intersections:
+            self.subplot.plot(
+                              (intersection.from_dist, intersection.to_dist),
+                              (intersection.from_z[0], intersection.to_z[0]),
+                              'b-',
+                              linewidth=4,
+                              zorder=1,
+                              )
+
         #save inital view in history
         pltToolbar.push_current()
         #select pan tool
@@ -217,6 +225,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         #self.fig.tight_layout()
         QApplication.restoreOverrideCursor()
 
+
     def accept(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
         QgsMessageLog.logMessage('accept: {0}'.format(self.exaggerationEdited), 'VoGis')
@@ -224,6 +233,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             self.exaggerationEdited = False
             return
         QDialog.accept(self)
+
 
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
@@ -233,11 +243,14 @@ class VoGISProfilToolPlotDialog(QDialog):
             return
         QDialog.reject(self)
 
+
     def exportShpPnt(self):
         self.__exportShp(True)
 
+
     def exportShpLine(self):
         self.__exportShp(False)
+
 
     def __exportShp(self, asPnt):
 
@@ -266,6 +279,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         else:
             expShp.exportPoint()
 
+
     def exportCsvXls(self):
         u = Util(self.iface)
         caption = QApplication.translate('code', 'CSV-datei exportieren', None, QApplication.UnicodeUTF8)
@@ -293,6 +307,7 @@ class VoGISProfilToolPlotDialog(QDialog):
                                  delimiter,
                                  decimalDelimiter
                                  ))
+
 
     def exportTxt(self):
         delimiter = self.__getDelimiter()
@@ -325,8 +340,8 @@ class VoGISProfilToolPlotDialog(QDialog):
                                  delimiter,
                                  decimalDelimiter
                                  ))
-
         txt.close()
+
 
     def exportAutoCadTxt(self):
         u = Util(self.iface)
@@ -342,11 +357,14 @@ class VoGISProfilToolPlotDialog(QDialog):
             txt.write(p.toACadTxt(' ', '.'))
         txt.close()
 
+
     def exportDxfPnt(self):
         self.__exportDxf(True)
 
+
     def exportDxfLine(self):
         self.__exportDxf(False)
+
 
     def __exportDxf(self, asPnt):
         u = Util(self.iface)
@@ -363,12 +381,14 @@ class VoGISProfilToolPlotDialog(QDialog):
         else:
             exDxf.exportLine()
 
+
     def __identify(self):
         #dirty hack: deselect all tools
         #selecting a tool twice deselects it
         self.pltToolbar.pan()
         self.pltToolbar.zoom()
         self.pltToolbar.zoom()
+
 
     def __figureDrawn(self, event):
         if self.debug: QgsMessageLog.logMessage('__figureDrawn, drawEventFired:{0} exaggerationEdited: {1}'.format(self.drawEventFired, self.exaggerationEdited), 'VoGis')
@@ -396,6 +416,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.editExaggeration.setText('{0:.1f}'.format(axes.get_aspect()))
         self.drawEventFired = False
 
+
     def __exaggerationEdited(self, *args):
         if self.debug: QgsMessageLog.logMessage('__exaggerationEdited, exaggerationEdited:{0} drawEventFired: {1}'.format(self.exaggerationEdited, self.drawEventFired), 'VoGis')
         #this event handler seems to get called twice????
@@ -412,10 +433,12 @@ class VoGISProfilToolPlotDialog(QDialog):
         exa = float(self.editExaggeration.text().replace(',', '.'))
         self.__adjustAxes(exa)
 
+
     def __one2oneClicked(self):
         if self.debug: QgsMessageLog.logMessage('1:1 clicked', 'VoGis')
         #QgsMessageLog.logMessage('axes:{0}'.format(self.pltWidget.figure.get_axes()), 'VoGis')
         self.__adjustAxes(1.0)
+
 
     def __adjustAxes(self, exaggeration):
         exaggeration = floor(exaggeration * 10) / 10
@@ -464,6 +487,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         # self.pltWidget.figure.get_axes()[0].set_ylim((self.origPltExt.ymin, newYmax))
         # self.pltWidget.figure.get_axes()[0].redraw_in_frame()
         # self.pltWidget.draw()
+
 
     def __plotPicked(self, event):
         self.plotpicked = True
@@ -615,6 +639,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             canvas.mpl_connect('button_press_event', self.__buttonPressed)
             return canvas
 
+
     def __setupAxes(self, axe1):
         axe1.grid()
         axe1.ticklabel_format(style='plain', useOffset=False)
@@ -640,11 +665,13 @@ class VoGISProfilToolPlotDialog(QDialog):
                          right=False
                          )
 
+
     def __getDecimalDelimiter(self):
         #delim = self.ui.IDC_cbDecimalDelimiter.itemData(self.ui.IDC_cbDecimalDelimiter.currentIndex())
         delim = self.ui.IDC_cbDecimalDelimiter.currentText()
         #QgsMessageLog.logMessage('delim:' + str(delim), 'VoGis')
         return delim
+
 
     def __getDelimiter(self):
         #delim = self.ui.IDC_cbDelimiter.itemData(self.ui.IDC_cbDelimiter.currentIndex())
