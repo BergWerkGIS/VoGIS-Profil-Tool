@@ -160,7 +160,7 @@ class VoGISProfilToolMainDialog(QDialog):
             QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
 
 
-    def profiles_finished(self, profiles):
+    def profiles_finished(self, profiles, intersections):
         QApplication.restoreOverrideCursor()
         self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
         #self.create_profile.deleteLater()
@@ -177,7 +177,7 @@ class VoGISProfilToolMainDialog(QDialog):
             QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Es konnten keine Profile erstellt werden.', None, QApplication.UnicodeUTF8))
             return
 
-        dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
+        dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles, intersections)
         dlg.show()
         #result = self.dlg.exec_()
         dlg.exec_()

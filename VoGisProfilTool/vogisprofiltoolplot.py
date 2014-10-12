@@ -46,7 +46,7 @@ RIGHT_MARGIN = 0.92
 TOP_MARGIN = 0.82
 
 class VoGISProfilToolPlotDialog(QDialog):
-    def __init__(self, interface, settings, profiles):
+    def __init__(self, interface, settings, profiles, intersections):
 
         QDialog.__init__(self, interface.mainWindow())
         self.iface = interface
@@ -54,6 +54,8 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.debug = False
         self.settings = settings
         self.profiles = profiles
+        self.intersections = intersections
+
         # Set up the user interface from Designer.
         self.ui = Ui_VoGISProfilToolPlot()
         self.ui.setupUi(self)
@@ -180,6 +182,9 @@ class VoGISProfilToolPlotDialog(QDialog):
                   (0.415686275, 0.239215686, 0.603921569, 1.0),
                   (1, 1, 0.521568627, 1.0),
                   ]
+
+#        for idx, intersection in enumerate(self.intersections):
+#            self.subplot.add_collection
 
         #idxCol = 0
         for idx, p in enumerate(self.profiles):
@@ -418,7 +423,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         #axes.set_aspect(exaggeration)
         #axes.set_autoscalex_on(False)
         #axes.set_autoscaley_on(True)
-        if self.debug: 
+        if self.debug:
             QgsMessageLog.logMessage('__adjustAxes, get_aspect:{0}'.format(axes.get_aspect()), 'VoGis')
             QgsMessageLog.logMessage('__adjustAxes, get_position:{0}'.format(axes.get_position()), 'VoGis')
             QgsMessageLog.logMessage('__adjustAxes, xBound:{0} xlim:{1}'.format(axes.get_xbound(),axes.get_xlim()), 'VoGis')
@@ -432,7 +437,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         axes.set_ylim(centerY - deltaYnew/2,centerY + deltaYnew/2)
         axes.set_aspect(exaggeration, 'datalim', 'C')
         self.pltWidget.draw()
-        if self.debug: 
+        if self.debug:
             QgsMessageLog.logMessage('__adjustAxes, get_aspect:{0}'.format(axes.get_aspect()), 'VoGis')
             QgsMessageLog.logMessage('__adjustAxes, get_position:{0}'.format(axes.get_position()), 'VoGis')
             QgsMessageLog.logMessage('__adjustAxes, xBound:{0} xlim:{1}'.format(axes.get_xbound(),axes.get_xlim()), 'VoGis')
@@ -591,7 +596,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             #                             )
             #left bottom right top
             self.subplot = fig.add_axes(
-                                        (LEFT_MARGIN, BOTTOM_MARGIN, RIGHT_MARGIN, TOP_MARGIN), 
+                                        (LEFT_MARGIN, BOTTOM_MARGIN, RIGHT_MARGIN, TOP_MARGIN),
                                         adjustable='datalim',
                                         aspect=1
                                         )

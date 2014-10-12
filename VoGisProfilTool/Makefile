@@ -44,6 +44,7 @@ QGISPIDIR = .qgis2
 PY_FILES = vogisprofiltoolmain.py vogisprofiltoolmaindialog.py vogisprofiltoolplot.py __init__.py
 EXTRAS = icons/icon.png icons/home.png icons/pan.png icons/save.png icons/zoomlast.png icons/zoomnext.png icons/zoomrectangle.png icons/zoomselect.png icons/identify.png
 BO_FILES = bo/__init__.py \
+           bo/intersection.py \
            bo/line.py \
            bo/lineCollection.py \
            bo/polygon.py \

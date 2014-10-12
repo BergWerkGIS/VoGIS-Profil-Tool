@@ -30,6 +30,25 @@ class Util:
     def __init__(self, iface):
         self.iface = iface
 
+    def get_geometry_wkbType_as_string(self, geom):
+        if QGis.WKBUnknown == geom.wkbType(): return 'WKBUnknown'
+        if QGis.WKBPoint == geom.wkbType(): return 'WKBPoint'
+        if QGis.WKBLineString == geom.wkbType(): return 'WKBLineString'
+        if QGis.WKBPolygon == geom.wkbType(): return 'WKBPolygon'
+        if QGis.WKBMultiPoint == geom.wkbType(): return 'WKBMultiPoint'
+        if QGis.WKBMultiLineString == geom.wkbType(): return 'WKBMultiLineString'
+        if QGis.WKBMultiPolygon == geom.wkbType(): return 'WKBMultiPolygon'
+        if QGis.WKBNoGeometry == geom.wkbType(): return 'WKBNoGeometry'
+        if QGis.WKBPoint25D == geom.wkbType(): return 'WKBPoint25D'
+        if QGis.WKBLineString25D == geom.wkbType(): return 'WKBLineString25D'
+        if QGis.WKBPolygon25D == geom.wkbType(): return 'WKBPolygon25D'
+        if QGis.WKBMultiPoint25D == geom.wkbType(): return 'WKBMultiPoint25D'
+        if QGis.WKBMultiLineString25D == geom.wkbType(): return 'WKBMultiLineString25D'
+        if QGis.WKBMultiPolygon25D == geom.wkbType(): return 'WKBMultiPolygon25D'
+
+        return 'no valid WKB Type'
+
+
     def isFloat(self, val, valName):
         try:
             val = val.replace(',', '.')
@@ -91,6 +110,32 @@ class Util:
         if fileName.lower().endswith(fileExt) is False:
             fileName = fileName + '.' + fileExt
         return fileName
+
+
+    def get_features(self, lyr):
+        feats = []
+        if lyr.selectedFeatureCount() > 0:
+            feats = lyr.selectedFeatures()
+        else:
+            if QGis.QGIS_VERSION_INT < 10900:
+                provider = lyr.dataProvider()
+                attrib_indices = provider.attributeIndexes()
+                provider.select(attrib_indices)
+                feat = QgsFeature()
+                while provider.nextFeature(feat):
+                    feats.append(feat)
+                    #neues Feature verwenden, weil sonst die Multiparts
+                    #nicht als solche erkannt werden
+                    feat = QgsFeature()
+            else:
+                #processing.getfeatures: This will iterate over all the features in the layer, in case there is no selection, or over the selected features otherwise.
+                #obviously not available with windows standalone installer
+                #features = processing.getfeatures(self.settings.mapData.selectedLineLyr.line)
+                features = lyr.getFeatures()
+                for feat in features:
+                    feats.append(feat)
+        return feats
+
 
     def createQgLineFeature(self, vertices):
         line = QgsGeometry.fromPolyline(vertices)
