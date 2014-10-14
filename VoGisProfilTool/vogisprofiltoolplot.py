@@ -87,29 +87,30 @@ class VoGISProfilToolPlotDialog(QDialog):
         QgsMessageLog.logMessage('idx:{0}'.format(idx), 'VoGis')
         self.ui.IDC_cbDecimalDelimiter.setCurrentIndex(idx)
 
-        pltExt = PlotExtent()
-        for p in self.profiles:
-            pltExt.union(p.getExtent())
-            #QgsMessageLog.logMessage(pltExt.toString(), 'VoGis')
+        plt_extent = PlotExtent()
+        for profile in self.profiles:
+            plt_extent.union(profile.getExtent())
+            if self.debug:
+                QgsMessageLog.logMessage(plt_extent.toString(), 'VoGis')
 
-        pltExt.expand()
-        self.origPltExt = PlotExtent(pltExt.xmin, pltExt.ymin, pltExt.xmax, pltExt.ymax)
-        self.pltWidget = self.__createMatplotlibCanvas(pltExt)
+        plt_extent.expand()
+        self.orig_plt_xtnt = PlotExtent(plt_extent.xmin, plt_extent.ymin, plt_extent.xmax, plt_extent.ymax)
+        self.plt_widget = self.__createMatplotlibCanvas(plt_extent)
         layout = self.ui.IDC_frPlot.layout()
         #QgsMessageLog.logMessage('layout: {0}'.format(layout), 'VoGis')
-        layout.addWidget(self.pltWidget)
-        pltToolbar = matplotlib.backends.backend_qt4agg.NavigationToolbar2QTAgg(self.pltWidget, self.ui.IDC_frPlot)
-        self.ui.IDC_frToolbar.layout().addWidget(pltToolbar)
+        layout.addWidget(self.plt_widget)
+        plt_toolbar = matplotlib.backends.backend_qt4agg.NavigationToolbar2QTAgg(self.plt_widget, self.ui.IDC_frPlot)
+        self.ui.IDC_frToolbar.layout().addWidget(plt_toolbar)
 
         #adjust actions
         #QgsMessageLog.logMessage('{0}'.format(dir(lstActions[0])), 'VoGis')
-#        for a in pltToolbar.actions():
+#        for a in plt_toolbar.actions():
 #            QgsMessageLog.logMessage('{0}'.format(a.text()), 'VoGis')
-#        for t in pltToolbar.toolitems:
+#        for t in plt_toolbar.toolitems:
 #            QgsMessageLog.logMessage('{0}'.format(t), 'VoGis')
-        #lstActions = pltToolbar.actions()
+        #lstActions = plt_toolbar.actions()
         firstaction = None
-        for a in pltToolbar.actions():
+        for a in plt_toolbar.actions():
             atxt = a.text()
             if atxt == 'Home':
                 firstaction = a
@@ -125,34 +126,38 @@ class VoGISProfilToolPlotDialog(QDialog):
             elif atxt == 'Save':
                 a.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/save.png"))
             else:
-                pltToolbar.removeAction(a)
+                plt_toolbar.removeAction(a)
 
         #insert 1:1 zoom button
         self.one2one = QPushButton()
         self.one2one.setText('1:1')
         self.one2one.clicked.connect(self.__one2oneClicked)
-        #pltToolbar.addWidget(self.one2one)
+        #plt_toolbar.addWidget(self.one2one)
         #insert QLineEdit to change the exaggeration
         #catch updating of figure, when exaggeration QLineEdit has been updated from draw_event of figure
-        self.drawEventFired = False
+        self.draw_event_fired = False
         #catch closing of dialog, when enter key has been used accept exaggeration edit field
-        self.exaggerationEdited = False
+        self.exaggeration_edited = False
+
+        #insert edit field for exaggeration
         self.editExaggeration = QLineEdit()
         self.editExaggeration.setFixedWidth(60)
         self.editExaggeration.setMaximumWidth(60)
-        pltToolbar.insertWidget(firstaction, self.editExaggeration)
-        self.editExaggeration.editingFinished.connect(self.__exaggerationEdited)
+        plt_toolbar.insertWidget(firstaction, self.editExaggeration)
+        self.editExaggeration.editingFinished.connect(self.__exaggeration_edited)
+
         #insert identify button -> deactivate all tools
         #HACK: picked event gets fired before click event
         self.plotpicked = False
-        pltToolbar.insertWidget(firstaction, self.one2one)
+        plt_toolbar.insertWidget(firstaction, self.one2one)
         self.identify = QPushButton()
         self.identify.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/identify.png"))
         self.identify.clicked.connect(self.__identify)
-        pltToolbar.insertWidget(firstaction, self.identify)
+        plt_toolbar.insertWidget(firstaction, self.identify)
+
         #insert identify label to show name of clicked dhm
         self.dhmLbl = QLabel()
-        pltToolbar.insertWidget(firstaction, self.dhmLbl)
+        plt_toolbar.insertWidget(firstaction, self.dhmLbl)
         #measure in figure
         self.click1 = None
         self.click2 = None
@@ -160,7 +165,14 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.click2pnt = None
         self.measureLbl = QLabel()
         self.measureLbl.setText(u'  ')
-        pltToolbar.insertWidget(firstaction, self.measureLbl)
+        plt_toolbar.insertWidget(firstaction, self.measureLbl)
+
+        #insert measure tool
+        self.measuring = False
+        self.measure_tool = QPushButton()
+        self.measure_tool.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/identify.png"))
+        self.measure_tool.clicked.connect(self.__measure)
+        plt_toolbar.insertWidget(firstaction, self.measure_tool)
 
         #for less thatn 10 colors:
         #alternative method: http://stackoverflow.com/a/14720445
@@ -216,10 +228,10 @@ class VoGISProfilToolPlotDialog(QDialog):
                               )
 
         #save inital view in history
-        pltToolbar.push_current()
+        plt_toolbar.push_current()
         #select pan tool
-        pltToolbar.pan()
-        self.pltToolbar = pltToolbar
+        plt_toolbar.pan()
+        self.plt_toolbar = plt_toolbar
         #(matplotlib.pyplot).tight_layout(True)
         #plt.tight_layout()
         #self.fig.tight_layout()
@@ -228,18 +240,18 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def accept(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
-        QgsMessageLog.logMessage('accept: {0}'.format(self.exaggerationEdited), 'VoGis')
-        if self.exaggerationEdited is True:
-            self.exaggerationEdited = False
+        QgsMessageLog.logMessage('accept: {0}'.format(self.exaggeration_edited), 'VoGis')
+        if self.exaggeration_edited is True:
+            self.exaggeration_edited = False
             return
         QDialog.accept(self)
 
 
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
-        QgsMessageLog.logMessage('reject: {0}'.format(self.exaggerationEdited), 'VoGis')
-        if self.exaggerationEdited is True:
-            self.exaggerationEdited = False
+        QgsMessageLog.logMessage('reject: {0}'.format(self.exaggeration_edited), 'VoGis')
+        if self.exaggeration_edited is True:
+            self.exaggeration_edited = False
             return
         QDialog.reject(self)
 
@@ -385,45 +397,62 @@ class VoGISProfilToolPlotDialog(QDialog):
     def __identify(self):
         #dirty hack: deselect all tools
         #selecting a tool twice deselects it
-        self.pltToolbar.pan()
-        self.pltToolbar.zoom()
-        self.pltToolbar.zoom()
+        self.plt_toolbar.pan()
+        self.plt_toolbar.zoom()
+        self.plt_toolbar.zoom()
+
+
+    def __measure(self):
+        self.measuring = True
+        #dirty hack: deselect all tools
+        #selecting a tool twice deselects it
+        self.plt_toolbar.pan()
+        self.plt_toolbar.zoom()
+        self.plt_toolbar.zoom()
 
 
     def __figureDrawn(self, event):
-        if self.debug: QgsMessageLog.logMessage('__figureDrawn, drawEventFired:{0} exaggerationEdited: {1}'.format(self.drawEventFired, self.exaggerationEdited), 'VoGis')
+        if self.debug:
+            QgsMessageLog.logMessage('__figureDrawn, draw_event_fired:{0} exaggeration_edited: {1}'.format(self.draw_event_fired, self.exaggeration_edited), 'VoGis')
         #draw event seems to get fired twice?????
-        if self.drawEventFired == True: return
-        self.drawEventFired = True
-        axes = self.pltWidget.figure.get_axes()[0]
+        if self.draw_event_fired == True:
+            return
+        self.draw_event_fired = True
+        axes = self.plt_widget.figure.get_axes()[0]
         xlim = axes.get_xlim()
         ylim = axes.get_ylim()
-        if self.debug: QgsMessageLog.logMessage('__figureDrawn: xlim:{0} ylim:{1}'.format(xlim, ylim), 'VoGis')
-        dpi = self.pltWidget.figure.get_dpi()
-        figWidth = self.pltWidget.figure.get_figwidth() * dpi
-        figHeight = self.pltWidget.figure.get_figheight() * dpi
-        #bbox = axes.get_window_extent().transformed(self.pltWidget.figure.dpi_scale_trans.inverted())
-        #figWidth, figHeight = bbox.width * dpi, bbox.height * dpi
-        figWidth *= (TOP_MARGIN - BOTTOM_MARGIN)
-        figHeight *= (RIGHT_MARGIN - LEFT_MARGIN)
-        deltaX = xlim[1] - xlim[0]
-        deltaY = ylim[1] - ylim[0]
-        ratio = (deltaX / figWidth) / (deltaY / figHeight)
+        if self.debug:
+            QgsMessageLog.logMessage('__figureDrawn: xlim:{0} ylim:{1}'.format(xlim, ylim), 'VoGis')
+        dpi = self.plt_widget.figure.get_dpi()
+        fig_width = self.plt_widget.figure.get_figwidth() * dpi
+        fig_height = self.plt_widget.figure.get_figheight() * dpi
+        #bbox = axes.get_window_extent().transformed(self.plt_widget.figure.dpi_scale_trans.inverted())
+        #fig_width, fig_height = bbox.width * dpi, bbox.height * dpi
+        fig_width *= (TOP_MARGIN - BOTTOM_MARGIN)
+        fig_height *= (RIGHT_MARGIN - LEFT_MARGIN)
+        delta_x = xlim[1] - xlim[0]
+        delta_y = ylim[1] - ylim[0]
+        ratio = (delta_x / fig_width) / (delta_y / fig_height)
         ratio = floor(ratio * 10) / 10
-        if self.debug: QgsMessageLog.logMessage('__figureDrawn: figWidth:{0} figHeight:{1} dpi:{2} deltaX:{3} deltaY:{4}, ratio:{5}'.format(figWidth, figHeight, dpi, deltaX, deltaY, ratio), 'VoGis')
-        if self.debug: QgsMessageLog.logMessage('__figureDrawn: axes.get_data_ratio:{0}'.format(axes.get_data_ratio()), 'VoGis')
+        if self.debug:
+            QgsMessageLog.logMessage('__figureDrawn: fig_width:{0} fig_height:{1} dpi:{2} delta_x:{3} delta_y:{4}, ratio:{5}'.format(fig_width, fig_height, dpi, delta_x, delta_y, ratio), 'VoGis')
+        if self.debug:
+            QgsMessageLog.logMessage('__figureDrawn: axes.get_data_ratio:{0}'.format(axes.get_data_ratio()), 'VoGis')
         #self.editExaggeration.setText('{0:.1f}'.format(ratio))
         self.editExaggeration.setText('{0:.1f}'.format(axes.get_aspect()))
-        self.drawEventFired = False
+        self.draw_event_fired = False
 
 
-    def __exaggerationEdited(self, *args):
-        if self.debug: QgsMessageLog.logMessage('__exaggerationEdited, exaggerationEdited:{0} drawEventFired: {1}'.format(self.exaggerationEdited, self.drawEventFired), 'VoGis')
+    def __exaggeration_edited(self, *args):
+        if self.debug:
+            QgsMessageLog.logMessage('__exaggeration_edited, exaggeration_edited:{0} draw_event_fired: {1}'.format(self.exaggeration_edited, self.draw_event_fired), 'VoGis')
         #this event handler seems to get called twice????
-        if self.drawEventFired == True: return
-        if self.exaggerationEdited == True: return
-        self.exaggerationEdited = True
-        #QgsMessageLog.logMessage('__exaggerationEdited: {0}'.format(self.exaggerationEdited), 'VoGis')
+        if self.draw_event_fired == True:
+            return
+        if self.exaggeration_edited == True:
+            return
+        self.exaggeration_edited = True
+        #QgsMessageLog.logMessage('__exaggeration_edited: {0}'.format(self.exaggeration_edited), 'VoGis')
         ut = Util(self.iface)
         txtExa = QApplication.translate('code', 'Überhöhung', None, QApplication.UnicodeUTF8)
         if ut.isFloat(self.editExaggeration.text(), txtExa) is False:
@@ -436,13 +465,13 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def __one2oneClicked(self):
         if self.debug: QgsMessageLog.logMessage('1:1 clicked', 'VoGis')
-        #QgsMessageLog.logMessage('axes:{0}'.format(self.pltWidget.figure.get_axes()), 'VoGis')
+        #QgsMessageLog.logMessage('axes:{0}'.format(self.plt_widget.figure.get_axes()), 'VoGis')
         self.__adjustAxes(1.0)
 
 
     def __adjustAxes(self, exaggeration):
         exaggeration = floor(exaggeration * 10) / 10
-        axes = self.pltWidget.figure.get_axes()[0]
+        axes = self.plt_widget.figure.get_axes()[0]
         #axes.set_aspect(exaggeration)
         #axes.set_autoscalex_on(False)
         #axes.set_autoscaley_on(True)
@@ -459,34 +488,12 @@ class VoGISProfilToolPlotDialog(QDialog):
         centerY = ylim[0] + (deltaYold / 2)
         axes.set_ylim(centerY - deltaYnew/2,centerY + deltaYnew/2)
         axes.set_aspect(exaggeration, 'datalim', 'C')
-        self.pltWidget.draw()
+        self.plt_widget.draw()
         if self.debug:
             QgsMessageLog.logMessage('__adjustAxes, get_aspect:{0}'.format(axes.get_aspect()), 'VoGis')
             QgsMessageLog.logMessage('__adjustAxes, get_position:{0}'.format(axes.get_position()), 'VoGis')
             QgsMessageLog.logMessage('__adjustAxes, xBound:{0} xlim:{1}'.format(axes.get_xbound(),axes.get_xlim()), 'VoGis')
             QgsMessageLog.logMessage('__adjustAxes, yBound:{0} ylim:{1}'.format(axes.get_ybound(),axes.get_ylim()), 'VoGis')
-        # if self.debug: QgsMessageLog.logMessage('__adjustAxes, exaggeration: {0}'.format(exaggeration), 'VoGis')
-        # dpi = self.pltWidget.figure.get_dpi()
-        # figWidth = self.pltWidget.figure.get_figwidth() * dpi
-        # figHeight = self.pltWidget.figure.get_figheight() * dpi
-        # axes = self.pltWidget.figure.get_axes()[0]
-        # if self.debug: QgsMessageLog.logMessage('__adjustAxes, imgextextent:{0}'.format(axes.get_aspect()), 'VoGis')
-        # #bbox = axes.get_window_extent().transformed(self.pltWidget.figure.dpi_scale_trans.inverted())
-        # #figWidth, figHeight = bbox.width * dpi, bbox.height * dpi
-        # figWidth *= (TOP_MARGIN - BOTTOM_MARGIN)
-        # figHeight *= (RIGHT_MARGIN - LEFT_MARGIN)
-        # if self.debug: QgsMessageLog.logMessage('__adjustAxes, dataExtent:{0}'.format(self.origPltExt.toString()), 'VoGis')
-        # if self.debug: QgsMessageLog.logMessage('__adjustAxes, fig size:{0}/{1}'.format(figWidth, figHeight), 'VoGis')
-        # mPerPixH = self.origPltExt.xmax / figWidth
-        # deltaVnew = figHeight * mPerPixH / exaggeration
-        # newYmax = self.origPltExt.ymin + deltaVnew
-        # #QgsMessageLog.logMessage('mPerPixH:{0} deltaV:{1} deltaVnew:{2} newYmax:{3}'.format(mPerPixH, deltaV, deltaVnew, newYmax), 'VoGis')
-        # #self.pltWidget.figure.get_axes()[0].set_xbound(self.origPltExt.xmin, self.origPltExt.xmax)
-        # #self.pltWidget.figure.get_axes()[0].set_ybound(self.origPltExt.ymin, newYmax)
-        # self.pltWidget.figure.get_axes()[0].set_xlim((self.origPltExt.xmin, self.origPltExt.xmax))
-        # self.pltWidget.figure.get_axes()[0].set_ylim((self.origPltExt.ymin, newYmax))
-        # self.pltWidget.figure.get_axes()[0].redraw_in_frame()
-        # self.pltWidget.draw()
 
 
     def __plotPicked(self, event):
@@ -506,36 +513,46 @@ class VoGISProfilToolPlotDialog(QDialog):
             QgsMessageLog.logMessage('LineCollection', 'VoGis')
             r = self.settings.mapData.rasters.selectedRasters()[event.ind[0]]
             QgsMessageLog.logMessage('Raster: {0}'.format(r.name), 'VoGis')
-            #self.pltWidget.figure.suptitle(r.name)
             self.dhmLbl.setText(u'  [' + r.name + '] ')
-            #QgsMessageLog.logMessage('{0}'.format(event), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(dir(event)), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(event.artist), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(dir(event.artist)), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(event.canvas), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(dir(event.canvas)), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(event.guiEvent), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(dir(event.guiEvent)), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(event.ind), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(dir(event.ind)), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(event.mouseevent), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(dir(event.mouseevent)), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(event.name), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(dir(event.name)), 'VoGis')
-            #lColl = event.artist
-            #QgsMessageLog.logMessage('{0}'.format(lColl.get_array()), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(lColl.get_paths()[event.ind[0]]), 'VoGis')
-            #segs = lColl.get_segments()
-            #l = segs[ind]
-            #QgsMessageLog.logMessage('{0}'.format(l.get_data(True)), 'VoGis')
-            #QgsMessageLog.logMessage('{0}'.format(l.get_data()), 'VoGis')
         else:
             QgsMessageLog.logMessage('no Line2D or LineCollection', 'VoGis')
 
 
+    def __mouse_move(self, event):
+        if self.measuring is False:
+            return
+        if self.click1 is None:
+            return
+        if event.xdata is None or event.ydata is None:
+            return
+
+        dx = event.xdata - self.click1[0]
+        dy = event.ydata - self.click1[1]
+
+        if self.debug:
+            #QgsMessageLog.logMessage('mouse move name {0}'.format(event.name), 'VoGis')
+            #QgsMessageLog.logMessage('mouse move xdata {0}'.format(event.xdata), 'VoGis')
+            #QgsMessageLog.logMessage('mouse move ydata {0}'.format(event.ydata), 'VoGis')
+            QgsMessageLog.logMessage('dx/dy {0}/{1}'.format(dx, dy), 'VoGis')
+        self.measureLbl.setText(u' x/y:{0:.1f}/{1:.1f} dx/dy:{2:.1f}/{3:.1f}'.format(
+            self.click1[0],
+            self.click1[1],
+            dx,
+            dy
+            ))
+        #self.plt_widget.draw_rubberband('xy', self.click1[0], self.click1[1], event.xdata, event.ydata)
+        self.plt_toolbar.draw_rubberband('xy', self.click1[0], self.click1[1], event.xdata, event.ydata)
+
     def __buttonPressed(self, event):
-        if self.debug: QgsMessageLog.logMessage('__buttonPressed', 'VoGis')
-        if self.plotpicked is False: self.dhmLbl.setText(' ? ')
+        if self.debug:
+            QgsMessageLog.logMessage('__buttonPressed', 'VoGis')
+
+        if self.plotpicked is False:
+            self.dhmLbl.setText(' ? ')
+
+        if self.measuring is False:
+            return
+
         if self.debug:
             QgsMessageLog.logMessage('{0}'.format(dir(event)), 'VoGis')
             QgsMessageLog.logMessage('{0}'.format(dir(event.xdata)), 'VoGis')
@@ -549,7 +566,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             self.click1 = [event.xdata, event.ydata]
             self.click2 = None
             #self.measureLbl.setText(u'')
-            self.measureLbl.setText(u' x:{0:.1f} y:{1:.1f} '.format(event.xdata, event.ydata))
+            self.measureLbl.setText(u' x/y:{0:.1f}/{1:.1f} '.format(event.xdata, event.ydata))
             if not self.click1pnt is None:
                 p = self.click1pnt.pop(0);
                 p.remove()
@@ -563,15 +580,16 @@ class VoGISProfilToolPlotDialog(QDialog):
             self.click1pnt = self.subplot.plot(event.xdata, event.ydata, 'ro')
         elif self.click2 is None:
             self.click2 = [event.xdata, event.ydata]
-            #deltaX = abs(self.click2[0] - self.click1[0])
-            #deltaY = abs(self.click2[1] - self.click1[1])
-            #dist = ((deltaX ** 2) + (deltaY ** 2)) ** 0.5
+            #delta_x = abs(self.click2[0] - self.click1[0])
+            #delta_y = abs(self.click2[1] - self.click1[1])
+            #dist = ((delta_x ** 2) + (delta_y ** 2)) ** 0.5
             #self.measureLbl.setText(u' dist: {0:.1f} '.format(dist))
-            deltaX = self.click2[0] - self.click1[0]
-            deltaY = self.click2[1] - self.click1[1]
-            dist = sqrt(pow(deltaX, 2) + pow(deltaY, 2))
-            self.measureLbl.setText(u' dx:{0:.1f} dy:{1:.1f} d:{2:.1f}'.format(deltaX, deltaY, dist))
+            delta_x = self.click2[0] - self.click1[0]
+            delta_y = self.click2[1] - self.click1[1]
+            dist = sqrt(pow(delta_x, 2) + pow(delta_y, 2))
+            self.measureLbl.setText(u' dx/dy:{0:.1f}/{1:.1f} d:{2:.1f}'.format(delta_x, delta_y, dist))
             self.click1 = None
+            self.measuring = False
             if not self.click2pnt is None:
                 p = self.click2pnt.pop(0);
                 p.remove()
@@ -579,14 +597,14 @@ class VoGISProfilToolPlotDialog(QDialog):
                 self.click2pnt = None
             self.click2pnt = self.subplot.plot(event.xdata, event.ydata, 'go')
         #refresh plot to show points, when identify tool active
-        #if self.debug: QgsMessageLog.logMessage('__buttonPressed: active: {0}'.format(self.pltToolbar._active), 'VoGis')
+        #if self.debug: QgsMessageLog.logMessage('__buttonPressed: active: {0}'.format(self.plt_toolbar._active), 'VoGis')
         #if self.plotpicked is True:
-        if self.pltToolbar._active is None:
-            self.pltWidget.draw()
+        if self.plt_toolbar._active is None:
+            self.plt_widget.draw()
         self.plotpicked = False
 
 
-    def __createMatplotlibCanvas(self, pltExt):
+    def __createMatplotlibCanvas(self, plt_extent):
             fig = Figure((1, 1),
                          #tight_layout=True,
                          linewidth=0.0,
@@ -625,8 +643,8 @@ class VoGISProfilToolPlotDialog(QDialog):
                                         aspect=1
                                         )
             #self.subplot.plot.tight_layout(True)
-            self.subplot.set_xbound(pltExt.xmin, pltExt.xmax)
-            self.subplot.set_ybound(pltExt.ymin, pltExt.ymax)
+            self.subplot.set_xbound(plt_extent.xmin, plt_extent.xmax)
+            self.subplot.set_ybound(plt_extent.ymin, plt_extent.ymax)
             self.__setupAxes(self.subplot)
             #fig.tight_layout()
             canvas = FigureCanvasQTAgg(fig)
@@ -637,6 +655,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             canvas.mpl_connect('pick_event', self.__plotPicked)
             canvas.mpl_connect('draw_event', self.__figureDrawn)
             canvas.mpl_connect('button_press_event', self.__buttonPressed)
+            canvas.mpl_connect('motion_notify_event', self.__mouse_move)
             return canvas
 
 
