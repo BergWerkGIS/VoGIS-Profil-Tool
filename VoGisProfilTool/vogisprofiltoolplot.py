@@ -26,6 +26,7 @@ from qgis.core import *
 from random import randrange
 from ui.ui_vogisprofiltoolplot import Ui_VoGISProfilToolPlot
 from bo.plotExtent import PlotExtent
+from bo.chartpoint import ChartPoint
 from util.u import Util
 from util.exportShape import ExportShape
 from util.exportDxf import ExportDxf
@@ -109,6 +110,9 @@ class VoGISProfilToolPlotDialog(QDialog):
 #        for t in plt_toolbar.toolitems:
 #            QgsMessageLog.logMessage('{0}'.format(t), 'VoGis')
         #lstActions = plt_toolbar.actions()
+
+        #https://hub.qgis.org/wiki/17/Icons_20
+
         firstaction = None
         for a in plt_toolbar.actions():
             atxt = a.text()
@@ -158,21 +162,22 @@ class VoGISProfilToolPlotDialog(QDialog):
         #insert identify label to show name of clicked dhm
         self.dhmLbl = QLabel()
         plt_toolbar.insertWidget(firstaction, self.dhmLbl)
-        #measure in figure
-        self.click1 = None
-        self.click2 = None
-        self.click1pnt = None
-        self.click2pnt = None
-        self.measureLbl = QLabel()
-        self.measureLbl.setText(u'  ')
-        plt_toolbar.insertWidget(firstaction, self.measureLbl)
 
         #insert measure tool
         self.measuring = False
         self.measure_tool = QPushButton()
-        self.measure_tool.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/identify.png"))
+        self.measure_tool.setIcon(QIcon(":/plugins/vogisprofiltoolmain/icons/measure.png"))
         self.measure_tool.clicked.connect(self.__measure)
         plt_toolbar.insertWidget(firstaction, self.measure_tool)
+
+        #show measure results
+        self.click1 = None
+        self.click2 = None
+        self.click1pnt = None
+        self.click2pnt = None
+        self.measure_lbl = QLabel()
+        self.measure_lbl.setText(u'  ')
+        plt_toolbar.insertWidget(firstaction, self.measure_lbl)
 
         #for less thatn 10 colors:
         #alternative method: http://stackoverflow.com/a/14720445
@@ -526,22 +531,21 @@ class VoGISProfilToolPlotDialog(QDialog):
         if event.xdata is None or event.ydata is None:
             return
 
-        dx = event.xdata - self.click1[0]
-        dy = event.ydata - self.click1[1]
+        dx = event.xdata - self.click1.xdata
+        dy = event.ydata - self.click1.ydata
 
         if self.debug:
             #QgsMessageLog.logMessage('mouse move name {0}'.format(event.name), 'VoGis')
             #QgsMessageLog.logMessage('mouse move xdata {0}'.format(event.xdata), 'VoGis')
             #QgsMessageLog.logMessage('mouse move ydata {0}'.format(event.ydata), 'VoGis')
             QgsMessageLog.logMessage('dx/dy {0}/{1}'.format(dx, dy), 'VoGis')
-        self.measureLbl.setText(u' x/y:{0:.1f}/{1:.1f} dx/dy:{2:.1f}/{3:.1f}'.format(
-            self.click1[0],
-            self.click1[1],
+        self.measure_lbl.setText(u' x/y:{0:.1f}/{1:.1f} dx/dy:{2:.1f}/{3:.1f}'.format(
+            self.click1.xdata,
+            self.click1.ydata,
             dx,
             dy
             ))
-        #self.plt_widget.draw_rubberband('xy', self.click1[0], self.click1[1], event.xdata, event.ydata)
-        self.plt_toolbar.draw_rubberband('xy', self.click1[0], self.click1[1], event.xdata, event.ydata)
+        self.plt_toolbar.draw_rubberband('xy', self.click1.xpixel, self.click1.ypixel, event.x, event.y)
 
     def __buttonPressed(self, event):
         if self.debug:
@@ -549,6 +553,8 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         if self.plotpicked is False:
             self.dhmLbl.setText(' ? ')
+
+        self.plotpicked = False
 
         if self.measuring is False:
             return
@@ -559,14 +565,16 @@ class VoGISProfilToolPlotDialog(QDialog):
             QgsMessageLog.logMessage('{0}'.format(dir(event.ydata)), 'VoGis')
             QgsMessageLog.logMessage(
                 'x:{0} y:{1} xdata:{2} ydata:{3} click1:{4} click2:{5} click1pnt:{6} click2pnt:{7}'.format(
-                    event.x, event.y, event.xdata, event.ydata, self.click1, self.click2,self.click1pnt, self.click2pnt), 'VoGis')
+                    event.x, event.y, event.xdata, event.ydata, self.click1, self.click2, self.click1pnt, self.click2pnt), 'VoGis')
+            QgsMessageLog.logMessage('click1pnt: {0}'.format(dir(self.click1pnt)), 'VoGis')
+
         if event.xdata is None or event.ydata is None:
             return
         if self.click1 is None:
-            self.click1 = [event.xdata, event.ydata]
+            self.click1 = ChartPoint(event.x, event.y, event.xdata, event.ydata)
             self.click2 = None
-            #self.measureLbl.setText(u'')
-            self.measureLbl.setText(u' x/y:{0:.1f}/{1:.1f} '.format(event.xdata, event.ydata))
+            #self.measure_lbl.setText(u'')
+            self.measure_lbl.setText(u' x/y:{0:.1f}/{1:.1f} dx/dy:0/0'.format(event.xdata, event.ydata))
             if not self.click1pnt is None:
                 p = self.click1pnt.pop(0);
                 p.remove()
@@ -579,15 +587,15 @@ class VoGISProfilToolPlotDialog(QDialog):
                 self.click2pnt = None
             self.click1pnt = self.subplot.plot(event.xdata, event.ydata, 'ro')
         elif self.click2 is None:
-            self.click2 = [event.xdata, event.ydata]
+            self.click2 = ChartPoint(event.x, event.y, event.xdata, event.ydata)
             #delta_x = abs(self.click2[0] - self.click1[0])
             #delta_y = abs(self.click2[1] - self.click1[1])
             #dist = ((delta_x ** 2) + (delta_y ** 2)) ** 0.5
-            #self.measureLbl.setText(u' dist: {0:.1f} '.format(dist))
-            delta_x = self.click2[0] - self.click1[0]
-            delta_y = self.click2[1] - self.click1[1]
+            #self.measure_lbl.setText(u' dist: {0:.1f} '.format(dist))
+            delta_x = self.click2.xdata - self.click1.xdata
+            delta_y = self.click2.ydata - self.click1.ydata
             dist = sqrt(pow(delta_x, 2) + pow(delta_y, 2))
-            self.measureLbl.setText(u' dx/dy:{0:.1f}/{1:.1f} d:{2:.1f}'.format(delta_x, delta_y, dist))
+            self.measure_lbl.setText(u' dx/dy:{0:.1f}/{1:.1f} d:{2:.1f}'.format(delta_x, delta_y, dist))
             self.click1 = None
             self.measuring = False
             if not self.click2pnt is None:
@@ -601,7 +609,6 @@ class VoGISProfilToolPlotDialog(QDialog):
         #if self.plotpicked is True:
         if self.plt_toolbar._active is None:
             self.plt_widget.draw()
-        self.plotpicked = False
 
 
     def __createMatplotlibCanvas(self, plt_extent):

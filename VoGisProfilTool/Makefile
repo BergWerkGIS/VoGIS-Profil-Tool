@@ -42,8 +42,18 @@ PLUGINNAME = VoGisProfilTool
 QGISPIDIR = .qgis2
 
 PY_FILES = vogisprofiltoolmain.py vogisprofiltoolmaindialog.py vogisprofiltoolplot.py __init__.py
-EXTRAS = icons/icon.png icons/home.png icons/pan.png icons/save.png icons/zoomlast.png icons/zoomnext.png icons/zoomrectangle.png icons/zoomselect.png icons/identify.png
+EXTRAS = icons/home.png \
+         icons/icon.png \
+         icons/identify.png \
+         icons/measure.png \
+         icons/pan.png \
+         icons/save.png \
+         icons/zoomlast.png \
+         icons/zoomnext.png \
+         icons/zoomrectangle.png \
+         icons/zoomselect.png
 BO_FILES = bo/__init__.py \
+           bo/chartpoint.py \
            bo/intersection.py \
            bo/line.py \
            bo/lineCollection.py \
