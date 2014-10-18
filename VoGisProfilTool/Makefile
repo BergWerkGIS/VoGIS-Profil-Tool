@@ -70,7 +70,43 @@ BO_FILES = bo/__init__.py \
            bo/node.py \
            bo/linkedList.py \
            bo/plotExtent.py
-UTIL_FILES = util/__init__.py util/u.py util/createProfile.py util/exportShape.py util/ptmaptool.py util/exportDxf.py
+UTIL_FILES =    util/__init__.py \
+                util/u.py \
+                util/createProfile.py \
+                util/exportShape.py \
+                util/ptmaptool.py \
+                util/exportDxf.py
+XLSX_FILES =    xlsxwriter/app.py \
+                xlsxwriter/chart_area.py \
+                xlsxwriter/chart_bar.py \
+                xlsxwriter/chart_column.py \
+                xlsxwriter/chart_doughnut.py \
+                xlsxwriter/chart_line.py \
+                xlsxwriter/chart_pie.py \
+                xlsxwriter/chart.py \
+                xlsxwriter/chart_radar.py \
+                xlsxwriter/chart_scatter.py \
+                xlsxwriter/chartsheet.py \
+                xlsxwriter/chart_stock.py \
+                xlsxwriter/comments.py \
+                xlsxwriter/compat_collections.py \
+                xlsxwriter/compatibility.py \
+                xlsxwriter/contenttypes.py \
+                xlsxwriter/core.py \
+                xlsxwriter/drawing.py \
+                xlsxwriter/format.py \
+                xlsxwriter/__init__.py \
+                xlsxwriter/packager.py \
+                xlsxwriter/relationships.py \
+                xlsxwriter/sharedstrings.py \
+                xlsxwriter/styles.py \
+                xlsxwriter/table.py \
+                xlsxwriter/theme.py \
+                xlsxwriter/utility.py \
+                xlsxwriter/vml.py \
+                xlsxwriter/workbook.py \
+                xlsxwriter/worksheet.py \
+                xlsxwriter/xmlwriter.py
 UI_FILES = ui/ui_vogisprofiltoolmain.py ui/ui_vogisprofiltoolplot.py
 RESOURCE_FILES = resources_rc.py
 
@@ -98,6 +134,7 @@ deploy: compile doc transcompile
 	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/util
 	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
 	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/icons
+	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/xlsxwriter
 
 	cp -vf metadata.txt $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
 	cp -vf $(PY_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
@@ -105,6 +142,7 @@ deploy: compile doc transcompile
 	cp -vf $(UTIL_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/util
 	cp -vf $(UI_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
 	cp -vf __init__.py $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
+	cp -vf $(XLSX_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/xlsxwriter
 	cp -vf $(RESOURCE_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
 	cp -vf $(EXTRAS) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/icons
 	cp -vfr i18n $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)

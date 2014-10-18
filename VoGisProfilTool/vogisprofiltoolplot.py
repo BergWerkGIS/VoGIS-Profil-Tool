@@ -40,6 +40,7 @@ from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.collections import LineCollection
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+import xlsxwriter
 
 LEFT_MARGIN = 0.08
 BOTTOM_MARGIN = 0.15
@@ -324,6 +325,58 @@ class VoGISProfilToolPlotDialog(QDialog):
                                  delimiter,
                                  decimalDelimiter
                                  ))
+
+        # BEGIN XLSX-Export
+        # zunaechst zusaetzlich zum CSV-Export als zweite Datei
+
+        fileNameXlsx = '{0}.xlsx'.format(fileName)
+        workbook = xlsxwriter.Workbook(fileNameXlsx)
+
+        worksheet_1 = workbook.add_worksheet('Sheet1')
+        worksheet_1.set_paper(9)                # A4
+        worksheet_1.set_column('A:C', 15)       # Spalten breiter machen
+
+        row = 0
+        col = 0
+
+
+        worksheet_1.write(row, col, "Datensatz Nr.")
+        worksheet_1.write(row, col + 1, "x")
+
+        format00 = workbook.add_format()
+        format00.set_align('center')
+        format01 = workbook.add_format()
+        format01.set_align('center')
+        format01.set_num_format('0.000')
+
+        row = 1
+        col = 0
+
+        for eigenschaft in self.profiles:
+            x = eigenschaft.toString(hekto, attribs, delimiter, decimalDelimiter)
+            zeilen = x.splitlines()
+            for zeile in zeilen:
+                x = zeile.split(";")
+
+                # ich nehme den ganzzahligen Teil, damit ich beim Testen nicht immer
+                # eine Fehlermeldung bekomme, wenn ich vergesse auf Komma umzustellen
+                y = x[2].split(".")
+
+                worksheet_1.write(row, col, row, format00)
+                worksheet_1.write(row, col + 1, int(y[0]), format01)
+                row += 1
+
+        row_B = 'Sheet1!$B$2:$B${0}'.format(row)
+
+        chart = workbook.add_chart({'type': 'line'})
+        chart.add_series({
+            'values':   row_B,
+            'name':     '=Sheet1!$B$1'
+        })
+
+        worksheet_1.insert_chart('C14', chart)
+
+        workbook.close()
 
 
     def exportTxt(self):
