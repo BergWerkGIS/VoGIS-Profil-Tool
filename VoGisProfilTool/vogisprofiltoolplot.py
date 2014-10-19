@@ -337,7 +337,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         worksheet_1.set_column('A:D', 15)       # Spalten breiter machen
         worksheet_1.set_column('E:E', 12)
         worksheet_1.set_column('F:H', 15)
-        worksheet_1.set_column('M:Z', 14)
+        worksheet_1.set_column('J:AA', 14)
 
         row = 0
         col = 0
@@ -367,7 +367,7 @@ class VoGISProfilToolPlotDialog(QDialog):
                     for vertex in segment:
                         worksheet_1.write(row, col + spalte, vertex, format01)
                         spalte += 1
-                        if spalte > 8:
+                        if spalte >= len(segment):
                             spalte = 0
                             row += 1
 

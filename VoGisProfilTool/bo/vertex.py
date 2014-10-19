@@ -106,9 +106,11 @@ class Vertex:
         feld.append(self.getType())
 
         if hekto is True:
-            pass
+            feld.append(self.getHekto(decimalDelimiter))
         if attribs is True:
-            pass
+            attribute = self.getAttributeVals()
+            for attribut in attribute:
+                feld.append(attribut)
 
         return feld
 
