@@ -334,24 +334,23 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         worksheet_1 = workbook.add_worksheet('Sheet1')
         worksheet_1.set_paper(9)                # A4
-        worksheet_1.set_column('A:D', 15)       # Spalten breiter machen
-        worksheet_1.set_column('E:E', 12)
-        worksheet_1.set_column('F:H', 15)
-        worksheet_1.set_column('J:AA', 14)
+        worksheet_1.set_column('A:AL', 15)       # Spalten breiter machen
+
+        format_center = workbook.add_format()
+        format_center.set_align('center')
+        format_float = workbook.add_format()
+        format_float.set_align('right')
+        format_float.set_num_format('0.00')
+        format_nofloat = workbook.add_format()
+        format_nofloat.set_align('right')
+        format_nofloat.set_num_format('0')
 
         row = 0
         col = 0
 
-        format00 = workbook.add_format()
-        format00.set_align('center')
-        format01 = workbook.add_format()
-        format01.set_align('right')
-        format01.set_num_format('0.000')
-
-
         header = self.profiles[0].writeArrayHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter)
         for kopfspalte in header:
-            worksheet_1.write(row, col, kopfspalte, format00)
+            worksheet_1.write(row, col, kopfspalte, format_center)
             col += 1
 
         row = 1
@@ -365,13 +364,26 @@ class VoGISProfilToolPlotDialog(QDialog):
             for segmente in profil:
                 for segment in segmente:
                     for vertex in segment:
-                        worksheet_1.write(row, col + spalte, vertex, format01)
+                        if self.XlsFormat_NoFloat(header, spalte):
+                            worksheet_1.write(row, col + spalte, vertex, format_nofloat)
+                        else:
+                            worksheet_1.write(row, col + spalte, vertex, format_float)
                         spalte += 1
                         if spalte >= len(segment):
                             spalte = 0
                             row += 1
 
         workbook.close()
+
+    def XlsFormat_NoFloat(self, header, spalte):
+        nofloat = False
+        if header[spalte] == "Profilenumber":
+            nofloat = True
+        elif header[spalte] == "Segmentnumber":
+            nofloat = True
+        elif header[spalte] == "Pointnumber":
+            nofloat = True
+        return nofloat
 
     def exportTxt(self):
         delimiter = self.__getDelimiter()

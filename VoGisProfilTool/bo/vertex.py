@@ -99,7 +99,9 @@ class Vertex:
         feld.append(self.distanceSegment)
         feld.append(self.x)
         feld.append(self.y)
-        feld.append(self.__getZVals(delimiter, decimalDelimiter))
+        zVals = self.getZVals()
+        for zVal in zVals:
+            feld.append(zVal)
         feld.append(self.profileId)
         feld.append(self.segmentId)
         feld.append(self.vertexId)
@@ -179,6 +181,16 @@ class Vertex:
         """Fuer Shapeausgabe"""
         hm = ('hm {0:.2f}'.format(self.distanceProfile / 100)).replace('.', decimalDelimiter)
         return hm
+
+    def getZVals(self):
+        z = []
+        if len(self.zvals) > 0:
+            for zVal in self.zvals:
+                if zVal is None:
+                    z.append(str(self.nodata_value))
+                else:
+                    z.append(zVal)
+        return z
 
     def __getZVals(self, delimiter, decimalDelimiter):
         z = ''
