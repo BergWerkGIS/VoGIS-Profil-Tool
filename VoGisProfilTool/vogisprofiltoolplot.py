@@ -672,6 +672,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         if self.plotpicked is False:
             self.dhmLbl.setText(' ? ')
 
+        #reset flag to show '?' next time a button gets pressed
         self.plotpicked = False
 
         if self.measuring is False:
