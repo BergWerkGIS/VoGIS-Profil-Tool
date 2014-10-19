@@ -332,9 +332,12 @@ class VoGISProfilToolPlotDialog(QDialog):
         fileNameXlsx = '{0}.xlsx'.format(fileName)
         workbook = xlsxwriter.Workbook(fileNameXlsx)
 
-        worksheet_1 = workbook.add_worksheet('Sheet1')
-        worksheet_1.set_paper(9)                # A4
-        worksheet_1.set_column('A:AL', 15)       # Spalten breiter machen
+        worksheet_1 = workbook.add_worksheet('Data')
+        worksheet_1.set_paper(9)                        # A4
+        worksheet_1.set_column('A:AL', 15)              # Spalten breiter machen
+
+        worksheet_2 = workbook.add_worksheet('Diagram')
+        worksheet_2.set_paper(9)                        # A4
 
         format_center = workbook.add_format()
         format_center.set_align('center')
@@ -356,8 +359,11 @@ class VoGISProfilToolPlotDialog(QDialog):
         row = 1
         col = 0
 
+        profile = []
+
         for eigenschaft in self.profiles:
             profil = eigenschaft.toArray(hekto, attribs, delimiter, decimalDelimiter)
+            profile.append(profil)
 
             spalte = 0
 
@@ -373,7 +379,60 @@ class VoGISProfilToolPlotDialog(QDialog):
                             spalte = 0
                             row += 1
 
+        diagram_spalte = "E"
+        self.CreateXlsDiagram(workbook, worksheet_2, profile, diagram_spalte)
+
         workbook.close()
+
+    def CreateXlsDiagram(self, workbook, worksheet, profile, spalte):
+        if 1 == 1:
+            return
+
+        legende_spalte = "F"
+
+        chart = workbook.add_chart({'type': 'line'})
+        lines = []
+
+        zeile_beginn = 1
+        zeile_ende = 1
+        altes_zeilenende = 1
+
+        zeilen_zaehler = 0
+        segment_zaehler = 0
+        profil_zaehler = 0
+
+        for profil in profile:
+            profil_zaehler += 1
+            for segmente in profil:
+                for segment in segmente:
+                    zeilen_zaehler += 1
+
+                segment_zaehler += 1
+                profilenumber = segmente[segment_zaehler][5]
+
+                if segment_zaehler == profilenumber:
+                    zeile_ende = zeilen_zaehler + 1
+                    if profil_zaehler == 1:
+                        zeile_beginn = 2
+                        altes_zeilenende = zeile_ende
+                    else:
+                        zeile_beginn = altes_zeilenende + 1
+                        altes_zeilenende = zeile_ende
+
+                lines.append(['Data!${0}${1}:${0}${2}'.format(spalte, zeile_beginn, zeile_ende), zeile_beginn])
+
+        for line in lines:
+            chart.add_series({
+                'values':   line[0],
+                'name':     '=Data!${0}${1}'.format(legende_spalte, line[1])
+            })
+
+        worksheet.insert_chart('B23', chart)
+
+        #y = 2
+        #for line in lines:
+        #    worksheet.write(y, 2, str(line))
+        #    y += 1
 
     def XlsFormat_NoFloat(self, header, spalte):
         nofloat = False
