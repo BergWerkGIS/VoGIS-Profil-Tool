@@ -92,6 +92,26 @@ class Vertex:
             txt += self.__getAttribs(delimiter, decimalDelimiter)
         return txt
 
+    def toArray(self, hekto, attribs, delimiter, decimalDelimiter):
+        """ Fuer die Weiterverarbeitung im Excel-Writer        """
+        feld = []
+        feld.append(self.distanceProfile)
+        feld.append(self.distanceSegment)
+        feld.append(self.x)
+        feld.append(self.y)
+        feld.append(self.__getZVals(delimiter, decimalDelimiter))
+        feld.append(self.profileId)
+        feld.append(self.segmentId)
+        feld.append(self.vertexId)
+        feld.append(self.getType())
+
+        if hekto is True:
+            pass
+        if attribs is True:
+            pass
+
+        return feld
+
     def toACadTxt(self, delimiter, decimalDelimiter):
         acadTxt = ''
         #profillaenge, rechtswert, hochwert hoehe

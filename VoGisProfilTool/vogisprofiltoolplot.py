@@ -334,50 +334,44 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         worksheet_1 = workbook.add_worksheet('Sheet1')
         worksheet_1.set_paper(9)                # A4
-        worksheet_1.set_column('A:C', 15)       # Spalten breiter machen
+        worksheet_1.set_column('A:D', 15)       # Spalten breiter machen
+        worksheet_1.set_column('E:E', 12)
+        worksheet_1.set_column('F:H', 15)
+        worksheet_1.set_column('M:Z', 14)
 
         row = 0
         col = 0
 
-
-        worksheet_1.write(row, col, "Datensatz Nr.")
-        worksheet_1.write(row, col + 1, "x")
-
         format00 = workbook.add_format()
         format00.set_align('center')
         format01 = workbook.add_format()
-        format01.set_align('center')
+        format01.set_align('right')
         format01.set_num_format('0.000')
+
+
+        header = self.profiles[0].writeArrayHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter)
+        for kopfspalte in header:
+            worksheet_1.write(row, col, kopfspalte, format00)
+            col += 1
 
         row = 1
         col = 0
 
         for eigenschaft in self.profiles:
-            x = eigenschaft.toString(hekto, attribs, delimiter, decimalDelimiter)
-            zeilen = x.splitlines()
-            for zeile in zeilen:
-                x = zeile.split(";")
+            profil = eigenschaft.toArray(hekto, attribs, delimiter, decimalDelimiter)
 
-                # ich nehme den ganzzahligen Teil, damit ich beim Testen nicht immer
-                # eine Fehlermeldung bekomme, wenn ich vergesse auf Komma umzustellen
-                y = x[2].split(".")
+            spalte = 0
 
-                worksheet_1.write(row, col, row, format00)
-                worksheet_1.write(row, col + 1, int(y[0]), format01)
-                row += 1
-
-        row_B = 'Sheet1!$B$2:$B${0}'.format(row)
-
-        chart = workbook.add_chart({'type': 'line'})
-        chart.add_series({
-            'values':   row_B,
-            'name':     '=Sheet1!$B$1'
-        })
-
-        worksheet_1.insert_chart('C14', chart)
+            for segmente in profil:
+                for segment in segmente:
+                    for vertex in segment:
+                        worksheet_1.write(row, col + spalte, vertex, format01)
+                        spalte += 1
+                        if spalte > 8:
+                            spalte = 0
+                            row += 1
 
         workbook.close()
-
 
     def exportTxt(self):
         delimiter = self.__getDelimiter()
