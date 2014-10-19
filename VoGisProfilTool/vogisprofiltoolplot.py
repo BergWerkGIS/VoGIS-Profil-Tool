@@ -40,6 +40,7 @@ from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.collections import LineCollection
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+import xlsxwriter
 
 LEFT_MARGIN = 0.08
 BOTTOM_MARGIN = 0.15
@@ -325,6 +326,64 @@ class VoGISProfilToolPlotDialog(QDialog):
                                  decimalDelimiter
                                  ))
 
+        # BEGIN XLSX-Export
+        # zunaechst zusaetzlich zum CSV-Export als zweite Datei
+
+        fileNameXlsx = '{0}.xlsx'.format(fileName)
+        workbook = xlsxwriter.Workbook(fileNameXlsx)
+
+        worksheet_1 = workbook.add_worksheet('Sheet1')
+        worksheet_1.set_paper(9)                # A4
+        worksheet_1.set_column('A:AL', 15)       # Spalten breiter machen
+
+        format_center = workbook.add_format()
+        format_center.set_align('center')
+        format_float = workbook.add_format()
+        format_float.set_align('right')
+        format_float.set_num_format('0.00')
+        format_nofloat = workbook.add_format()
+        format_nofloat.set_align('right')
+        format_nofloat.set_num_format('0')
+
+        row = 0
+        col = 0
+
+        header = self.profiles[0].writeArrayHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter)
+        for kopfspalte in header:
+            worksheet_1.write(row, col, kopfspalte, format_center)
+            col += 1
+
+        row = 1
+        col = 0
+
+        for eigenschaft in self.profiles:
+            profil = eigenschaft.toArray(hekto, attribs, delimiter, decimalDelimiter)
+
+            spalte = 0
+
+            for segmente in profil:
+                for segment in segmente:
+                    for vertex in segment:
+                        if self.XlsFormat_NoFloat(header, spalte):
+                            worksheet_1.write(row, col + spalte, vertex, format_nofloat)
+                        else:
+                            worksheet_1.write(row, col + spalte, vertex, format_float)
+                        spalte += 1
+                        if spalte >= len(segment):
+                            spalte = 0
+                            row += 1
+
+        workbook.close()
+
+    def XlsFormat_NoFloat(self, header, spalte):
+        nofloat = False
+        if header[spalte] == "Profilenumber":
+            nofloat = True
+        elif header[spalte] == "Segmentnumber":
+            nofloat = True
+        elif header[spalte] == "Pointnumber":
+            nofloat = True
+        return nofloat
 
     def exportTxt(self):
         delimiter = self.__getDelimiter()
