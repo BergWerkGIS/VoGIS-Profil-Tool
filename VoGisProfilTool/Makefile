@@ -75,38 +75,39 @@ UTIL_FILES =    util/__init__.py \
                 util/createProfile.py \
                 util/exportShape.py \
                 util/ptmaptool.py \
-                util/exportDxf.py
-XLSX_FILES =    xlsxwriter/app.py \
-                xlsxwriter/chart_area.py \
-                xlsxwriter/chart_bar.py \
-                xlsxwriter/chart_column.py \
-                xlsxwriter/chart_doughnut.py \
-                xlsxwriter/chart_line.py \
-                xlsxwriter/chart_pie.py \
-                xlsxwriter/chart.py \
-                xlsxwriter/chart_radar.py \
-                xlsxwriter/chart_scatter.py \
-                xlsxwriter/chartsheet.py \
-                xlsxwriter/chart_stock.py \
-                xlsxwriter/comments.py \
-                xlsxwriter/compat_collections.py \
-                xlsxwriter/compatibility.py \
-                xlsxwriter/contenttypes.py \
-                xlsxwriter/core.py \
-                xlsxwriter/drawing.py \
-                xlsxwriter/format.py \
-                xlsxwriter/__init__.py \
-                xlsxwriter/packager.py \
-                xlsxwriter/relationships.py \
-                xlsxwriter/sharedstrings.py \
-                xlsxwriter/styles.py \
-                xlsxwriter/table.py \
-                xlsxwriter/theme.py \
-                xlsxwriter/utility.py \
-                xlsxwriter/vml.py \
-                xlsxwriter/workbook.py \
-                xlsxwriter/worksheet.py \
-                xlsxwriter/xmlwriter.py
+                util/exportDxf.py \
+                util/exportXls.py
+XLSX_FILES =    util/xlsxwriter/app.py \
+                util/xlsxwriter/chart_area.py \
+                util/xlsxwriter/chart_bar.py \
+                util/xlsxwriter/chart_column.py \
+                util/xlsxwriter/chart_doughnut.py \
+                util/xlsxwriter/chart_line.py \
+                util/xlsxwriter/chart_pie.py \
+                util/xlsxwriter/chart.py \
+                util/xlsxwriter/chart_radar.py \
+                util/xlsxwriter/chart_scatter.py \
+                util/xlsxwriter/chartsheet.py \
+                util/xlsxwriter/chart_stock.py \
+                util/xlsxwriter/comments.py \
+                util/xlsxwriter/compat_collections.py \
+                util/xlsxwriter/compatibility.py \
+                util/xlsxwriter/contenttypes.py \
+                util/xlsxwriter/core.py \
+                util/xlsxwriter/drawing.py \
+                util/xlsxwriter/format.py \
+                util/xlsxwriter/__init__.py \
+                util/xlsxwriter/packager.py \
+                util/xlsxwriter/relationships.py \
+                util/xlsxwriter/sharedstrings.py \
+                util/xlsxwriter/styles.py \
+                util/xlsxwriter/table.py \
+                util/xlsxwriter/theme.py \
+                util/xlsxwriter/utility.py \
+                util/xlsxwriter/vml.py \
+                util/xlsxwriter/workbook.py \
+                util/xlsxwriter/worksheet.py \
+                util/xlsxwriter/xmlwriter.py
 UI_FILES = ui/ui_vogisprofiltoolmain.py ui/ui_vogisprofiltoolplot.py
 RESOURCE_FILES = resources_rc.py
 
@@ -134,7 +135,7 @@ deploy: compile doc transcompile
 	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/util
 	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
 	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/icons
-	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/xlsxwriter
+	mkdir -p $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/util/xlsxwriter
 
 	cp -vf metadata.txt $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
 	cp -vf $(PY_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
@@ -142,7 +143,7 @@ deploy: compile doc transcompile
 	cp -vf $(UTIL_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/util
 	cp -vf $(UI_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
 	cp -vf __init__.py $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/ui
-	cp -vf $(XLSX_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/xlsxwriter
+	cp -vf $(XLSX_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/util/xlsxwriter
 	cp -vf $(RESOURCE_FILES) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)
 	cp -vf $(EXTRAS) $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)/icons
 	cp -vfr i18n $(HOME)/$(QGISPIDIR)/python/plugins/$(PLUGINNAME)

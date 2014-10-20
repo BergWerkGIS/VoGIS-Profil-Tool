@@ -92,7 +92,7 @@ class Vertex:
             txt += self.__getAttribs(delimiter, decimalDelimiter)
         return txt
 
-    def toArray(self, hekto, attribs, delimiter, decimalDelimiter):
+    def toArray(self, hekto, attribs, decimalDelimiter):
         """ Fuer die Weiterverarbeitung im Excel-Writer        """
         feld = []
         feld.append(self.distanceProfile)

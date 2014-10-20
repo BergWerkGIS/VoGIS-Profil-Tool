@@ -30,6 +30,7 @@ from bo.chartpoint import ChartPoint
 from util.u import Util
 from util.exportShape import ExportShape
 from util.exportDxf import ExportDxf
+from util.exportXls import ExportXls
 import locale
 #import ogr
 from math import floor, pow, sqrt
@@ -40,7 +41,6 @@ from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.collections import LineCollection
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
-import xlsxwriter
 
 LEFT_MARGIN = 0.08
 BOTTOM_MARGIN = 0.15
@@ -327,122 +327,8 @@ class VoGISProfilToolPlotDialog(QDialog):
                                  ))
 
         # BEGIN XLSX-Export
-        # zunaechst zusaetzlich zum CSV-Export als zweite Datei
-
-        fileNameXlsx = '{0}.xlsx'.format(fileName)
-        workbook = xlsxwriter.Workbook(fileNameXlsx)
-
-        worksheet_1 = workbook.add_worksheet('Data')
-        worksheet_1.set_paper(9)                        # A4
-        worksheet_1.set_column('A:AL', 15)              # Spalten breiter machen
-
-        worksheet_2 = workbook.add_worksheet('Diagram')
-        worksheet_2.set_paper(9)                        # A4
-
-        format_center = workbook.add_format()
-        format_center.set_align('center')
-        format_float = workbook.add_format()
-        format_float.set_align('right')
-        format_float.set_num_format('0.00')
-        format_nofloat = workbook.add_format()
-        format_nofloat.set_align('right')
-        format_nofloat.set_num_format('0')
-
-        row = 0
-        col = 0
-
-        header = self.profiles[0].writeArrayHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter)
-        for kopfspalte in header:
-            worksheet_1.write(row, col, kopfspalte, format_center)
-            col += 1
-
-        row = 1
-        col = 0
-
-        profile = []
-
-        for eigenschaft in self.profiles:
-            profil = eigenschaft.toArray(hekto, attribs, delimiter, decimalDelimiter)
-            profile.append(profil)
-
-            spalte = 0
-
-            for segmente in profil:
-                for segment in segmente:
-                    for vertex in segment:
-                        if self.XlsFormat_NoFloat(header, spalte):
-                            worksheet_1.write(row, col + spalte, vertex, format_nofloat)
-                        else:
-                            worksheet_1.write(row, col + spalte, vertex, format_float)
-                        spalte += 1
-                        if spalte >= len(segment):
-                            spalte = 0
-                            row += 1
-
-        diagram_spalte = "E"
-        self.CreateXlsDiagram(workbook, worksheet_2, profile, diagram_spalte)
-
-        workbook.close()
-
-    def CreateXlsDiagram(self, workbook, worksheet, profile, spalte):
-        if 1 == 1:
-            return
-
-        legende_spalte = "F"
-
-        chart = workbook.add_chart({'type': 'line'})
-        lines = []
-
-        zeile_beginn = 1
-        zeile_ende = 1
-        altes_zeilenende = 1
-
-        zeilen_zaehler = 0
-        segment_zaehler = 0
-        profil_zaehler = 0
-
-        for profil in profile:
-            profil_zaehler += 1
-            for segmente in profil:
-                for segment in segmente:
-                    zeilen_zaehler += 1
-
-                segment_zaehler += 1
-                profilenumber = segmente[segment_zaehler][5]
-
-                if segment_zaehler == profilenumber:
-                    zeile_ende = zeilen_zaehler + 1
-                    if profil_zaehler == 1:
-                        zeile_beginn = 2
-                        altes_zeilenende = zeile_ende
-                    else:
-                        zeile_beginn = altes_zeilenende + 1
-                        altes_zeilenende = zeile_ende
-
-                lines.append(['Data!${0}${1}:${0}${2}'.format(spalte, zeile_beginn, zeile_ende), zeile_beginn])
-
-        for line in lines:
-            chart.add_series({
-                'values':   line[0],
-                'name':     '=Data!${0}${1}'.format(legende_spalte, line[1])
-            })
-
-        worksheet.insert_chart('B23', chart)
-
-        #y = 2
-        #for line in lines:
-        #    worksheet.write(y, 2, str(line))
-        #    y += 1
-
-    def XlsFormat_NoFloat(self, header, spalte):
-        nofloat = False
-        if header[spalte] == "Profilenumber":
-            nofloat = True
-        elif header[spalte] == "Segmentnumber":
-            nofloat = True
-        elif header[spalte] == "Pointnumber":
-            nofloat = True
-        return nofloat
+        exXls = ExportXls(self.iface, fileName, self.settings, self.profiles, hekto, attribs, decimalDelimiter)
+        exXls.create()
 
     def exportTxt(self):
         delimiter = self.__getDelimiter()

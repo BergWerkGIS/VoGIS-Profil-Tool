@@ -103,21 +103,21 @@ class Profile:
 
         return txt
 
-    def toArray(self, hekto, attribs, delimiter, decimalDelimiter):
+    def toArray(self, hekto, attribs, decimalDelimiter):
         """ Fuer die Weiterverarbeitung im Excel-Writer        """
         feld = []
         oldSeg = None
         for idxS in range(len(self.segments)):
             s = self.segments[idxS]
             if oldSeg is not None:
-                feld.append(oldSeg.toArray(hekto, attribs, delimiter, decimalDelimiter))
+                feld.append(oldSeg.toArray(hekto, attribs, decimalDelimiter))
 
-            feld.append(s.toArray(hekto, attribs, delimiter, decimalDelimiter))
+            feld.append(s.toArray(hekto, attribs, decimalDelimiter))
             oldSeg = s
 
         return feld
 
-    def writeArrayHeader(self, selectedRasters, hekto, attribs, delimiter):
+    def writeArrayHeader(self, selectedRasters, hekto, attribs):
         """ Kopfzeile fuer Excel        """
         #Profillaenge;Segmentlaenge;Rechtswert;Hochwert;
         #"Laser - Hoehenmodell Oberflaeche 1m";"Laser Hoehenmodell Gelaende1m";
