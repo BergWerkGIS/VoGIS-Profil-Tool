@@ -300,8 +300,12 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def exportCsvXls(self):
         u = Util(self.iface)
-        caption = QApplication.translate('code', 'CSV-datei exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, [["csv", "csv"]], self.filePath)
+        caption = QApplication.translate('code', 'Excel- oder CSV-Datei exportieren', None, QApplication.UnicodeUTF8)
+        file_format = []
+        file_format.append(["Microsoft Excel 2007/2010 XML", "xlsx"])
+        file_format.append(["Comma-Separated Values CSV", "csv"])
+
+        fileName = u.getFileName(caption, file_format, self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -312,23 +316,23 @@ class VoGISProfilToolPlotDialog(QDialog):
         delimiter = ';'
         decimalDelimiter = self.__getDecimalDelimiter()
 
-        txt = open(fileName, 'w')
+        if fileName[-3:] == "csv":
+            txt = open(fileName, 'w')
 
-        txt.write(self.profiles[0].writeHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter))
-        for p in self.profiles:
-            #txt.write('=====Profil {0}======{1}'.format(p.id, os.linesep))
-            #txt.write('Segments:{0}{1}'.format(len(p.segments), os.linesep))
-            #for s in p.segments:
-            #    txt.write('Vertices:{0}{1}'.format(len(s.vertices), os.linesep))
-            txt.write(p.toString(hekto,
-                                 attribs,
-                                 delimiter,
-                                 decimalDelimiter
-                                 ))
-
-        # BEGIN XLSX-Export
-        exXls = ExportXls(self.iface, fileName, self.settings, self.profiles, hekto, attribs, decimalDelimiter)
-        exXls.create()
+            txt.write(self.profiles[0].writeHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter))
+            for p in self.profiles:
+                #txt.write('=====Profil {0}======{1}'.format(p.id, os.linesep))
+                #txt.write('Segments:{0}{1}'.format(len(p.segments), os.linesep))
+                #for s in p.segments:
+                #    txt.write('Vertices:{0}{1}'.format(len(s.vertices), os.linesep))
+                txt.write(p.toString(hekto,
+                                     attribs,
+                                     delimiter,
+                                     decimalDelimiter))
+        else:
+            # BEGIN XLSX-Export
+            exXls = ExportXls(self.iface, fileName, self.settings, self.profiles, hekto, attribs, decimalDelimiter)
+            exXls.create()
 
     def exportTxt(self):
         delimiter = self.__getDelimiter()

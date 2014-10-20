@@ -14,9 +14,7 @@ class ExportXls:
         self.decimalDelimiter = decimalDelimiter
 
     def create(self):
-        # XLSX-Datei zusaetzlich zur CSV-Datei speichern
-        fileNameXlsx = '{0}.xlsx'.format(self.fileName)
-        workbook = xlsxwriter.Workbook(fileNameXlsx)
+        workbook = xlsxwriter.Workbook(self.fileName)
 
         worksheet_1 = workbook.add_worksheet('Data')
         worksheet_1.set_paper(9)                        # A4

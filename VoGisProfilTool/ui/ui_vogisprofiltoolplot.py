@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Mon Oct 20 14:20:57 2014
+# Created: Mon Oct 20 17:07:54 2014
 #      by: PyQt4 UI code generator 4.9.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_VoGISProfilToolPlot(object):
     def setupUi(self, VoGISProfilToolPlot):
         VoGISProfilToolPlot.setObjectName(_fromUtf8("VoGISProfilToolPlot"))
-        VoGISProfilToolPlot.resize(820, 464)
+        VoGISProfilToolPlot.resize(836, 472)
         VoGISProfilToolPlot.setModal(True)
         self.gridLayout_2 = QtGui.QGridLayout(VoGISProfilToolPlot)
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
@@ -132,5 +132,5 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_chkHekto.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Hektometrie Attribute", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_chkLineAttributes.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Linien Attribute", None, QtGui.QApplication.UnicodeUTF8))
         self.IDC_bText.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Textdatei", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bExcel.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "csv (Excel)", None, QtGui.QApplication.UnicodeUTF8))
+        self.IDC_bExcel.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Excel / CSV", None, QtGui.QApplication.UnicodeUTF8))
 
