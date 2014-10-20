@@ -92,12 +92,12 @@ class ExportXls:
                             spalte = 0
                             row += 1
 
-        self.CreateXlsDiagram(workbook, worksheet_2, lines, "DTM")
+        self.CreateXlsDiagram(workbook, worksheet_2, lines)
 
         workbook.close()
 
-    def CreateXlsDiagram(self, workbook, worksheet, lines, raster):
-        if 1 == 2:
+    def CreateXlsDiagram(self, workbook, worksheet, lines):
+        if 1 == 1:
             return
 
         chart = workbook.add_chart({'type': 'line'})
