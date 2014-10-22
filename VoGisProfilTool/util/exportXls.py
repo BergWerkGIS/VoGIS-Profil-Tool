@@ -20,9 +20,6 @@ class ExportXls:
         worksheet_1.set_paper(9)                        # A4
         worksheet_1.set_column('A:AL', 15)              # Spalten breiter machen
 
-        worksheet_2 = workbook.add_worksheet('Diagram')
-        worksheet_2.set_paper(9)                        # A4
-
         format_center = workbook.add_format()
         format_center.set_align('center')
         format_float = workbook.add_format()
@@ -42,7 +39,7 @@ class ExportXls:
         for kopfspalte in header:
             worksheet_1.write(row, col, kopfspalte, format_center)
 
-            if kopfspalte == "Profilenumber":
+            if (kopfspalte == "Profilenumber") or (kopfspalte == "Profilnummer"):
                 profilspalte = col
 
             col += 1
@@ -90,17 +87,24 @@ class ExportXls:
                             spalte = 0
                             row += 1
 
-        self.CreateXlsDiagram(workbook, worksheet_2, lines)
+        self.CreateXlsDiagram(workbook, lines)
 
         workbook.close()
 
-    def CreateXlsDiagram(self, workbook, worksheet, lines):
+    def CreateXlsDiagram(self, workbook, lines, name='Diagram'):
         if 1 == 1:
             return
 
+        worksheet = workbook.add_worksheet(name)
+        worksheet.set_paper(9)                        # A4
+
         chart = workbook.add_chart({'type': 'line'})
 
+        #i = 0
+
         for line in lines:
+            #worksheet.write(i, 0, line)
+            #i += 1
             chart.add_series({
                 'values':   line
             })
@@ -109,10 +113,10 @@ class ExportXls:
 
     def XlsFormat_NoFloat(self, header, spalte):
         nofloat = False
-        if header[spalte] == "Profilenumber":
+        if (header[spalte] == "Profilenumber") or (header[spalte] == "Profilnummer"):
             nofloat = True
-        elif header[spalte] == "Segmentnumber":
+        elif (header[spalte] == "Segmentnumber") or (header[spalte] == "Segmentnummer"):
             nofloat = True
-        elif header[spalte] == "Pointnumber":
+        elif (header[spalte] == "Pointnumber") or (header[spalte] == "Punktnummer"):
             nofloat = True
         return nofloat
