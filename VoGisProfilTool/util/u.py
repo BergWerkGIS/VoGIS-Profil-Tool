@@ -56,9 +56,9 @@ class Util:
             f += 0.01
             return True
         except:
-            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", unicode(valName) + u' ' + unicode(QApplication.translate('code', u'ist keine gÃ¼ltige Zahl!', None, QApplication.UnicodeUTF8)))
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", '"' + valName + '" ' + QApplication.translate('code', 'ist keine gÃ¼ltige Zahl!', None, QApplication.UnicodeUTF8))
-            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", tr(u'ist keine gÃ¼ltige Zahl!'))
+            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", unicode(valName) + u' ' + unicode(QApplication.translate('code', u'ist keine gültige Zahl!', None, QApplication.UnicodeUTF8)))
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", '"' + valName + '" ' + QApplication.translate('code', 'ist keine gültige Zahl!', None, QApplication.UnicodeUTF8))
+            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", tr(u'ist keine gültige Zahl!'))
             return False
 
 
@@ -68,16 +68,16 @@ class Util:
             i += 1
             return True
         except:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"'" + valName + "' ist keine gÃ¼ltige Ganzzahl!")
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"'" + valName + "' ist keine gültige Ganzzahl!")
             return False
 
 
     def getFileName(self, text, filter, filePath):
         """filter: [["Shapefile", "shp"], ["Keyhole Markup Language", "kml"]]"""
         if QGis.QGIS_VERSION_INT < 10900:
-             selectedFilter = QString()
-        # else:
-        #     selectedFilter = u''
+            selectedFilter = QString()
+        #else:
+        #    selectedFilter = QString()
         filters = []
         for item in filter:
             filters.append('%s (*.%s)' % (item[0], item[1]))
@@ -90,11 +90,14 @@ class Util:
                                                selectedFilter
                                                )
         else:
-            fileName = fileDlg.getSaveFileName(self.iface.mainWindow(),
+            fileDlg.setNameFilters(filters)
+            fileName, selectedFilter = fileDlg.getSaveFileNameAndFilter(self.iface.mainWindow(),
                                                text,
                                                filePath,
                                                ";;".join(filters)
                                                )
+            QgsMessageLog.logMessage('selectedFilter: {0}'.format(selectedFilter), 'VoGis')
+
         #QgsMessageLog.logMessage('{0}'.format(fileName), 'VoGis')
         if fileName is None or fileName == '':
             return u''
@@ -102,16 +105,17 @@ class Util:
             #fileExt = fInfo.suffix()
             fileExt = str(selectedFilter[:3]).lower()
         else:
-            selectedFilter = fileDlg.filters().index(fileDlg.selectedFilter())
+            QgsMessageLog.logMessage('fileDlg.filters(): {0}'.format(fileDlg.filters()), 'VoGis')
+            selectedFilter = fileDlg.filters().index(selectedFilter)
             fileExt = filter[selectedFilter][1]
 
-        #QgsMessageLog.logMessage('selectedFilter: {0}'.format(selectedFilter), 'VoGis')
-        #QgsMessageLog.logMessage('fileExt: {0}'.format(fileExt), 'VoGis')
+        QgsMessageLog.logMessage('selectedFilter: {0}'.format(selectedFilter), 'VoGis')
+        QgsMessageLog.logMessage('fileExt: {0}'.format(fileExt), 'VoGis')
 
         fileName = unicode(fileName)
         if fileName.lower().endswith(fileExt) is False:
             fileName = fileName + '.' + fileExt
-        return fileName
+        return fileName, fileExt
 
 
     def get_features(self, lyr):
@@ -407,7 +411,7 @@ class Util:
         if QgsVectorFileWriter.deleteShapeFile(fileName) is False:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                QApplication.translate('code', 'Konnte vorhandene Datei nicht lÃ¶schen', None, QApplication.UnicodeUTF8) + ': ' + fileName
+                                QApplication.translate('code', 'Konnte vorhandene Datei nicht löschen', None, QApplication.UnicodeUTF8) + ': ' + fileName
                                 )
             return False
         else:
@@ -438,7 +442,7 @@ class Util:
         if drv is None:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                driverName + ' ' + QApplication.translate('code', 'Treiber nicht verfÃ¼gbar', None, QApplication.UnicodeUTF8)
+                                driverName + ' ' + QApplication.translate('code', 'Treiber nicht verfügbar', None, QApplication.UnicodeUTF8)
                                 )
             return None, None
 

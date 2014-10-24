@@ -305,8 +305,9 @@ class VoGISProfilToolPlotDialog(QDialog):
         file_format.append(["Microsoft Excel 2007/2010 XML", "xlsx"])
         file_format.append(["Comma-Separated Values CSV", "csv"])
 
-        #TODO: eigene getFileName-Methode mit der Methode in util/u.py mergen
-        fileName = self.getFileName(caption, file_format, self.filePath)
+        fileName, fileExt = u.getFileName(caption, file_format, self.filePath)
+        QgsMessageLog.logMessage(u'fileName: {0} fileExt:{1}'.format(fileName, fileExt), 'VoGis')
+
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -317,9 +318,8 @@ class VoGISProfilToolPlotDialog(QDialog):
         delimiter = ';'
         decimalDelimiter = self.__getDecimalDelimiter()
 
-        if fileName.lower().endswith("csv") is True:
+        if fileExt == 'csv':
             txt = open(fileName, 'w')
-
             txt.write(self.profiles[0].writeHeader(self.settings.mapData.rasters.selectedRasters(), hekto, attribs, delimiter))
             for p in self.profiles:
                 #txt.write('=====Profil {0}======{1}'.format(p.id, os.linesep))
@@ -335,37 +335,6 @@ class VoGISProfilToolPlotDialog(QDialog):
             exXls = ExportXls(self.iface, fileName, self.settings, self.profiles, hekto, attribs, decimalDelimiter)
             exXls.create()
 
-    def getFileName(self, text, filter, filePath):
-        """filter: [["Shapefile", "shp"], ["Keyhole Markup Language", "kml"]]"""
-
-        filters = []
-        for item in filter:
-            filters.append('%s (*.%s)' % (item[0], item[1]))
-        fileDlg = QFileDialog(self.iface.mainWindow())
-
-        fileNameAndFilter = fileDlg.getSaveFileNameAndFilter(self.iface.mainWindow(),
-                                                             text,
-                                                             filePath,
-                                                             ";;".join(filters)
-        )
-        fileName = fileNameAndFilter[0]
-        fullfileExt = fileNameAndFilter[1]
-
-        #Default-Export
-        fileExt = "xlsx"
-
-        for item in filter:
-            fullfileExtGewaehlt = "{0} (*.{1})".format(item[0], item[1])
-            if fullfileExt == fullfileExtGewaehlt:
-                fileExt = item[1]
-
-        if fileName is None or fileName == '':
-            return u''
-
-        fileName = unicode(fileName)
-        if fileName.lower().endswith(fileExt) is False:
-            fileName = fileName + '.' + fileExt
-        return fileName
 
     def exportTxt(self):
         delimiter = self.__getDelimiter()

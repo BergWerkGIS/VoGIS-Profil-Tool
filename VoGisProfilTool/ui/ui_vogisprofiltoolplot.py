@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Mon Oct 20 17:07:54 2014
-#      by: PyQt4 UI code generator 4.9.3
+# Created: Fri Oct 24 10:22:14 2014
+#      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_VoGISProfilToolPlot(object):
     def setupUi(self, VoGISProfilToolPlot):
@@ -115,22 +124,22 @@ class Ui_VoGISProfilToolPlot(object):
         QtCore.QMetaObject.connectSlotsByName(VoGISProfilToolPlot)
 
     def retranslateUi(self, VoGISProfilToolPlot):
-        VoGISProfilToolPlot.setWindowTitle(QtGui.QApplication.translate("VoGISProfilToolPlot", "VoGIS Profil Tool", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bClose.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Schließen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bDxfLine.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "DXF Linie", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bDxfPnt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "DXF Punkt", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bShpPnt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Shp Punkt", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bShpLine.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Shp Linie", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bACadTxt.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Autocad Text", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Dezimalzeichen (für Text, csv):", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_cbDecimalDelimiter.setItemText(0, QtGui.QApplication.translate("VoGISProfilToolPlot", ",", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_cbDecimalDelimiter.setItemText(1, QtGui.QApplication.translate("VoGISProfilToolPlot", ".", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Spaltentrennzeichen (Text):", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_cbDelimiter.setItemText(0, QtGui.QApplication.translate("VoGISProfilToolPlot", "tab", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_cbDelimiter.setItemText(1, QtGui.QApplication.translate("VoGISProfilToolPlot", ";", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_cbDelimiter.setItemText(2, QtGui.QApplication.translate("VoGISProfilToolPlot", ",", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkHekto.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Hektometrie Attribute", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkLineAttributes.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Linien Attribute", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bText.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Textdatei", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bExcel.setText(QtGui.QApplication.translate("VoGISProfilToolPlot", "Excel / CSV", None, QtGui.QApplication.UnicodeUTF8))
+        VoGISProfilToolPlot.setWindowTitle(_translate("VoGISProfilToolPlot", "VoGIS Profil Tool", None))
+        self.IDC_bClose.setText(_translate("VoGISProfilToolPlot", "Schließen", None))
+        self.IDC_bDxfLine.setText(_translate("VoGISProfilToolPlot", "DXF Linie", None))
+        self.IDC_bDxfPnt.setText(_translate("VoGISProfilToolPlot", "DXF Punkt", None))
+        self.IDC_bShpPnt.setText(_translate("VoGISProfilToolPlot", "Shp Punkt", None))
+        self.IDC_bShpLine.setText(_translate("VoGISProfilToolPlot", "Shp Linie", None))
+        self.IDC_bACadTxt.setText(_translate("VoGISProfilToolPlot", "Autocad Text", None))
+        self.label.setText(_translate("VoGISProfilToolPlot", "Dezimalzeichen (für Text, csv):", None))
+        self.IDC_cbDecimalDelimiter.setItemText(0, _translate("VoGISProfilToolPlot", ",", None))
+        self.IDC_cbDecimalDelimiter.setItemText(1, _translate("VoGISProfilToolPlot", ".", None))
+        self.label_2.setText(_translate("VoGISProfilToolPlot", "Spaltentrennzeichen (Text):", None))
+        self.IDC_cbDelimiter.setItemText(0, _translate("VoGISProfilToolPlot", "tab", None))
+        self.IDC_cbDelimiter.setItemText(1, _translate("VoGISProfilToolPlot", ";", None))
+        self.IDC_cbDelimiter.setItemText(2, _translate("VoGISProfilToolPlot", ",", None))
+        self.IDC_chkHekto.setText(_translate("VoGISProfilToolPlot", "Hektometrie Attribute", None))
+        self.IDC_chkLineAttributes.setText(_translate("VoGISProfilToolPlot", "Linien Attribute", None))
+        self.IDC_bText.setText(_translate("VoGISProfilToolPlot", "Textdatei", None))
+        self.IDC_bExcel.setText(_translate("VoGISProfilToolPlot", "Excel / CSV", None))
 
