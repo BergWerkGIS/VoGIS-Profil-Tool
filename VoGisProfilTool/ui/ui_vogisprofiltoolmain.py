@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Mon Oct 20 14:20:57 2014
-#      by: PyQt4 UI code generator 4.9.3
+# Created: Fri Oct 24 11:26:18 2014
+#      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_VoGISProfilToolMain(object):
     def setupUi(self, VoGISProfilToolMain):
@@ -319,30 +328,30 @@ class Ui_VoGISProfilToolMain(object):
         QtCore.QMetaObject.connectSlotsByName(VoGISProfilToolMain)
 
     def retranslateUi(self, VoGISProfilToolMain):
-        VoGISProfilToolMain.setWindowTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "VoGIS Profil Tool", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_grpRaster.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Rastermodell(e) auswählen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bSelectVisibleRasters.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Im aktuellen Extent sichtbare Raster auswählen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bRefreshRasterList.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Raster aktualisieren", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_grpProfilLinien.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Lage der Profillinie(n) festlegen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_bDrawLine.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profillinie (neu) digitalisieren", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkOnlySelectedFeatures.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "nur selektierte Elemente verwenden", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkLinesExplode.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Linien explodieren (Multipart Features)", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_rbShapeLine.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profillinie(n) aus Linienthema übernehmen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_rbDigi.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profillinie am Bildschirm zeichen", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Linie", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_tbToY.setText(QtGui.QApplication.translate("VoGISProfilToolMain", ".", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "von:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "nach:", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_3.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Rechtswert", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_4.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Hochwert", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkLinesMerge.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Zusammenhängende Linien verbinden", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_rbStraigthLine.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "gerade Profillinie zwischen zwei Punkten", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_grpVertices.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Stützstellen festlegen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_rbEquiDistance.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Abstand zwischen den Profilpunkten", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_rbVertexCount.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Anzahl Profilpunkte pro Profil", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_chkNodesAndVertices.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Profilpunkte erstellen an Knoten und Stützstellen", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_grpIntersection.setTitle(QtGui.QApplication.translate("VoGISProfilToolMain", "Flächenverschneidung", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_tbNoDataExport.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "-9999", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_5.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "Nodata (Export)", None, QtGui.QApplication.UnicodeUTF8))
-        self.IDC_lblCreateStatus.setText(QtGui.QApplication.translate("VoGISProfilToolMain", "0/0", None, QtGui.QApplication.UnicodeUTF8))
+        VoGISProfilToolMain.setWindowTitle(_translate("VoGISProfilToolMain", "VoGIS Profil Tool", None))
+        self.IDC_grpRaster.setTitle(_translate("VoGISProfilToolMain", "Rastermodell(e) auswählen", None))
+        self.IDC_bSelectVisibleRasters.setText(_translate("VoGISProfilToolMain", "Im aktuellen Extent sichtbare Raster auswählen", None))
+        self.IDC_bRefreshRasterList.setText(_translate("VoGISProfilToolMain", "Raster aktualisieren", None))
+        self.IDC_grpProfilLinien.setTitle(_translate("VoGISProfilToolMain", "Lage der Profillinie(n) festlegen", None))
+        self.IDC_bDrawLine.setText(_translate("VoGISProfilToolMain", "Profillinie (neu) digitalisieren", None))
+        self.IDC_chkOnlySelectedFeatures.setText(_translate("VoGISProfilToolMain", "nur selektierte Elemente verwenden", None))
+        self.IDC_chkLinesExplode.setText(_translate("VoGISProfilToolMain", "Linien explodieren (Multipart Features)", None))
+        self.IDC_rbShapeLine.setText(_translate("VoGISProfilToolMain", "Profillinie(n) aus Linienthema übernehmen", None))
+        self.IDC_rbDigi.setText(_translate("VoGISProfilToolMain", "Profillinie am Bildschirm zeichen", None))
+        self.groupBox.setTitle(_translate("VoGISProfilToolMain", "Linie", None))
+        self.IDC_tbToY.setText(_translate("VoGISProfilToolMain", ".", None))
+        self.label.setText(_translate("VoGISProfilToolMain", "von:", None))
+        self.label_2.setText(_translate("VoGISProfilToolMain", "nach:", None))
+        self.label_3.setText(_translate("VoGISProfilToolMain", "Rechtswert", None))
+        self.label_4.setText(_translate("VoGISProfilToolMain", "Hochwert", None))
+        self.IDC_chkLinesMerge.setText(_translate("VoGISProfilToolMain", "Zusammenhängende Linien verbinden", None))
+        self.IDC_rbStraigthLine.setText(_translate("VoGISProfilToolMain", "gerade Profillinie zwischen zwei Punkten", None))
+        self.IDC_grpVertices.setTitle(_translate("VoGISProfilToolMain", "Stützstellen festlegen", None))
+        self.IDC_rbEquiDistance.setText(_translate("VoGISProfilToolMain", "Abstand zwischen den Profilpunkten", None))
+        self.IDC_rbVertexCount.setText(_translate("VoGISProfilToolMain", "Anzahl Profilpunkte pro Profil", None))
+        self.IDC_chkNodesAndVertices.setText(_translate("VoGISProfilToolMain", "Profilpunkte erstellen an Knoten und Stützstellen", None))
+        self.IDC_grpIntersection.setTitle(_translate("VoGISProfilToolMain", "Flächenverschneidung", None))
+        self.IDC_tbNoDataExport.setText(_translate("VoGISProfilToolMain", "-9999", None))
+        self.label_5.setText(_translate("VoGISProfilToolMain", "Nodata (Export)", None))
+        self.IDC_lblCreateStatus.setText(_translate("VoGISProfilToolMain", "0/0", None))
 

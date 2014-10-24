@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created: Fri Oct 24 10:22:14 2014
+# Created: Fri Oct 24 11:26:18 2014
 #      by: PyQt4 UI code generator 4.10.4
 #
 # WARNING! All changes made in this file will be lost!
