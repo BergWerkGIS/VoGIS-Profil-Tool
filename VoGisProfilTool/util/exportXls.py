@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import xlsxwriter
+from qgis.core import QgsMessageLog
+from PyQt4.QtGui import QApplication
 
 
 class ExportXls:
@@ -39,7 +41,10 @@ class ExportXls:
         for kopfspalte in header:
             worksheet_1.write(row, col, kopfspalte, format_center)
 
-            if (kopfspalte == "Profilenumber") or (kopfspalte == "Profilnummer"):
+            spalten_name_profil_nr = QApplication.translate('code', 'Profilnummer', None, QApplication.UnicodeUTF8)
+            QgsMessageLog.logMessage(u'spalten_name_profil_nr: {0}'.format(spalten_name_profil_nr), 'VoGis')
+
+            if (kopfspalte == spalten_name_profil_nr):
                 profilspalte = col
 
             col += 1
@@ -106,7 +111,7 @@ class ExportXls:
             #worksheet.write(i, 0, line)
             #i += 1
             chart.add_series({
-                'values':   line
+                'values': line
             })
 
         worksheet.insert_chart('B23', chart)
