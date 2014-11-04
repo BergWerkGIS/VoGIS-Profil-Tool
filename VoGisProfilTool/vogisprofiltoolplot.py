@@ -201,15 +201,17 @@ class VoGISProfilToolPlotDialog(QDialog):
                   (1, 1, 0.521568627, 1.0),
                   ]
 
+        max_profile_length = 0
         #idxCol = 0
         for idx, p in enumerate(self.profiles):
+            max_profile_length = max(p.getExtent().xmax, max_profile_length)
             #if idxCol > len(colors) - 1:
             #    idxCol = 0
-            #x, pltSegs = p.getPlotSegments()
+            #x, plt_segments = p.getPlotSegments()
             #QgsMessageLog.logMessage('x: {0}'.format(x), 'VoGis')
-            pltSegs = p.getPlotSegments()
-            #QgsMessageLog.logMessage('pltSegs: {0}'.format(pltSegs), 'VoGis')
-            lineColl = LineCollection(pltSegs,
+            plt_segments = p.getPlotSegments()
+            #QgsMessageLog.logMessage('plt_segments: {0}'.format(plt_segments), 'VoGis')
+            lineColl = LineCollection(plt_segments,
                                       linewidths=2,
                                       linestyles='solid',
                                       #colors=colors[randrange(len(colors))],
@@ -224,14 +226,32 @@ class VoGISProfilToolPlotDialog(QDialog):
             #idxCol += 1
 
         #LINE STYLES: http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.plot
-        for intersection in self.intersections:
+        for idx, intersection in enumerate(self.intersections):
+            color_intersection = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
+            x_1 = intersection.from_dist
+            x_2 = intersection.to_dist
+            z_1 = intersection.from_z[self.settings.intersection_dhm_idx]
+            z_2 = intersection.to_z[self.settings.intersection_dhm_idx]
             self.subplot.plot(
-                              (intersection.from_dist, intersection.to_dist),
-                              (intersection.from_z[self.settings.intersection_dhm_idx], intersection.to_z[self.settings.intersection_dhm_idx]),
-                              'b-',
+                              (x_1, x_2),
+                              (z_1, z_2),
+                              color_intersection[idx] + '--',
                               linewidth=4,
-                              zorder=1,
+                              zorder=1
                               )
+            #http://matplotlib.org/users/annotations_guide.html#using-complex-coordinate-with-annotation
+            self.subplot.annotate(u'{0:.2f}'.format(z_1), (x_1, z_1), xytext=(0, 30), textcoords="offset points", bbox=dict(boxstyle="round", fc="w"), arrowprops=dict(arrowstyle="->"), ha='center', va='bottom', rotation=90)
+            self.subplot.annotate(u'{0:.2f}'.format(z_2), (x_2, z_2), xytext=(0, 30), textcoords="offset points", bbox=dict(boxstyle="round", fc="w"), arrowprops=dict(arrowstyle="->"), ha='center', va='bottom', rotation=90)
+
+            #horizontale Ausspiegeling
+            self.subplot.plot(
+                              (x_1, max_profile_length),
+                              (z_1, z_1),
+                              color_intersection[idx] + ':',
+                              linewidth=4,
+                              zorder=1
+                              )
+
 
         #save inital view in history
         plt_toolbar.push_current()
