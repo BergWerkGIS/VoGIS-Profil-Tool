@@ -86,6 +86,15 @@ class VoGISProfilToolMain:
     # run method that performs all the real work
     def run(self):
 
+        is_open = QSettings().value("vogisprofiltoolmain/isopen", False)
+        #Python treats almost everything as True````
+        #is_open = bool(is_open)
+        QgsMessageLog.logMessage(u'isopen: {0}'.format(is_open), 'VoGis')
+        #!!!string comparison
+        if is_open == 'true':
+            QgsMessageLog.logMessage(u'Dialog already opened', 'VoGis')
+            return
+
         try:
             import shapely
         except ImportError:
@@ -118,13 +127,17 @@ class VoGISProfilToolMain:
                 self.settings.onlyHektoMode = True
                 self.settings.createHekto = True
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = VoGISProfilToolMainDialog(self.iface, self.settings)
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        #result = self.dlg.exec_()
-        self.dlg.exec_()
+        try:
+            QSettings().setValue("vogisprofiltoolmain/isopen", True)
+            # Create the dialog (after translation) and keep reference
+            self.dlg = VoGISProfilToolMainDialog(self.iface, self.settings)
+            # show the dialog
+            self.dlg.show()
+            # Run the dialog event loop
+            #result = self.dlg.exec_()
+            self.dlg.exec_()
+        finally:
+            QSettings().setValue("vogisprofiltoolmain/isopen", False)
 
 
     def __getMapData(self):
