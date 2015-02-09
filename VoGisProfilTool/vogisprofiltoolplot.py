@@ -297,7 +297,7 @@ class VoGISProfilToolPlotDialog(QDialog):
             caption = QApplication.translate('code', 'Punkt Shapefile exportieren', None, QApplication.UnicodeUTF8)
         else:
             caption = QApplication.translate('code', 'Linien Shapefile exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, [["shp", "shp"]], self.filePath)
+        fileName, file_ext = u.getFileName(caption, [["shp", "shp"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -366,7 +366,7 @@ class VoGISProfilToolPlotDialog(QDialog):
 
         u = Util(self.iface)
         caption = QApplication.translate('code', 'Textdatei exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, [["txt", "txt"]], self.filePath)
+        fileName, file_ext = u.getFileName(caption, [["txt", "txt"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -393,7 +393,7 @@ class VoGISProfilToolPlotDialog(QDialog):
     def exportAutoCadTxt(self):
         u = Util(self.iface)
         caption = QApplication.translate('code', 'AutoCad Textdatei exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, [["txt", "txt"]], self.filePath)
+        fileName, file_ext = u.getFileName(caption, [["txt", "txt"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
@@ -416,7 +416,7 @@ class VoGISProfilToolPlotDialog(QDialog):
     def __exportDxf(self, asPnt):
         u = Util(self.iface)
         caption = QApplication.translate('code', 'DXF exportieren', None, QApplication.UnicodeUTF8)
-        fileName = u.getFileName(caption, [["dxf", "dxf"]], self.filePath)
+        fileName, file_ext = u.getFileName(caption, [["dxf", "dxf"]], self.filePath)
         if fileName == '':
             return
         fInfo = QFileInfo(fileName)
