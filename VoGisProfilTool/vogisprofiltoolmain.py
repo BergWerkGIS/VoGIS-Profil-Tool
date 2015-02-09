@@ -49,9 +49,14 @@ class VoGISProfilToolMain:
         else:
             loc = QSettings().value("locale/userLocale")[0:2]
 
+        QgsMessageLog.logMessage("locale: {0}".format(loc), 'VoGis')
+
         if QFileInfo(self.plugin_dir).exists():
             #QgsMessageLog.logMessage('plugin_dir exits', 'VoGis')
             localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + loc + ".qm"
+
+        if loc != 'de' and not QFileInfo(localePath).exists():
+            localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_en.qm"
 
         if QFileInfo(localePath).exists():
             #QgsMessageLog.logMessage('localePath exits', 'VoGis')
