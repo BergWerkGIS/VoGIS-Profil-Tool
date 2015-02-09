@@ -57,7 +57,7 @@ class VoGISProfilToolMainDialog(QDialog):
             self.ui.IDC_widRaster.hide()
             self.adjustSize()
 
-        validator = QIntValidator(-32768, 32768)
+        validator = QIntValidator(-32768, 32768, self)
         self.ui.IDC_tbNoDataExport.setValidator(validator)
 
         self.ui.IDC_tbFromX.setText('-30000')
