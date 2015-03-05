@@ -23,7 +23,8 @@ class Vertex:
                  vertexId,
                  distanceProfile,
                  distanceSegment,
-                 zvals
+                 zvals,
+                 nodata_value=-9999
                  ):
         self.attribNames = []
         self.attributes = []
@@ -49,6 +50,8 @@ class Vertex:
         self.distanceProfile = distanceProfile
         self.distanceSegment = distanceSegment
         self.zvals = zvals
+        self.nodata_value = nodata_value
+
 
     def toString(self, hekto, attribs, delimiter, decimalDelimiter):
         #dirty HACK! toString() replace, um unabhaengig von LOCALE Dezimaltrenner setzen zu können
@@ -88,6 +91,30 @@ class Vertex:
         if attribs is True:
             txt += self.__getAttribs(delimiter, decimalDelimiter)
         return txt
+
+    def toArray(self, hekto, attribs, decimalDelimiter):
+        """ Fuer die Weiterverarbeitung im Excel-Writer        """
+        feld = []
+        feld.append(self.distanceProfile)
+        feld.append(self.distanceSegment)
+        feld.append(self.x)
+        feld.append(self.y)
+        zVals = self.getZVals()
+        for zVal in zVals:
+            feld.append(zVal)
+        feld.append(self.profileId)
+        feld.append(self.segmentId)
+        feld.append(self.vertexId)
+        feld.append(self.getType())
+
+        if hekto is True:
+            feld.append(self.getHekto(decimalDelimiter))
+        if attribs is True:
+            attribute = self.getAttributeVals()
+            for attribut in attribute:
+                feld.append(attribut)
+
+        return feld
 
     def toACadTxt(self, delimiter, decimalDelimiter):
         acadTxt = ''
@@ -155,13 +182,23 @@ class Vertex:
         hm = ('hm {0:.2f}'.format(self.distanceProfile / 100)).replace('.', decimalDelimiter)
         return hm
 
+    def getZVals(self):
+        z = []
+        if len(self.zvals) > 0:
+            for zVal in self.zvals:
+                if zVal is None:
+                    z.append(str(self.nodata_value))
+                else:
+                    z.append(zVal)
+        return z
+
     def __getZVals(self, delimiter, decimalDelimiter):
         z = ''
         if len(self.zvals) > 0:
             valCnter = 1
             for zVal in self.zvals:
                 if zVal is None:
-                    z += '-9999'
+                    z += str(self.nodata_value)
                 else:
                     z += ('{0:.2f}'.format(zVal)).replace('.', decimalDelimiter)
                 if valCnter < len(self.zvals):

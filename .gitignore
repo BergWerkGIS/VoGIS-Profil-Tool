@@ -1,2 +1,7 @@
+help/
+
+*.nja
 *.sublime-project
 *.sublime-workspace
+
+.idea/

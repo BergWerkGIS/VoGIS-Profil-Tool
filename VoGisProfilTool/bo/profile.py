@@ -103,6 +103,55 @@ class Profile:
 
         return txt
 
+    def toArray(self, hekto, attribs, decimalDelimiter):
+        """ Fuer die Weiterverarbeitung im Excel-Writer        """
+        feld = []
+        oldSeg = None
+        for idxS in range(len(self.segments)):
+            s = self.segments[idxS]
+            if oldSeg is not None:
+                feld.append(oldSeg.toArray(hekto, attribs, decimalDelimiter))
+
+            feld.append(s.toArray(hekto, attribs, decimalDelimiter))
+            oldSeg = s
+
+        return feld
+
+    def writeArrayHeader(self, selectedRasters, hekto, attribs):
+        """ Kopfzeile fuer Excel        """
+        #Profillaenge;Segmentlaenge;Rechtswert;Hochwert;
+        #"Laser - Hoehenmodell Oberflaeche 1m";"Laser Hoehenmodell Gelaende1m";
+        #Profilnummer;Segmentnummer;Punktnummer;Punktklasse;
+        #Hektometer
+        #ATTRIBUTE
+        hdr_prof_len = QApplication.translate('code', 'Profillaenge', None, QApplication.UnicodeUTF8)
+        hdr_seg_len = QApplication.translate('code', 'Segmentlaenge', None, QApplication.UnicodeUTF8)
+        hdr_xval = QApplication.translate('code', 'Rechtswert', None, QApplication.UnicodeUTF8)
+        hdr_yval = QApplication.translate('code', 'Hochwert', None, QApplication.UnicodeUTF8)
+        hdr_prof_nr = QApplication.translate('code', 'Profilnummer', None, QApplication.UnicodeUTF8)
+        hdr_seg_nr = QApplication.translate('code', 'Segmentnummer', None, QApplication.UnicodeUTF8)
+        hdr_pnt_nr = QApplication.translate('code', 'Punktnummer', None, QApplication.UnicodeUTF8)
+        hdr_pnt_class = QApplication.translate('code', 'Punktklasse', None, QApplication.UnicodeUTF8)
+
+        hdr = []
+        hdr.append(hdr_prof_len)
+        hdr.append(hdr_seg_len)
+        hdr.append(hdr_xval)
+        hdr.append(hdr_yval)
+        for r in selectedRasters:
+            hdr.append(r.name)
+        hdr.append(hdr_prof_nr)
+        hdr.append(hdr_seg_nr)
+        hdr.append(hdr_pnt_nr)
+        hdr.append(hdr_pnt_class)
+        if hekto is True:
+            hdr.append('Hektometer')
+        if attribs is True:
+            for fldName in self.segments[0].vertices[0].attribNames:
+                hdr.append(fldName)
+        return hdr
+
+
     def toACadTxt(self, delimiter, decimalDelimiter):
         acadTxt = ''
         for s in self.segments:

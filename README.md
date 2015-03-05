@@ -1,27 +1,18 @@
 #VoGIS-Profil-Tool
- 
-One plugin working with QGIS 1.8 and 2.0.
- 
+
+One plugin working with QGIS 1.8 and 2.x.
+
 ##Developed for
- 
-Amt der Vorarlberger Landesregierung 
 
-Landesamt für Vermessung und Geoinformation 
+Amt der Vorarlberger Landesregierung
 
-http://vorarlberg.at/vorarlberg/bauen_wohnen/bauen/vermessung_geoinformation/start.htm 
- 
-##Developed on
- 
-OSGeo-Live 7.0: 
+Landesamt für Vermessung und Geoinformation
 
-http://live.osgeo.org/en/index.html 
- 
+http://vorarlberg.at/vorarlberg/bauen_wohnen/bauen/vermessung_geoinformation/start.htm
+
+
 #Build from source
- 
-Directory **VoGISProfilTool** contains new enhanced version. 
 
-Directory **Z_VoGISProfilTool** contains old version. 
- 
 ```
 * git clone https://github.com/BergWerkGIS/VoGIS-Profil-Tool.git
 * cd ./VoGISProfilTool
@@ -30,19 +21,19 @@ Directory **Z_VoGISProfilTool** contains old version.
 * make deploy #(compile and deploy to ~/.qgis/pyhton/plugins/VoGISProfilTool)
 * make zip #(create plugin zip-file for deployment in local folder)
 ```
- 
+
 #Download the ready-to-deploy PlugIn
- 
+
 Download via QGIS Plugin Manager or directly from GitHub:
 https://github.com/BergWerkGIS/VoGIS-Profil-Tool/raw/master/VoGisProfilTool/VoGisProfilTool.zip
- 
+
 #Description
- 
-Create profiles from DHMs using vector geometries or a digitized line. 
- 
-Interpolate vertices (equidistant or constant number of vertices per input geometry). 
- 
-Display profile plots. 
+
+Create profiles from DHMs using vector geometries or a digitized line.
+
+Interpolate vertices (equidistant or constant number of vertices per input geometry).
+
+Display profile plots.
 
 Export to:
 * 2.5D point or 2.5D line Shapefile
@@ -54,3 +45,9 @@ Export to:
 
 ![Alt text](/screenshots/maindialog.png)
 ![Alt text](/screenshots/plotdialog.png)
+
+## Known issues
+
+If you get an error message about missing shapely, just do
+
+`sudo apt-get install python-shapely`.

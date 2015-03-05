@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>463</width>
-    <height>612</height>
+    <width>487</width>
+    <height>775</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,6 +33,9 @@
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="spacing">
       <number>0</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
      </property>
      <item>
       <widget class="QWidget" name="IDC_widRaster" native="true">
@@ -126,6 +129,12 @@
      </item>
      <item>
       <widget class="QWidget" name="IDC_widProfilLinien" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <layout class="QGridLayout" name="gridLayout_4">
         <property name="topMargin">
          <number>2</number>
@@ -138,6 +147,12 @@
         </property>
         <item row="0" column="0">
          <widget class="QGroupBox" name="IDC_grpProfilLinien">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="title">
            <string>Lage der Profillinie(n) festlegen</string>
           </property>
@@ -216,6 +231,18 @@
            </item>
            <item row="10" column="0">
             <widget class="QGroupBox" name="groupBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>200</height>
+              </size>
+             </property>
              <property name="title">
               <string>Linie</string>
              </property>
@@ -313,6 +340,12 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>250</height>
+        </size>
+       </property>
        <layout class="QGridLayout" name="gridLayout_6">
         <property name="topMargin">
          <number>0</number>
@@ -325,6 +358,12 @@
         </property>
         <item row="0" column="0">
          <widget class="QGroupBox" name="IDC_grpVertices">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="title">
            <string>Stützstellen festlegen</string>
           </property>
@@ -434,16 +473,162 @@
       </widget>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="enabled">
-        <bool>true</bool>
+      <widget class="QWidget" name="IDC_widPolygonLayers" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
        </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>300</height>
+        </size>
        </property>
+       <layout class="QGridLayout" name="gridLayout_10">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="IDC_grpIntersection">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Flächenverschneidung</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_11">
+           <property name="topMargin">
+            <number>3</number>
+           </property>
+           <property name="rightMargin">
+            <number>9</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QListWidget" name="IDC_listPolygons">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QDialogButtonBox" name="buttonBox">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="standardButtons">
+           <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QWidget" name="IDC_widNoDataAndProgress" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>80</height>
+           </size>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_9">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="IDC_tbNoDataExport">
+             <property name="inputMask">
+              <string/>
+             </property>
+             <property name="text">
+              <string>-9999</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Nodata (Export)</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="3">
+            <widget class="QLabel" name="IDC_lblCreateStatus">
+             <property name="text">
+              <string>0/0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>
@@ -475,12 +660,12 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>354</x>
-     <y>882</y>
+     <x>373</x>
+     <y>773</y>
     </hint>
     <hint type="destinationlabel">
      <x>309</x>
-     <y>845</y>
+     <y>774</y>
     </hint>
    </hints>
   </connection>
@@ -491,12 +676,12 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>447</x>
-     <y>882</y>
+     <x>466</x>
+     <y>773</y>
     </hint>
     <hint type="destinationlabel">
      <x>424</x>
-     <y>847</y>
+     <y>774</y>
     </hint>
    </hints>
   </connection>
@@ -507,8 +692,8 @@
    <slot>selectVisibleRasters()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>327</x>
-     <y>56</y>
+     <x>363</x>
+     <y>48</y>
     </hint>
     <hint type="destinationlabel">
      <x>457</x>
@@ -523,8 +708,8 @@
    <slot>drawLine()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>428</x>
-     <y>472</y>
+     <x>452</x>
+     <y>296</y>
     </hint>
     <hint type="destinationlabel">
      <x>457</x>
@@ -539,8 +724,8 @@
    <slot>valueChangedEquiDistance(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>394</x>
-     <y>748</y>
+     <x>458</x>
+     <y>532</y>
     </hint>
     <hint type="destinationlabel">
      <x>453</x>
@@ -555,12 +740,12 @@
    <slot>valueChangedVertexCount(double)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>400</x>
-     <y>793</y>
+     <x>458</x>
+     <y>559</y>
     </hint>
     <hint type="destinationlabel">
      <x>453</x>
-     <y>804</y>
+     <y>774</y>
     </hint>
    </hints>
   </connection>
@@ -571,8 +756,8 @@
    <slot>lineLayerChanged(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>416</x>
-     <y>533</y>
+     <x>452</x>
+     <y>347</y>
     </hint>
     <hint type="destinationlabel">
      <x>453</x>
@@ -587,12 +772,28 @@
    <slot>refreshRasterList()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>397</x>
-     <y>91</y>
+     <x>433</x>
+     <y>77</y>
     </hint>
     <hint type="destinationlabel">
      <x>458</x>
      <y>93</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>IDC_listPolygons</sender>
+   <signal>itemChanged(QListWidgetItem*)</signal>
+   <receiver>VoGISProfilToolMain</receiver>
+   <slot>lvPolygonItemChanged(QListWidgetItem*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>134</x>
+     <y>651</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>4</x>
+     <y>664</y>
     </hint>
    </hints>
   </connection>
@@ -605,5 +806,6 @@
   <slot>valueChangedVertexCount(double)</slot>
   <slot>lineLayerChanged(int)</slot>
   <slot>refreshRasterList()</slot>
+  <slot>lvPolygonItemChanged(QListWidgetItem*)</slot>
  </slots>
 </ui>

@@ -45,6 +45,7 @@ class VoGISProfilToolMainDialog(QDialog):
         self.settings = settings
         self.iface = interface
         self.selectingVisibleRasters = False
+        self.thread = None
 
         QDialog.__init__(self, interface.mainWindow())
 
@@ -56,15 +57,19 @@ class VoGISProfilToolMainDialog(QDialog):
             self.ui.IDC_widRaster.hide()
             self.adjustSize()
 
+        validator = QIntValidator(-32768, 32768, self)
+        self.ui.IDC_tbNoDataExport.setValidator(validator)
+
         self.ui.IDC_tbFromX.setText('-30000')
         self.ui.IDC_tbFromY.setText('240000')
         self.ui.IDC_tbToX.setText('-20000')
         self.ui.IDC_tbToY.setText('230000')
 
         self.__addRastersToGui()
+        self.__addPolygonsToGui()
 
-        for lLyr in self.settings.mapData.lines.lines():
-            self.ui.IDC_cbLineLayers.addItem(lLyr.name, lLyr)
+        for line_lyr in self.settings.mapData.lines.lines():
+            self.ui.IDC_cbLineLayers.addItem(line_lyr.name, line_lyr)
 
         if self.settings.mapData.lines.count() < 1:
             self.ui.IDC_rbDigi.setChecked(True)
@@ -82,7 +87,7 @@ class VoGISProfilToolMainDialog(QDialog):
             #self.rubberband.setBrushStyle()
             self.rubberband.setLineStyle(Qt.SolidLine)
             self.rubberband.setWidth(4.0)
-            self.rubberband.setColor(QColor(0,255,0))
+            self.rubberband.setColor(QColor(0, 255, 0))
             #http://www.qgis.org/api/classQgsRubberBand.html#a6f7cdabfcf69b65dfc6c164ce2d01fab
         self.pointsToDraw = []
         self.dblclktemp = None
@@ -91,6 +96,11 @@ class VoGISProfilToolMainDialog(QDialog):
     def accept(self):
         try:
             #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
+
+            #QgsMessageLog.logMessage('nodata: {0}'.format(self.settings.nodata_value), 'VoGis')
+            self.settings.nodata_value = int(self.ui.IDC_tbNoDataExport.text())
+            QgsMessageLog.logMessage('maindlg: nodata: {0}'.format(self.settings.nodata_value), 'VoGis')
+
             if self.settings.onlyHektoMode is True and self.settings.mapData.rasters.count() > 0:
                 self.settings.onlyHektoMode = False
 
@@ -115,7 +125,7 @@ class VoGISProfilToolMainDialog(QDialog):
             if self.settings.onlyHektoMode is False:
                 if len(self.settings.mapData.rasters.selectedRasters()) < 1:
                     #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Kein Raster selektiert!")
-                    #msg = 
+                    #msg =
                     #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
                     QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Kein Raster selektiert!', None, QApplication.UnicodeUTF8))
                     return
@@ -127,34 +137,88 @@ class VoGISProfilToolMainDialog(QDialog):
                 QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Keine Profillinie vorhanden!', None, QApplication.UnicodeUTF8))
                 return
 
+            if len(self.settings.mapData.polygons.selected_polygons()) > 0 and len(self.settings.mapData.rasters.selectedRasters()) > 1:
+                raster_names = list(raster.name for raster in self.settings.mapData.rasters.selectedRasters())
+                sel_raster, ok_clicked = QInputDialog.getItem(
+                                                self.iface.mainWindow(),
+                                                u'DHM?',
+                                                u'Welches DHM soll zur Flächenverschneidung verwendet werden?',
+                                                raster_names,
+                                                0,
+                                                False
+                                                )
+                if ok_clicked is False:
+                    return
+                self.settings.intersection_dhm_idx = raster_names.index(sel_raster)
+
             #self.rubberband.reset(self.polygon)
             #QDialog.accept(self)
 
             QApplication.setOverrideCursor(Qt.WaitCursor)
 
-            createProf = CreateProfile(self.iface, self.settings)
-            profiles = createProf.create()
-            QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
-
-            if len(profiles) < 1:
-                QApplication.restoreOverrideCursor()
-                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Es konnten keine Profile erstellt werden.', None, QApplication.UnicodeUTF8))
-                return
-
-            dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
-            dlg.show()
-            #result = self.dlg.exec_()
-            dlg.exec_()
+            create_profile = CreateProfile(self.iface, self.settings)
+            thread = QThread(self)
+            create_profile.moveToThread(thread)
+            create_profile.finished.connect(self.profiles_finished)
+            create_profile.error.connect(self.profiles_error)
+            create_profile.progress.connect(self.profiles_progress)
+            thread.started.connect(create_profile.create)
+            thread.start(QThread.LowestPriority)
+            self.thread = thread
+            self.create_profile = create_profile
+            self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         except:
             QApplication.restoreOverrideCursor()
             ex = u'{0}'.format(traceback.format_exc())
             msg = 'Unexpected ERROR:\n\n{0}'.format(ex[:2000])
             QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
 
+
+    def profiles_finished(self, profiles, intersections):
+        QApplication.restoreOverrideCursor()
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
+        #self.create_profile.deleteLater()
+        self.thread.quit()
+        self.thread.wait()
+        #self.thread.deleteLater()
+
+        #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
+        self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, {0} Profile'.format(len(profiles)))
+        QgsMessageLog.logMessage('Profile Count: ' + str(len(profiles)), 'VoGis')
+
+        if len(profiles) < 1:
+            QApplication.restoreOverrideCursor()
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", QApplication.translate('code', 'Es konnten keine Profile erstellt werden.', None, QApplication.UnicodeUTF8))
+            return
+
+        dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles, intersections)
+        dlg.show()
+        #result = self.dlg.exec_()
+        dlg.exec_()
+
+
+    def profiles_error(self, exception_string):
+        QApplication.restoreOverrideCursor()
+        QgsMessageLog.logMessage(u'Error during profile creation: {0}'.format(exception_string), 'VoGis')
+        QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", exception_string)
+
+
+    def profiles_progress(self, msg):
+        self.iface.mainWindow().statusBar().showMessage(msg)
+        self.ui.IDC_lblCreateStatus.setText(msg)
+        #QgsMessageLog.logMessage(msg, 'VoGis')
+        QApplication.processEvents()
+
+
     def reject(self):
-        #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
+        if not self.thread is None:
+            if self.thread.isRunning():
+                self.create_profile.abort()
+                return
+
         self.rubberband.reset(self.polygon)
         QDialog.reject(self)
+
 
     def selectVisibleRasters(self):
         self.refreshRasterList()
@@ -181,6 +245,7 @@ class VoGISProfilToolMainDialog(QDialog):
                         item.setCheckState(Qt.Checked)
         self.selectingVisibleRasters = False
 
+
     def lineLayerChanged(self, idx):
         if self.ui.IDC_rbShapeLine.isChecked() is False:
             self.ui.IDC_rbShapeLine.setChecked(True)
@@ -197,42 +262,62 @@ class VoGISProfilToolMainDialog(QDialog):
             else:
                 self.ui.IDC_chkOnlySelectedFeatures.setChecked(True)
 
+
     def valueChangedEquiDistance(self, val):
         if self.ui.IDC_rbEquiDistance.isChecked() is False:
             self.ui.IDC_rbEquiDistance.setChecked(True)
+
 
     def valueChangedVertexCount(self, val):
         if self.ui.IDC_rbVertexCount.isChecked() is False:
             self.ui.IDC_rbVertexCount.setChecked(True)
 
+
     def lvRasterItemChanged(self, item):
-        if self.selectingVisibleRasters is True: return
+        if self.selectingVisibleRasters is True:
+            return
         if item.checkState() == Qt.Checked:
             selected = True
         if item.checkState() == Qt.Unchecked:
             selected = False
 
-        iData = item.data(Qt.UserRole)
+        item_data = item.data(Qt.UserRole)
         if QGis.QGIS_VERSION_INT < 10900:
-            rl = iData.toPyObject()
+            raster_lyr = item_data.toPyObject()
         else:
-            rl = iData
-        self.settings.mapData.rasters.getById(rl.id).selected = selected
+            raster_lyr = item_data
+        self.settings.mapData.rasters.getById(raster_lyr.id).selected = selected
+
+
+    def lvPolygonItemChanged(self, item):
+        if item.checkState() == Qt.Checked:
+            selected = True
+        if item.checkState() == Qt.Unchecked:
+            selected = False
+
+        item_data = item.data(Qt.UserRole)
+        if QGis.QGIS_VERSION_INT < 10900:
+            poly_lyr = item_data.toPyObject()
+        else:
+            poly_lyr = item_data
+        self.settings.mapData.polygons.getById(poly_lyr.id).selected = selected
+
 
     def refreshRasterList(self):
         legend = self.iface.legendInterface()
-        availLayers = legend.layers()
-        rColl = RasterCollection()
+        avail_lyrs = legend.layers()
+        raster_coll = RasterCollection()
 
-        for lyr in availLayers:
+        for lyr in avail_lyrs:
             if legend.isLayerVisible(lyr):
-                lyrType = lyr.type()
-                lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
-                if lyrType == 1:
-                    r = Raster(lyr.id(), lyrName, lyr)
-                    rColl.addRaster(r)
+                lyr_type = lyr.type()
+                lyr_name = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
+                if lyr_type == 1:
+                    if lyr.bandCount() < 2:
+                        new_raster = Raster(lyr.id(), lyr_name, lyr)
+                        raster_coll.addRaster(new_raster)
 
-        self.settings.mapData.rasters = rColl
+        self.settings.mapData.rasters = raster_coll
         self.__addRastersToGui()
 
     def __addRastersToGui(self):
@@ -242,12 +327,24 @@ class VoGISProfilToolMainDialog(QDialog):
             check = Qt.Checked
             self.settings.mapData.rasters.rasters()[0].selected = True
 
-        for rLyr in self.settings.mapData.rasters.rasters():
-            item = QListWidgetItem(rLyr.name)
-            item.setData(Qt.UserRole, rLyr)
+        for raster_lyr in self.settings.mapData.rasters.rasters():
+            item = QListWidgetItem(raster_lyr.name)
+            item.setData(Qt.UserRole, raster_lyr)
             item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
             item.setCheckState(check)
             self.ui.IDC_listRasters.addItem(item)
+
+
+    def __addPolygonsToGui(self):
+        self.ui.IDC_listPolygons.clear()
+        check = Qt.Unchecked
+        for poly_lyr in self.settings.mapData.polygons.polygons():
+            item = QListWidgetItem(poly_lyr.name)
+            item.setData(Qt.UserRole, poly_lyr)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+            item.setCheckState(check)
+            self.ui.IDC_listPolygons.addItem(item)
+
 
     def drawLine(self):
         if self.ui.IDC_rbDigi.isChecked() is False:
@@ -258,10 +355,12 @@ class VoGISProfilToolMainDialog(QDialog):
         self.__activateDigiTool()
         self.canvas.setMapTool(self.tool)
 
+
     def __createDigiFeature(self, pnts):
         u = Util(self.iface)
         f = u.createQgLineFeature(pnts)
         self.settings.mapData.customLine = f
+
 
     def __lineFinished(self, position):
         mapPos = self.canvas.getCoordinateTransform().toMapCoordinates(position["x"], position["y"])

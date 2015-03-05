@@ -16,137 +16,135 @@ from ..bo.settings import enumVertexType
 from ..bo.profile import Profile
 from ..bo.segment import Segment
 from ..bo.vertex import Vertex
+from ..bo.intersection import Intersection
 from u import Util
 #from bo.zVal import ZVal
 from qgis.core import *
 from math import *
 from PyQt4.QtGui import QMessageBox
 from PyQt4.QtGui import QApplication
+from PyQt4.QtCore import QObject
+from PyQt4.QtCore import pyqtSignal
+import traceback
 #if QGis.QGIS_VERSION_INT >= 10900:
 #    import processing
 
 
-class CreateProfile:
+class CreateProfile(QObject):
 
     def __init__(self, interface, settings):
+        QObject.__init__(self)
         self.iface = interface
         self.settings = settings
+        self.stop = False
+        self.util = Util(self.iface)
+        self.intersections = []
+
+
+    def abort(self):
+        self.stop = True
+
+
+    finished = pyqtSignal(object, object)
+    error = pyqtSignal(basestring)
+    progress = pyqtSignal(basestring)
+
 
     def create(self):
 
         profiles = []
 
-        #Line aus den Textboxwerten erstellen
-        if self.settings.modeLine == enumModeLine.straightLine:
-            profiles.append(self.processFeature(None,
-                                                1,
-                                                1,
-                                                self.settings.mapData.customLine
-                                                )
-                            )
-            return profiles
-
-        #Line aus gezeichneter Linie erstellen
-        if self.settings.modeLine == enumModeLine.customLine:
-            profiles.append(self.processFeature(None,
-                                                1,
-                                                1,
-                                                self.settings.mapData.customLine
-                                                )
-                            )
-            return profiles
-
-        #Shapefile Geometrien abarbeiten
-        if self.settings.modeLine == enumModeLine.line:
-
-            #feat = QgsFeature()
-            #if self.settings.onlySelectedFeatures is True:
-            #    for feat in self.settings.mapData.selectedLineLyr.line.selectedFeatures():
-            #        profiles.append(self.processFeature(len(profiles) + 1,
-            #                                            self.settings.mapData.selectedLineLyr.line.id(),
-            #                                            feat
-            #                                            )
-            #                        )
-            #else:
-            #    provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
-            #    attrIndices = provider.attributeIndexes()
-            #    provider.select(attrIndices)
-            #    while (provider.nextFeature(feat)):
-            #        #QgsMessageLog.logMessage(str(self.settings.mapData.selectedLineLyr.line.id()), 'VoGis')
-            #        profiles.append(self.processFeature(len(profiles) + 1,
-            #                                            self.settings.mapData.selectedLineLyr.line.id(),
-            #                                            feat
-            #                                            )
-            #                        )
-
-            provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
-            feats = []
-
-            #Alle Attribute holen
-            if QGis.QGIS_VERSION_INT < 10900: provider.select(provider.attributeIndexes())
-
-            if self.settings.onlySelectedFeatures is True:
-                feats = self.settings.mapData.selectedLineLyr.line.selectedFeatures()
-            else:
-                if QGis.QGIS_VERSION_INT < 10900:
-                    attrIndices = provider.attributeIndexes()
-                    provider.select(attrIndices)
-                    feat = QgsFeature()
-                    while (provider.nextFeature(feat)):
-                        #geom = feat.geometry()
-                        #QgsMessageLog.logMessage( 'isMultipart: {0}'.format(str(geom.isMultipart())), 'VoGis')
-                        #attrs = feat.attributeMap()
-                        # attrs is a dictionary: key = field index, value = QgsFeatureAttribute
-                        # show all attributes and their values
-                        #for (k, attr) in feat.attributeMap().iteritems():
-                        #    QgsMessageLog.logMessage('{0}: {1}'.format(k, attr.toString()), 'VoGis')
-                        feats.append(feat)
-                        #neues Feature verwenden, weil sonst die Multiparts
-                        #nicht als solche erkannt werden
-                        feat = QgsFeature()
-                else:
-                    QgsMessageLog.logMessage('PROVIDER SELECT', 'VoGis')
-                    #processing.getfeatures: This will iterate over all the features in the layer, in case there is no selection, or over the selected features otherwise.
-                    #obviously not available with windows standalone installer
-                    #features = processing.getfeatures(self.settings.mapData.selectedLineLyr.line)
-                    features = self.settings.mapData.selectedLineLyr.line.getFeatures()
-                    for feat in features:
-                        feats.append(feat)
-
-            #for feat in feats:
-            #    if feat.isValid() is False:
-            #        return []
-
-            ut = Util(self.iface)
-            feats, err_msg = ut.prepareFeatures(self.settings, provider, feats)
-
-            if not err_msg is None:
-                #QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", err_msg)
-                QMessageBox.critical(self.iface.mainWindow(), 'PREPARE ERROR', err_msg)
-                return []
-
-            for f in feats:
-                geom = f.geometry()
-                if geom.isMultipart():
-                    msg = QApplication.translate('code', 'Multipart Feature vorhanden! Option zum Explodieren verwenden.', None, QApplication.UnicodeUTF8)
-                    QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", msg)
-                    return profiles
-
-            featCnt = len(feats)
-            for idx, feat in enumerate(feats):
-                #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
-                #http://acaciaecho.wordpress.com/2011/01/11/pyqtprogressbar/
-                self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, Element: {0}/{1}'.format(idx, featCnt))
-                profiles.append(self.processFeature(provider.fields(),
-                                                    len(profiles) + 1,
-                                                    self.settings.mapData.selectedLineLyr.line.id(),
-                                                    feat
+        try:
+            #Line aus den Textboxwerten erstellen
+            if self.settings.modeLine == enumModeLine.straightLine:
+                profiles.append(self.processFeature(None,
+                                                    1,
+                                                    1,
+                                                    self.settings.mapData.customLine
                                                     )
                                 )
+                self.finished.emit(profiles, self.intersections)
+                return
 
-        #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
-        self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, {0} Profile'.format(len(profiles)))
-        return profiles
+            #Line aus gezeichneter Linie erstellen
+            if self.settings.modeLine == enumModeLine.customLine:
+                profiles.append(self.processFeature(None,
+                                                    1,
+                                                    1,
+                                                    self.settings.mapData.customLine
+                                                    )
+                                )
+                self.finished.emit(profiles, self.intersections)
+                return
+
+            #Shapefile Geometrien abarbeiten
+            if self.settings.modeLine == enumModeLine.line:
+
+                provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
+                feats = []
+
+                #Alle Attribute holen
+                if QGis.QGIS_VERSION_INT < 10900:
+                    provider.select(provider.attributeIndexes())
+
+                if self.settings.onlySelectedFeatures is True:
+                    feats = self.settings.mapData.selectedLineLyr.line.selectedFeatures()
+                else:
+                    if QGis.QGIS_VERSION_INT < 10900:
+                        attrib_indices = provider.attributeIndexes()
+                        provider.select(attrib_indices)
+                        feat = QgsFeature()
+                        while provider.nextFeature(feat):
+                            feats.append(feat)
+                            #neues Feature verwenden, weil sonst die Multiparts
+                            #nicht als solche erkannt werden
+                            feat = QgsFeature()
+                    else:
+                        #processing.getfeatures: This will iterate over all the features in the layer, in case there is no selection, or over the selected features otherwise.
+                        #obviously not available with windows standalone installer
+                        #features = processing.getfeatures(self.settings.mapData.selectedLineLyr.line)
+                        features = self.settings.mapData.selectedLineLyr.line.getFeatures()
+                        for feat in features:
+                            feats.append(feat)
+
+                feats, err_msg = self.util.prepareFeatures(self.settings, provider, feats)
+
+                if not err_msg is None:
+                    #QMessageBox.critical(self.iface.mainWindow(), 'PREPARE ERROR', err_msg)
+                    self.error.emit(err_msg)
+                    self.finished.emit([], [])
+                    return
+
+                for feat in feats:
+                    geom = feat.geometry()
+                    if geom.isMultipart():
+                        msg = QApplication.translate('code', 'Multipart Feature vorhanden! Option zum Explodieren verwenden.', None, QApplication.UnicodeUTF8)
+                        self.error.emit(msg)
+                        self.finished.emit([], [])
+                        return
+
+                feat_cnt = len(feats)
+                for idx, feat in enumerate(feats):
+                    if self.stop is True:
+                        profiles = []
+                        break
+                    if idx == 0 or idx % 5 == 0:
+                        msg = 'Profil {0}/{1}'.format(idx+1, feat_cnt)
+                        self.progress.emit(msg)
+                    profiles.append(self.processFeature(provider.fields(),
+                                                        len(profiles) + 1,
+                                                        self.settings.mapData.selectedLineLyr.line.id(),
+                                                        feat
+                                                        )
+                                    )
+                msg = 'Profil {0}/{1}'.format(idx+1, feat_cnt)
+                self.progress.emit(msg)
+
+            self.finished.emit(profiles, self.intersections)
+        except Exception, ex:
+            self.error.emit(traceback.format_exc())
+            self.finished.emit([], [])
+
 
     def processFeature(self, fields, profileId, layerId, feat):
 
@@ -157,151 +155,204 @@ class CreateProfile:
         else:
             segments = self.processVertices(fields, feat.attributes(), profileId, geom, layerId, feat.id())
 
+        #intersection with area
+        #QgsMessageLog.logMessage(u'{0}'.format(dir(feat)), 'VoGis')
+        line_geom = feat.geometry()
+        if not self.settings.mapData.polygons is None:
+            polys = self.settings.mapData.polygons.polygons()
+            for poly in polys:
+                if poly.selected is False:
+                    continue
+                poly_feats = self.util.get_features(poly.polygon)
+                if len(poly_feats) < 1:
+                    continue
+                for poly_feat in poly_feats:
+                    intersection = poly_feat.geometry().intersection(line_geom)
+                    inter_geom_coll = intersection.asGeometryCollection()
+                    for inter_geom in inter_geom_coll:
+                        if QGis.WKBLineString != inter_geom.wkbType():
+                            continue
+                        inter_line = inter_geom.asPolyline()
+                        from_x = inter_line[0][0]
+                        from_y = inter_line[0][1]
+                        from_pnt = QgsPoint(from_x, from_y)
+                        from_z = self.__getValsAtPoint(from_pnt)
+                        from_dist = self.__get_distance(feat, from_pnt)
+                        to_x = inter_line[1][0]
+                        to_y = inter_line[1][1]
+                        to_pnt = QgsPoint(to_x, to_y)
+                        to_z = self.__getValsAtPoint(to_pnt)
+                        to_dist = self.__get_distance(feat, to_pnt)
+                        bo_intersection = Intersection(
+                                                       from_x,
+                                                       from_y,
+                                                       from_z,
+                                                       from_dist,
+                                                       to_x,
+                                                       to_y,
+                                                       to_z,
+                                                       to_dist
+                                                       )
+                        self.intersections.append(bo_intersection)
+
         return Profile(profileId, segments)
+
+
+    def __get_distance(self, line, qgis_pnt):
+        shply_line = loads(line.geometry().asWkb())
+        shply_pnt = Point(qgis_pnt.x(), qgis_pnt.y())
+        return shply_line.project(shply_pnt)
+
 
     def processVertices(self, fields, attribMap, profileId, qgGeom, layerId, featId):
 
         #QgsMessageLog.logMessage('{0}: {1}'.format('processFeature',attribMap), 'VoGis')
 
         step = -1
-        segmentCnter = 1
+        segment_counter = 1
         segments = []
         segmentvertices = []
-        distSegment = 0
-        distTotal = 0
-        qgPntOld = None
-        vtxType = None
-        vtxId = 1
+        dist_segment = 0
+        dist_total = 0
+        qg_pnt_old = None
+        vtx_type = None
+        vtx_id = 1
 
-        qgLineVertices = qgGeom.asPolyline()
-        shplyGeom = loads(qgGeom.asWkb())
-        shplyVertices = []
-        #for shplyV in shplyGeom.coords:
-        for idxV in range(1, len(shplyGeom.coords) - 1):
-            #shplyVertices.append(Point(shplyV[0], shplyV[1]))
-            shplyVertices.append(Point(shplyGeom.coords[idxV][0], shplyGeom.coords[idxV][1]))
+        qg_line_vertices = qgGeom.asPolyline()
+        shply_geom = loads(qgGeom.asWkb())
+        shply_vertices = []
+        #for shplyV in shply_geom.coords:
+        for idx_vtx in range(1, len(shply_geom.coords) - 1):
+            #shply_vertices.append(Point(shplyV[0], shplyV[1]))
+            shply_vertices.append(Point(shply_geom.coords[idx_vtx][0], shply_geom.coords[idx_vtx][1]))
 
         if self.settings.modeVertices == enumModeVertices.equiDistant:
             step = self.settings.equiDistance
         else:
-            step = shplyGeom.length / (self.settings.vertexCnt - 1)
+            step = shply_geom.length / (self.settings.vertexCnt - 1)
 
         #erster, echter Punkt der Geometrie
-        qgPntOld = qgLineVertices[0]
-        vtxType = enumVertexType.node
-        newVtx = Vertex(fields,
+        qg_pnt_old = qg_line_vertices[0]
+        vtx_type = enumVertexType.node
+        new_vtx = Vertex(fields,
                         attribMap,
-                        vtxType,
-                        qgLineVertices[0].x(),
-                        qgLineVertices[0].y(),
+                        vtx_type,
+                        qg_line_vertices[0].x(),
+                        qg_line_vertices[0].y(),
                         profileId,
                         layerId,
                         featId,
-                        segmentCnter,
-                        vtxId,
-                        distTotal,
-                        distSegment,
-                        self.__getValsAtPoint(qgLineVertices[0])
+                        segment_counter,
+                        vtx_id,
+                        dist_total,
+                        dist_segment,
+                        self.__getValsAtPoint(qg_line_vertices[0]),
+                        self.settings.nodata_value
                         )
-        segmentvertices.append(newVtx)
+        segmentvertices.append(new_vtx)
 
-        #QgsMessageLog.logMessage('GeomLength:' + str(shplyGeom.length), 'VoGis')
+        #QgsMessageLog.logMessage('GeomLength:' + str(shply_geom.length), 'VoGis')
 
-        while distTotal < shplyGeom.length:
+        while dist_total < shply_geom.length:
 
-            distSegment += step
-            distTotal += step
+            dist_segment += step
+            dist_total += step
 
             #überprüfen, ob echter Vertex zwischen den
             # zu berechnenden Ṕrofilpunkten liegt
             #nur falls diese auch ausgegeben werden sollen
             if self.settings.nodesAndVertices is True:
-                if distTotal > 0:
-                    prevDist = distTotal - step
-                    for v in shplyVertices:
-                        vDist = shplyGeom.project(v)
-                        if vDist > prevDist and vDist < distTotal:
-                            qgPnt = self.__qgPntFromShplyPnt(v)
-                            distQgVertices = sqrt(qgPnt.sqrDist(qgPntOld))
-                            vtxType = enumVertexType.vertex
-                            vtxId += 1
-                            newVtx = Vertex(fields,
+                if dist_total > 0:
+                    prev_dist = dist_total - step
+                    for shply_vtx in shply_vertices:
+                        vtx_dist = shply_geom.project(shply_vtx)
+                        if vtx_dist > prev_dist and vtx_dist < dist_total:
+                            qg_pnt = self.__qgPntFromShplyPnt(shply_vtx)
+                            dist_qg_vertices = sqrt(qg_pnt.sqrDist(qg_pnt_old))
+                            vtx_type = enumVertexType.vertex
+                            vtx_id += 1
+                            new_vtx = Vertex(fields,
                                             attribMap,
-                                            vtxType,
-                                            v.x,
-                                            v.y,
+                                            vtx_type,
+                                            shply_vtx.x,
+                                            shply_vtx.y,
                                             profileId,
                                             layerId,
                                             featId,
-                                            segmentCnter,
-                                            vtxId,
-                                            vDist,
-                                            distQgVertices,
-                                            self.__getValsAtPoint(qgPnt)
+                                            segment_counter,
+                                            vtx_id,
+                                            vtx_dist,
+                                            dist_qg_vertices,
+                                            self.__getValsAtPoint(qg_pnt),
+                                            self.settings.nodata_value
                                             )
-                            segmentvertices.append(newVtx)
-                            segments.append(Segment(segmentCnter, segmentvertices))
+                            segmentvertices.append(new_vtx)
+                            segments.append(Segment(segment_counter, segmentvertices))
                             #neues Segment beginnen
-                            qgPntOld = self.__qgPntFromShplyPnt(v)
+                            qg_pnt_old = self.__qgPntFromShplyPnt(shply_vtx)
                             segmentvertices = []
-                            distSegment -= distQgVertices
-                            segmentCnter += 1
+                            dist_segment -= dist_qg_vertices
+                            segment_counter += 1
 
             #Profilpunkte berechnen
             #nur wenn noch unter Featurelaenge
-            if distTotal < shplyGeom.length:
-                shplyPnt = shplyGeom.interpolate(distTotal, False)
-                vtxType = enumVertexType.point
-                vtxId += 1
-                newVtx = Vertex(fields,
+            if dist_total < shply_geom.length:
+                shply_pnt = shply_geom.interpolate(dist_total, False)
+                vtx_type = enumVertexType.point
+                vtx_id += 1
+                new_vtx = Vertex(fields,
                                 attribMap,
-                                vtxType,
-                                shplyPnt.x,
-                                shplyPnt.y,
+                                vtx_type,
+                                shply_pnt.x,
+                                shply_pnt.y,
                                 profileId,
                                 layerId,
                                 featId,
-                                segmentCnter,
-                                vtxId,
-                                distTotal,
-                                distSegment,
-                                self.__getValsAtPoint(self.__qgPntFromShplyPnt(shplyPnt))
+                                segment_counter,
+                                vtx_id,
+                                dist_total,
+                                dist_segment,
+                                self.__getValsAtPoint(self.__qgPntFromShplyPnt(shply_pnt)),
+                                self.settings.nodata_value
                                 )
-                segmentvertices.append(newVtx)
+                segmentvertices.append(new_vtx)
 
         #letzter, echter Punkt der Geometrie
-        qgLastPnt = qgLineVertices[len(qgLineVertices)-1]
+        qg_last_pnt = qg_line_vertices[len(qg_line_vertices)-1]
         #keine echten Knoten, nur berechnete -> letzter Pkt entspricht kompletter Laenge der Geometrie
         if self.settings.nodesAndVertices is False:
-            distSegment = shplyGeom.length
+            dist_segment = shply_geom.length
         else:
-            distSegment = sqrt(qgLastPnt.sqrDist(qgPntOld))
-        vtxType = enumVertexType.node
-        vtxId += 1
-        newVtx = Vertex(fields,
+            dist_segment = sqrt(qg_last_pnt.sqrDist(qg_pnt_old))
+        vtx_type = enumVertexType.node
+        vtx_id += 1
+        new_vtx = Vertex(fields,
                         attribMap,
-                        vtxType,
-                        qgLastPnt.x(),
-                        qgLastPnt.y(),
+                        vtx_type,
+                        qg_last_pnt.x(),
+                        qg_last_pnt.y(),
                         profileId,
                         layerId,
                         featId,
-                        segmentCnter,
-                        vtxId,
-                        shplyGeom.length,
-                        distSegment,
-                        self.__getValsAtPoint(qgLastPnt)
+                        segment_counter,
+                        vtx_id,
+                        shply_geom.length,
+                        dist_segment,
+                        self.__getValsAtPoint(qg_last_pnt),
+                        self.settings.nodata_value
                         )
-        segmentvertices.append(newVtx)
-        segments.append(Segment(segmentCnter, segmentvertices))
+        segmentvertices.append(new_vtx)
+        segments.append(Segment(segment_counter, segmentvertices))
 
         return segments
 
+
     def __qgPntFromShplyPnt(self, shapelyPnt):
-        wkbPnt = dumps(shapelyPnt)
-        qgGeom = QgsGeometry()
-        qgGeom.fromWkb(wkbPnt)
-        return qgGeom.asPoint()
+        wkb_pnt = dumps(shapelyPnt)
+        qg_geom = QgsGeometry()
+        qg_geom.fromWkb(wkb_pnt)
+        return qg_geom.asPoint()
+
 
     def __getValsAtPoint(self, pnt):
 
@@ -313,16 +364,16 @@ class CreateProfile:
 
             #TODO!!!! QGIS BUG: QGIS 2.0.1: raster.noDataValue() = > AttributeError: 'QgsRasterLayer' object has no attribute 'noDataValue'
             if QGis.QGIS_VERSION_INT < 10900:
-                noDataVal, validNoData = raster.noDataValue()
-                if validNoData:
-                    rasterVal = noDataVal
+                nodata_val, valid_nodata = raster.noDataValue()
+                if valid_nodata:
+                    raster_val = nodata_val
                 else:
-                    #rasterVal = float('nan')
-                    rasterVal = -9999
+                    #raster_val = float('nan')
+                    raster_val = self.settings.nodata_value
             else:
-                rasterVal = -9999
+                raster_val = self.settings.nodata_value
 
-            #QgsMessageLog.logMessage('rasterVal VOR identify:' + str(rasterVal), 'VoGis')
+            #QgsMessageLog.logMessage('raster_val VOR identify:' + str(raster_val), 'VoGis')
 
             #check if coordinate systems match
             if self.settings.modeLine == enumModeLine.line:
@@ -341,33 +392,35 @@ class CreateProfile:
             #QgsMessageLog.logMessage(str(pnt), 'VoGis')
 
             if QGis.QGIS_VERSION_INT < 10900:
-                result, identifyDic = raster.identify(pnt)
+                result, identify_dic = raster.identify(pnt)
                 if result:
-                    for bandName, pixelValue in identifyDic.iteritems():
-                        #QgsMessageLog.logMessage('bandName:' + str(bandName), 'VoGis')
-                        if str(bandName) == raster.bandName(1):
+                    for band_name, pixel_value in identify_dic.iteritems():
+                        #QgsMessageLog.logMessage('band_name:' + str(band_name), 'VoGis')
+                        if str(band_name) == raster.band_name(1):
                             try:
-                                #QgsMessageLog.logMessage('pixelValue:' + str(pixelValue), 'VoGis')
-                                rasterVal = float(pixelValue)
+                                #QgsMessageLog.logMessage('pixel_value:' + str(pixel_value), 'VoGis')
+                                raster_val = float(pixel_value)
                             except ValueError:
                                 #float('nan') #0
-                                rasterVal = -9999
-                                pass
+                                raster_val = self.settings.nodata_value
             else:
-                identifyResult = raster.dataProvider().identify(pnt, 1)
-                for bndNr, pixVal in identifyResult.results().iteritems():
-                    if 1 == bndNr:
+                identify_result = raster.dataProvider().identify(pnt, QgsRaster.IdentifyFormatValue)
+                #QgsMessageLog.logMessage(u'identify_result: {0}'.format(identify_result.results()), 'VoGis')
+                for bnd_nr, pix_val in identify_result.results().iteritems():
+                    if 1 == bnd_nr:
                         try:
-                            rasterVal = float(pixVal)
+                            if pix_val is None:
+                                raster_val = self.settings.nodata_value
+                            else:
+                                raster_val = float(pix_val)
                         #except ValueError:
                         except:
-                            QgsMessageLog.logMessage('pixVal Exception: ' + str(pixVal), 'VoGis')
-                            rasterVal = -9999
-                            pass
+                            QgsMessageLog.logMessage('pix_val Exception: ' + str(pix_val), 'VoGis')
+                            raster_val = self.settings.nodata_value
 
-            #QgsMessageLog.logMessage('rasterVal NACH identify:' + str(rasterVal), 'VoGis')
+            #QgsMessageLog.logMessage('raster_val NACH identify:' + str(raster_val), 'VoGis')
 
-            vals.append(rasterVal)
+            vals.append(raster_val)
 
         #QMessageBox.warning(self.InterFace.mainWindow(), "VoGIS-Profiltool", str(vals))
         return vals

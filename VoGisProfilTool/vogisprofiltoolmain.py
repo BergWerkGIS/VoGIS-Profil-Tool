@@ -27,8 +27,10 @@ import resources_rc
 from vogisprofiltoolmaindialog import VoGISProfilToolMainDialog
 from bo.raster import Raster
 from bo.line import Line
+from bo.polygon import Polygon
 from bo.rasterCollection import RasterCollection
 from bo.lineCollection import LineCollection
+from bo.polygonCollection import PolygonCollection
 from bo.mapdata import MapData
 from bo.settings import Settings
 
@@ -47,9 +49,14 @@ class VoGISProfilToolMain:
         else:
             loc = QSettings().value("locale/userLocale")[0:2]
 
+        QgsMessageLog.logMessage("locale: {0}".format(loc), 'VoGis')
+
         if QFileInfo(self.plugin_dir).exists():
             #QgsMessageLog.logMessage('plugin_dir exits', 'VoGis')
             localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + loc + ".qm"
+
+        if loc != 'de' and not QFileInfo(localePath).exists():
+            localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_en.qm"
 
         if QFileInfo(localePath).exists():
             #QgsMessageLog.logMessage('localePath exits', 'VoGis')
@@ -84,6 +91,15 @@ class VoGISProfilToolMain:
     # run method that performs all the real work
     def run(self):
 
+        is_open = QSettings().value("vogisprofiltoolmain/isopen", False)
+        #Python treats almost everything as True````
+        #is_open = bool(is_open)
+        QgsMessageLog.logMessage(u'isopen: {0}'.format(is_open), 'VoGis')
+        #!!!string comparison
+        if is_open == 'true':
+            QgsMessageLog.logMessage(u'Dialog already opened', 'VoGis')
+            return
+
         try:
             import shapely
         except ImportError:
@@ -116,60 +132,54 @@ class VoGISProfilToolMain:
                 self.settings.onlyHektoMode = True
                 self.settings.createHekto = True
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = VoGISProfilToolMainDialog(self.iface, self.settings)
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        #result = self.dlg.exec_()
-        self.dlg.exec_()
-        #QgsMessageLog.logMessage(str(result), 'VoGis')
+        try:
+            QSettings().setValue("vogisprofiltoolmain/isopen", True)
+            # Create the dialog (after translation) and keep reference
+            self.dlg = VoGISProfilToolMainDialog(self.iface, self.settings)
+            # show the dialog
+            self.dlg.show()
+            # Run the dialog event loop
+            #result = self.dlg.exec_()
+            self.dlg.exec_()
+        finally:
+            QSettings().setValue("vogisprofiltoolmain/isopen", False)
 
-        # if result == 0:
-        #     return
-
-        # QApplication.setOverrideCursor(Qt.WaitCursor)
-
-        # createProf = CreateProfile(self.iface, self.settings)
-        # profiles = createProf.create()
-        # QgsMessageLog.logMessage('ProfCnt: ' + str(len(profiles)), 'VoGis')
-
-        # if len(profiles) < 1:
-        #     QApplication.restoreOverrideCursor()
-        #     QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "Es konnten keine Profile erstellt werden.")
-        #     return
-
-        # self.dlg = VoGISProfilToolPlotDialog(self.iface, self.settings, profiles)
-        # self.dlg.show()
-        # result = self.dlg.exec_()
 
     def __getMapData(self):
 
         legend = self.iface.legendInterface()
-        availLayers = legend.layers()
+        avail_lyrs = legend.layers()
 
-        rColl = RasterCollection()
-        lColl = LineCollection()
+        raster_coll = RasterCollection()
+        line_coll = LineCollection()
+        poly_coll = PolygonCollection()
 
-        for lyr in availLayers:
+        for lyr in avail_lyrs:
             if legend.isLayerVisible(lyr):
-                lyrType = lyr.type()
-                lyrName = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
-                #lyrName = unicodedata.normalize('NFKD', unicode(lyr.name()))
-                if lyrType == 0:
+                lyr_type = lyr.type()
+                lyr_name = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
+                #lyr_name = unicodedata.normalize('NFKD', unicode(lyr.name()))
+                if lyr_type == 0:
                     #vector
                     if lyr.geometryType() == 1:
                         #Line
-                        l = Line(lyr.id(), lyrName, lyr)
-                        #QgsMessageLog.logMessage(l.toStr(), 'VoGis')
-                        lColl.addLine(l)
-                elif lyrType == 1:
+                        new_line = Line(lyr.id(), lyr_name, lyr)
+                        line_coll.addLine(new_line)
+                    elif lyr.geometryType() == 2:
+                        #Polygon
+                        new_poly = Polygon(lyr.id(), lyr_name, lyr)
+                        poly_coll.addPolygon(new_poly)
+                elif lyr_type == 1:
                     #Raster
-                    r = Raster(lyr.id(), lyrName, lyr)
-                    rColl.addRaster(r)
+                    QgsMessageLog.logMessage(u'[{0}] provider type: {1}'.format(lyr.name(), lyr.providerType()), 'VoGis')
+                    if lyr.providerType() == 'gdal':
+                        if lyr.bandCount() < 2:
+                            new_raster = Raster(lyr.id(), lyr_name, lyr)
+                            raster_coll.addRaster(new_raster)
 
-        mapData = MapData()
-        mapData.lines = lColl
-        mapData.rasters = rColl
+        map_data = MapData()
+        map_data.lines = line_coll
+        map_data.rasters = raster_coll
+        map_data.polygons = poly_coll
 
-        return mapData
+        return map_data

@@ -16,6 +16,8 @@ class Settings:
         self.vertexCnt = 100
         self.createHekto = False
         self.nodesAndVertices = False
+        self.nodata_value = -9999
+        self.intersection_dhm_idx = 0
 
 
 class enumVertexType:

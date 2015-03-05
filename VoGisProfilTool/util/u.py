@@ -30,6 +30,25 @@ class Util:
     def __init__(self, iface):
         self.iface = iface
 
+    def get_geometry_wkbType_as_string(self, geom):
+        if QGis.WKBUnknown == geom.wkbType(): return 'WKBUnknown'
+        if QGis.WKBPoint == geom.wkbType(): return 'WKBPoint'
+        if QGis.WKBLineString == geom.wkbType(): return 'WKBLineString'
+        if QGis.WKBPolygon == geom.wkbType(): return 'WKBPolygon'
+        if QGis.WKBMultiPoint == geom.wkbType(): return 'WKBMultiPoint'
+        if QGis.WKBMultiLineString == geom.wkbType(): return 'WKBMultiLineString'
+        if QGis.WKBMultiPolygon == geom.wkbType(): return 'WKBMultiPolygon'
+        if QGis.WKBNoGeometry == geom.wkbType(): return 'WKBNoGeometry'
+        if QGis.WKBPoint25D == geom.wkbType(): return 'WKBPoint25D'
+        if QGis.WKBLineString25D == geom.wkbType(): return 'WKBLineString25D'
+        if QGis.WKBPolygon25D == geom.wkbType(): return 'WKBPolygon25D'
+        if QGis.WKBMultiPoint25D == geom.wkbType(): return 'WKBMultiPoint25D'
+        if QGis.WKBMultiLineString25D == geom.wkbType(): return 'WKBMultiLineString25D'
+        if QGis.WKBMultiPolygon25D == geom.wkbType(): return 'WKBMultiPolygon25D'
+
+        return 'no valid WKB Type'
+
+
     def isFloat(self, val, valName):
         try:
             val = val.replace(',', '.')
@@ -37,10 +56,11 @@ class Util:
             f += 0.01
             return True
         except:
-            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", unicode(valName) + u' ' + unicode(QApplication.translate('code', u'ist keine gÃ¼ltige Zahl!', None, QApplication.UnicodeUTF8)))
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", '"' + valName + '" ' + QApplication.translate('code', 'ist keine gÃ¼ltige Zahl!', None, QApplication.UnicodeUTF8))
-            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", tr(u'ist keine gÃ¼ltige Zahl!'))
+            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", unicode(valName) + u' ' + unicode(QApplication.translate('code', u'ist keine gültige Zahl!', None, QApplication.UnicodeUTF8)))
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", '"' + valName + '" ' + QApplication.translate('code', 'ist keine gültige Zahl!', None, QApplication.UnicodeUTF8))
+            #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", tr(u'ist keine gültige Zahl!'))
             return False
+
 
     def isInt(self, val, valName):
         try:
@@ -48,15 +68,16 @@ class Util:
             i += 1
             return True
         except:
-            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"'" + valName + "' ist keine gÃ¼ltige Ganzzahl!")
+            QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", u"'" + valName + "' ist keine gültige Ganzzahl!")
             return False
+
 
     def getFileName(self, text, filter, filePath):
         """filter: [["Shapefile", "shp"], ["Keyhole Markup Language", "kml"]]"""
         if QGis.QGIS_VERSION_INT < 10900:
-             selectedFilter = QString()
-        # else:
-        #     selectedFilter = u''
+            selectedFilter = QString()
+        #else:
+        #    selectedFilter = QString()
         filters = []
         for item in filter:
             filters.append('%s (*.%s)' % (item[0], item[1]))
@@ -69,11 +90,14 @@ class Util:
                                                selectedFilter
                                                )
         else:
-            fileName = fileDlg.getSaveFileName(self.iface.mainWindow(),
+            fileDlg.setNameFilters(filters)
+            fileName, selectedFilter = fileDlg.getSaveFileNameAndFilter(self.iface.mainWindow(),
                                                text,
                                                filePath,
                                                ";;".join(filters)
                                                )
+            QgsMessageLog.logMessage('selectedFilter: {0}'.format(selectedFilter), 'VoGis')
+
         #QgsMessageLog.logMessage('{0}'.format(fileName), 'VoGis')
         if fileName is None or fileName == '':
             return u''
@@ -81,16 +105,43 @@ class Util:
             #fileExt = fInfo.suffix()
             fileExt = str(selectedFilter[:3]).lower()
         else:
-            selectedFilter = fileDlg.filters().index(fileDlg.selectedFilter())
+            QgsMessageLog.logMessage('fileDlg.filters(): {0}'.format(fileDlg.filters()), 'VoGis')
+            selectedFilter = fileDlg.filters().index(selectedFilter)
             fileExt = filter[selectedFilter][1]
 
-        #QgsMessageLog.logMessage('selectedFilter: {0}'.format(selectedFilter), 'VoGis')
-        #QgsMessageLog.logMessage('fileExt: {0}'.format(fileExt), 'VoGis')
+        QgsMessageLog.logMessage('selectedFilter: {0}'.format(selectedFilter), 'VoGis')
+        QgsMessageLog.logMessage('fileExt: {0}'.format(fileExt), 'VoGis')
 
         fileName = unicode(fileName)
         if fileName.lower().endswith(fileExt) is False:
             fileName = fileName + '.' + fileExt
-        return fileName
+        return fileName, fileExt
+
+
+    def get_features(self, lyr):
+        feats = []
+        if lyr.selectedFeatureCount() > 0:
+            feats = lyr.selectedFeatures()
+        else:
+            if QGis.QGIS_VERSION_INT < 10900:
+                provider = lyr.dataProvider()
+                attrib_indices = provider.attributeIndexes()
+                provider.select(attrib_indices)
+                feat = QgsFeature()
+                while provider.nextFeature(feat):
+                    feats.append(feat)
+                    #neues Feature verwenden, weil sonst die Multiparts
+                    #nicht als solche erkannt werden
+                    feat = QgsFeature()
+            else:
+                #processing.getfeatures: This will iterate over all the features in the layer, in case there is no selection, or over the selected features otherwise.
+                #obviously not available with windows standalone installer
+                #features = processing.getfeatures(self.settings.mapData.selectedLineLyr.line)
+                features = lyr.getFeatures()
+                for feat in features:
+                    feats.append(feat)
+        return feats
+
 
     def createQgLineFeature(self, vertices):
         line = QgsGeometry.fromPolyline(vertices)
@@ -98,11 +149,13 @@ class Util:
         qgFeat.setGeometry(line)
         return qgFeat
 
+
     def createQgPointFeature(self, vertex):
         pnt = QgsGeometry.fromPoint(QgsPoint(vertex.x, vertex.y))
         qgPnt = QgsFeature()
         qgPnt.setGeometry(pnt)
         return qgPnt
+
 
     def prepareFeatures(self, settings, provider, feats):
         """explode multipart features"""
@@ -134,6 +187,7 @@ class Util:
 
         return feats, None
 
+
     def valid(self, feats):
         #QgsMessageLog.logMessage('check feat valid', 'VoGis')
         err_cnt = 0
@@ -155,6 +209,7 @@ class Util:
                         err_cnt += 1
                         QgsMessageLog.logMessage(u'$id [{0}] {1}'.format(feat.id(), err.what()), 'VoGis')
         return (1 > err_cnt)
+
 
     def __mergeFeaturesAny(self, origFeats):
 
@@ -192,6 +247,7 @@ class Util:
         newFeats = tmpFeats
 
         return newFeats
+
 
     def __mergeFeaturesSimple(self, provider, origFeats):
 
@@ -268,11 +324,13 @@ class Util:
 
         return newFeats
 
+
     # def __printAttribs(self, attributeMap):
     #     txt = ''
     #     for (k, attr) in attributeMap.iteritems():
     #         txt += '({0}: {1}) '.format(k, attr.toString())
     #     return txt
+
 
     def __explodeMultiPartFeatures(self, provider, origFeats):
 
@@ -290,6 +348,7 @@ class Util:
 
         QgsMessageLog.logMessage('{0} features after exploding'.format(len(newFeats)), 'VoGis')
         return newFeats
+
 
     #https://github.com/SrNetoChan/MultipartSplit/blob/master/splitmultipart.py
     def explodeMultiPartFeature(self, provider, feat):
@@ -326,6 +385,7 @@ class Util:
 
         return newFeats
 
+
     def __transferAttributes(self, provider, attrMap, featNew):
         #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes OLD', self.__printAttribs(attrMap)), 'VoGis')
         #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW', self.__printAttribs(featNew.attributeMap())), 'VoGis')
@@ -346,15 +406,17 @@ class Util:
         #QgsMessageLog.logMessage('{0}: {1}'.format('__transferAttributes NEW2', self.__printAttribs(featNew.attributeMap())), 'VoGis')
         return featNew
 
+
     def deleteVectorFile(self, fileName):
         if QgsVectorFileWriter.deleteShapeFile(fileName) is False:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                QApplication.translate('code', 'Konnte vorhandene Datei nicht lÃ¶schen', None, QApplication.UnicodeUTF8) + ': ' + fileName
+                                QApplication.translate('code', 'Konnte vorhandene Datei nicht löschen', None, QApplication.UnicodeUTF8) + ': ' + fileName
                                 )
             return False
         else:
             return True
+
 
     def loadVectorFile(self, fileName):
         fileSaved = QApplication.translate('code', 'Datei gespeichert.', None, QApplication.UnicodeUTF8)
@@ -372,6 +434,7 @@ class Util:
                                       'ogr'
                                       )
 
+
     #def createOgrDataSrcAndLyr(self, driverName, fileName, epsg, geomType):
     def createOgrDataSrcAndLyr(self, driverName, fileName, wkt, geomType):
 
@@ -379,7 +442,7 @@ class Util:
         if drv is None:
             QMessageBox.warning(self.iface.mainWindow(),
                                 "VoGIS-Profiltool",
-                                driverName + ' ' + QApplication.translate('code', 'Treiber nicht verfÃ¼gbar', None, QApplication.UnicodeUTF8)
+                                driverName + ' ' + QApplication.translate('code', 'Treiber nicht verfügbar', None, QApplication.UnicodeUTF8)
                                 )
             return None, None
 
@@ -413,6 +476,7 @@ class Util:
             return None, None
 
         return ds, lyr
+
 
     def createOgrPointFeature(self, lyr, v):
         #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[0]), 'VoGis')

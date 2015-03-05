@@ -33,6 +33,16 @@ class Segment:
         txt += '\n'
         return txt
 
+    def toArray(self, hekto, attribs, decimalDelimiter):
+        """ Fuer die Weiterverarbeitung im Excel-Writer        """
+        feld = []
+        vCnt = len(self.vertices)
+        for idxV in range(vCnt):
+            feld.append(self.vertices[idxV].toArray(hekto,
+                                               attribs,
+                                               decimalDelimiter))
+        return feld
+
     def toACadTxt(self, delimiter, decimalDelimiter):
         acadTxt = ''
         for v in self.vertices:
