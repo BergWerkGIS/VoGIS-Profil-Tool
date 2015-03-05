@@ -184,7 +184,7 @@ class VoGISProfilToolMainDialog(QDialog):
 
         #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
         self.iface.mainWindow().statusBar().showMessage('VoGIS-Profiltool, {0} Profile'.format(len(profiles)))
-        QgsMessageLog.logMessage('Profile Count: ' + str(len(profiles)), 'VoGis')
+        QgsMessageLog.logMessage(u'Profile Count: {0}'.format(len(profiles)), 'VoGis')
 
         if len(profiles) < 1:
             QApplication.restoreOverrideCursor()

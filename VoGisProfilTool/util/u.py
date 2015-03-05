@@ -100,7 +100,7 @@ class Util:
 
         #QgsMessageLog.logMessage('{0}'.format(fileName), 'VoGis')
         if fileName is None or fileName == '':
-            return u''
+            return u'', u''
         if QGis.QGIS_VERSION_INT < 10900:
             #fileExt = fInfo.suffix()
             fileExt = str(selectedFilter[:3]).lower()
@@ -430,7 +430,7 @@ class Util:
                                      )
         if reply == QMessageBox.Yes:
             self.iface.addVectorLayer(fileName,
-                                      basename(str(fileName)),
+                                      basename(unicode(fileName)),
                                       'ogr'
                                       )
 
