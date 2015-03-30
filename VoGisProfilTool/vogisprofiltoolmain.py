@@ -38,6 +38,7 @@ from bo.settings import Settings
 class VoGISProfilToolMain:
 
     def __init__(self, iface):
+        QSettings().setValue("vogisprofiltoolmain/isopen", False)
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
