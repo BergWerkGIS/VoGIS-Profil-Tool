@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created: Mon Mar 30 11:03:43 2015
-#      by: PyQt4 UI code generator 4.10.4
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -37,8 +36,8 @@ class Ui_VoGISProfilToolMain(object):
         self.gridLayout.setVerticalSpacing(0)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setSpacing(0)
         self.verticalLayout.setSizeConstraint(QtGui.QLayout.SetMinimumSize)
+        self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.IDC_widRaster = QtGui.QWidget(VoGISProfilToolMain)
         self.IDC_widRaster.setEnabled(True)
