@@ -101,7 +101,13 @@ class VoGISProfilToolPlotDialog(QDialog):
         layout = self.ui.IDC_frPlot.layout()
         #QgsMessageLog.logMessage('layout: {0}'.format(layout), 'VoGis')
         layout.addWidget(self.plt_widget)
-        plt_toolbar = matplotlib.backends.backend_qt4agg.NavigationToolbar2QTAgg(self.plt_widget, self.ui.IDC_frPlot)
+
+	# check matplotlib version solves https://github.com/BergWerkGIS/VoGIS-Profil-Tool/issues/6
+	if matplotlib.__version__ < 1.5 : 
+       		plt_toolbar = matplotlib.backends.backend_qt4agg.NavigationToolbar2QTAgg(self.plt_widget, self.ui.IDC_frPlot)
+	else :
+		plt_toolbar = matplotlib.backends.backend_qt4agg.NavigationToolbar2QT(self.plt_widget, self.ui.IDC_frPlot) 
+
         self.ui.IDC_frToolbar.layout().addWidget(plt_toolbar)
 
         #adjust actions
