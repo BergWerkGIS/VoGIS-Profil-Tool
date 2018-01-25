@@ -12,8 +12,8 @@ class Settings:
         self.onlySelectedFeatures = False
         self.linesExplode = True
         self.linesMerge = True
-        self.equiDistance = 10.0
-        self.vertexCnt = 100
+        self.equiDistance = 1.0
+        self.vertexCnt = 1000
         self.createHekto = False
         self.nodesAndVertices = False
         self.nodata_value = -9999

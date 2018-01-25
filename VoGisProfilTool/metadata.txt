@@ -10,11 +10,11 @@
 
 [general]
 name=VoGIS-ProfilTool
-qgisMinimumVersion=1.8
-qgisMaximumVersion=2.99
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
 about=Create profiles from DHMs using vector geometries or a digitized line.
 description=Create profiles from DHMs using vector geometries or a digitized line.
-version=2.5.6
+version=2.5.5
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 
@@ -23,7 +23,7 @@ email=wb@BergWerk-GIS.at
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=fix for matplotlib >= 1.5 by https://github.com/haubourg https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/7
+changelog=show intersection of profiles with polygons
 
 # tags are comma separated with spaces allowed
 tags=raster, profile, profiles, vorarlberg, dxf, vogis, matplotlib, dhm, csv, equidistant

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-import unicodedata
-from PyQt4.QtCore import QVariant
-from settings import enumVertexType
-from qgis.core import QGis
+
+from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsMessageLog
+
+from VoGisProfilTool.bo.settings import enumVertexType
 
 
 class Vertex:
@@ -24,21 +24,16 @@ class Vertex:
                  distanceProfile,
                  distanceSegment,
                  zvals,
-                 nodata_value=-9999
+                 nodata_value=-9999,
+                 raster_nodata=None,
                  ):
         self.attribNames = []
         self.attributes = []
-        if QGis.QGIS_VERSION_INT < 10900:
-            for (k, attr) in attribMap.iteritems():
-                #QgsMessageLog.logMessage('new Vextex: {0}:{1}'.format(k, attr.toString()), 'VoGis')
-                if fields is not None:
-                    self.attribNames.append(fields[k].name())
-                self.attributes.append(attr)
-        else:
-            for k in range(len(attribMap)):
-                if fields is not None:
-                    self.attribNames.append(fields[k].name())
-                self.attributes.append(attribMap[k])
+        for k in range(len(attribMap)):
+            if fields is not None:
+                self.attribNames.append(fields[k].name())
+            self.attributes.append(attribMap[k])
+
         self.vertexType = vertexType
         self.x = x
         self.y = y
@@ -51,7 +46,7 @@ class Vertex:
         self.distanceSegment = distanceSegment
         self.zvals = zvals
         self.nodata_value = nodata_value
-
+        self.raster_nodata = raster_nodata
 
     def toString(self, hekto, attribs, delimiter, decimalDelimiter):
         #dirty HACK! toString() replace, um unabhaengig von LOCALE Dezimaltrenner setzen zu können
@@ -124,7 +119,7 @@ class Vertex:
                                                       ('{0:.2f}'.format(self.distanceProfile)).replace('.', decimalDelimiter),
                                                       ('{0:.2f}'.format(self.x)).replace('.', decimalDelimiter),
                                                       ('{0:.2f}'.format(self.y)).replace('.', decimalDelimiter),
-                                                      ('{0:.2f}'.format(rVal)).replace('.', decimalDelimiter),
+                                                      ('' if rVal is None else '{0:.2f}'.format(rVal)).replace('.', decimalDelimiter),
                                                       )
             #acadTxt += os.linesep
             acadTxt += '\n'
@@ -135,14 +130,14 @@ class Vertex:
         aTxt = ''
         for a in self.attributes:
             if isinstance(a, QVariant):
-                a2 = a.toPyObject()
+                a2 = str(a)
             else:
                 a2 = a
             #if isinstance(a2, (int, long, float, complex)):
             if isinstance(a2, (long, float, complex)):
                 aTxt += ('{0}{1:.2f}'.format(delimiter, a2)).replace('.', decimalDelimiter)
             else:
-                aTxt += '{0}{1}'.format(delimiter, unicodedata.normalize('NFKD', unicode(a2)).encode('ascii', 'ignore'))
+                aTxt += '{0}{1}'.format(delimiter, a2)
         return aTxt
 
     def getAttributeVals(self):
@@ -150,7 +145,7 @@ class Vertex:
         attribs = []
         for a in self.attributes:
             if isinstance(a, QVariant):
-                a2 = a.toPyObject()
+                a2 = str(a)
             else:
                 a2 = a
             #if isinstance(a2, (int, long, float, complex)):
@@ -159,7 +154,7 @@ class Vertex:
             elif isinstance(a2, (long, float, complex)):
                 attribs.append(a2)
             else:
-                attribs.append(unicodedata.normalize('NFKD', unicode(a2)).encode('ascii', 'ignore'))
+                attribs.append(a2)
         return attribs
 
     def getType(self):
@@ -187,7 +182,7 @@ class Vertex:
         if len(self.zvals) > 0:
             for zVal in self.zvals:
                 if zVal is None:
-                    z.append(str(self.nodata_value))
+                    z.append("" if self.nodata_value is None else str(self.nodata_value))
                 else:
                     z.append(zVal)
         return z
@@ -198,7 +193,7 @@ class Vertex:
             valCnter = 1
             for zVal in self.zvals:
                 if zVal is None:
-                    z += str(self.nodata_value)
+                    z += "" if self.nodata_value is None else str(self.nodata_value)
                 else:
                     z += ('{0:.2f}'.format(zVal)).replace('.', decimalDelimiter)
                 if valCnter < len(self.zvals):
