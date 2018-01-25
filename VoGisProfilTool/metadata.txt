@@ -14,7 +14,7 @@ qgisMinimumVersion=2.99
 qgisMaximumVersion=3.99
 about=Create profiles from DHMs using vector geometries or a digitized line.
 description=Create profiles from DHMs using vector geometries or a digitized line.
-version=2.5.5
+version=2.99.1
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 
@@ -23,7 +23,17 @@ email=wb@BergWerk-GIS.at
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=show intersection of profiles with polygons
+changelog=
+  2.99.1:
+  * Bugfix: error when entering an empty string into "Nodata (Export)"
+  * Bugfix: consider different matplotlib versions
+  * New: show cadastre in the profile chart as small vertical lines
+  * New: intermittent profile lines when outside of DEM
+  * New: insert profile chart into layout
+  * New: export profile chart to scale by defining scale and DPI
+  * New: support DEMs with different projections
+  2.99.0:
+  * initial port to 3.x
 
 # tags are comma separated with spaces allowed
 tags=raster, profile, profiles, vorarlberg, dxf, vogis, matplotlib, dhm, csv, equidistant
