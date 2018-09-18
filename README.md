@@ -29,7 +29,7 @@ https://github.com/BergWerkGIS/VoGIS-Profil-Tool/raw/master/VoGisProfilTool/VoGi
 
 #Description
 
-Create profiles from DHMs using vector geometries or a digitized line.
+Create profiles from DEMs using vector geometries or a digitized line.
 
 Interpolate vertices (equidistant or constant number of vertices per input geometry).
 
