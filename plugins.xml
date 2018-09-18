@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <plugins>
     <pyqgis_plugin name="VoGIS-ProfilTool" version="2.5.6">
-        <description><![CDATA[Create profiles from DHMs using vector geometries or a digitized line.]]></description>
+        <description><![CDATA[Create profiles from DEMs using vector geometries or a digitized line.]]></description>
         <version>2.5.6</version>
         <qgis_minimum_version>1.8.0</qgis_minimum_version>
         <qgis_maximum_version>2.99.0</qgis_maximum_version>
@@ -16,6 +16,6 @@
         <deprecated>False</deprecated>
         <tracker><![CDATA[https://github.com/BergWerkGIS/VoGIS-Profil-Tool/issues]]></tracker>
         <repository><![CDATA[https://github.com/BergWerkGIS/VoGIS-Profil-Tool/]]></repository>
-        <tags><![CDATA[raster,profile,profiles,vorarlberg,dxf,vogis,matplotlib,dhm,csv,equidistant]]></tags>
+        <tags><![CDATA[raster,profile,profiles,vorarlberg,dxf,vogis,matplotlib,dem,csv,equidistant]]></tags>
     </pyqgis_plugin>
 </plugins>
