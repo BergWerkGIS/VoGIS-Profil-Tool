@@ -27,7 +27,7 @@ def name():
 
 
 def description():
-    return "Create profiles from DHMs using vector geometries or a digitized line."
+    return "Create profiles from DEMs using vector geometries or a digitized line."
 
 
 def version():
