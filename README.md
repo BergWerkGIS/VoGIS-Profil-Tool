@@ -37,7 +37,7 @@ Download via
 
 # Description
 
-Create profiles from DHMs using vector geometries or a digitized line.
+Create profiles from DEMs using vector geometries or a digitized line.
 
 Interpolate vertices (equidistant or constant number of vertices per input geometry).
 
@@ -59,3 +59,5 @@ Export to:
 ## Plot Dialog
 ![plot dialog](/screenshots/plotdialog.png)
 
+If you get an error message about missing shapely, just do
+`sudo apt-get install python3-shapely`.

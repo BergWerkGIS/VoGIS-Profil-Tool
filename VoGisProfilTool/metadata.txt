@@ -14,7 +14,7 @@ qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 about=Create profiles from DHMs using vector geometries or a digitized line.
 description=Create profiles from DHMs using vector geometries or a digitized line.
-version=2.99.1
+version=3.4.1
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 
@@ -36,7 +36,7 @@ changelog=
   * initial port to 3.x
 
 # tags are comma separated with spaces allowed
-tags=raster, profile, profiles, vorarlberg, dxf, vogis, matplotlib, dhm, csv, equidistant
+tags=raster, profile, profiles, vorarlberg, dxf, vogis, matplotlib, dem, csv, equidistant
 
 homepage=https://github.com/BergWerkGIS/VoGIS-Profil-Tool/
 tracker=https://github.com/BergWerkGIS/VoGIS-Profil-Tool/issues
