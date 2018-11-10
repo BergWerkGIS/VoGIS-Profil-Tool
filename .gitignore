@@ -5,3 +5,5 @@ help/
 *.sublime-workspace
 
 .idea/
+
+__pycache__

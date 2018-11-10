@@ -26,9 +26,13 @@ PLUGIN_UPLOAD = $(CURDIR)/plugin_upload.py
 SOURCES = vogisprofiltoolmain.py\
           ui/ui_vogisprofiltoolmain.py\
           ui/ui_vogisprofiltoolplot.py\
+          ui/ui_vogisprofiltoollayouts.py\
+          ui/ui_vogisprofiltoolscale.py\
           __init__.py\
           vogisprofiltoolmaindialog.py\
           vogisprofiltoolplot.py\
+          vogisprofiltoollayouts.py\
+          vogisprofiltoolscale.py\
           util/u.py\
           util/createProfile.py\
           bo/profile.py
@@ -38,10 +42,9 @@ TRANSLATIONS = i18n/vogisprofiltoolmain_en.ts
 # global
 
 PLUGINNAME = VoGisProfilTool
-#QGISPIDIR = .qgis
-QGISPIDIR = .qgis2
+QGISPIDIR = .local/share/QGIS/QGIS3/profiles/default
 
-PY_FILES = vogisprofiltoolmain.py vogisprofiltoolmaindialog.py vogisprofiltoolplot.py __init__.py
+PY_FILES = vogisprofiltoolmain.py vogisprofiltoolmaindialog.py vogisprofiltoolplot.py vogisprofiltoollayouts.py vogisprofiltoolscale.py __init__.py
 EXTRAS = icons/home.png \
          icons/icon.png \
          icons/identify.png \
@@ -108,7 +111,7 @@ XLSX_FILES =    util/xlsxwriter/app.py \
                 util/xlsxwriter/workbook.py \
                 util/xlsxwriter/worksheet.py \
                 util/xlsxwriter/xmlwriter.py
-UI_FILES = ui/ui_vogisprofiltoolmain.py ui/ui_vogisprofiltoolplot.py
+UI_FILES = ui/ui_vogisprofiltoolmain.py ui/ui_vogisprofiltoolplot.py ui/ui_vogisprofiltoollayouts.py ui/ui_vogisprofiltoolscale.py
 RESOURCE_FILES = resources_rc.py
 
 HELP = help/build/html
@@ -118,10 +121,10 @@ default: compile
 compile: $(UI_FILES) $(RESOURCE_FILES)
 
 %_rc.py : %.qrc
-	pyrcc4 -o $*_rc.py  $<
+	pyrcc5 -o $*_rc.py  $<
 
 %.py : %.ui
-	pyuic4 -o $@ $<
+	pyuic5 -o $@ $<
 
 %.qm : %.ts
 	lrelease $<
@@ -182,7 +185,7 @@ upload: zip
 # transup
 # update .ts translation files
 transup:
-	pylupdate4 -noobsolete Makefile
+	pylupdate5 -noobsolete Makefile
 
 # transcompile
 # compile translation files into .qm binary format

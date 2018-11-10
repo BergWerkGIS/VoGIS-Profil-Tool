@@ -1,6 +1,5 @@
 import os
 
-
 class Segment:
 
     def __init__(self, id, vertices):
@@ -8,7 +7,6 @@ class Segment:
         self.vertices = vertices
 
     def toString(self, hekto, attribs, delimiter, decimalDelimiter):
-
         txt = ''
         vCnt = len(self.vertices)
         for idxV in range(vCnt):

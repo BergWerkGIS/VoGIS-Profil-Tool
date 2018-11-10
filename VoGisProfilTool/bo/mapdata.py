@@ -6,3 +6,4 @@ class MapData:
         self.polygons = None
         self.selectedLineLyr = None
         self.customLine = None
+        self.cadastre = None

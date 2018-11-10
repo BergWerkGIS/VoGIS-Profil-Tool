@@ -13,7 +13,7 @@ class Intersection:
 
 
     def toStr(self):
-        return u'{0}/{1} z:{2} dist:{3} -> {4}/{5} z:{6} dist:{7}'.format(
+        return '{0}/{1} z:{2} dist:{3} -> {4}/{5} z:{6} dist:{7}'.format(
                           self.from_x,
                           self.from_y,
                           self.from_z,

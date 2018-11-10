@@ -21,46 +21,7 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-
-def name():
-    return "VoGIS-Profiltool"
-
-
-def description():
-    return "Create profiles from DEMs using vector geometries or a digitized line."
-
-
-def version():
-    return "2.5.6"
-
-
-def icon():
-    return "icons/icon.png"
-
-def category():
-    return 'Raster'
-
-def qgisMinimumVersion():
-    return "1.8"
-
-
-def qgisMaximumVersion():
-    return "2.99"
-
-
-def experimental():
-    return False
-
-
-def author():
-    return "BergWerk GIS"
-
-
-def email():
-    return "wb@BergWerk-GIS.at"
-
-
 def classFactory(iface):
     # load VoGISProfilToolMain class from file VoGISProfilToolMain
-    from vogisprofiltoolmain import VoGISProfilToolMain
+    from VoGisProfilTool.vogisprofiltoolmain import VoGISProfilToolMain
     return VoGISProfilToolMain(iface)
