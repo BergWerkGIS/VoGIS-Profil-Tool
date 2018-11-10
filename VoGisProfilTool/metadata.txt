@@ -28,6 +28,7 @@ changelog=
   * Updated for LTS 3.4
   * French translation by @kikislater https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/14
   * English translation fix DHM -> DEM by @kannes https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/12/
+  * Bugfix: DEM query point not assigned in case no coordinate transformation is necessary, by @jef-n, https://github.com/BergWerkGIS/VoGIS-Profil-Tool/commit/24a26eb3833a554686c44d17ab1d416ceb484254#r29595856
   * General development support by @alexbruy
   2.99.1 - 20180125:
   * Bugfix: error when entering an empty string into "Nodata (Export)"

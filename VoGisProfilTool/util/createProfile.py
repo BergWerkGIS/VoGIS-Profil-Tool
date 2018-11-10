@@ -15,7 +15,7 @@ except:
 
 from qgis.PyQt.QtCore import pyqtSignal, QObject
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication
-from qgis.core import QgsFeature, QgsWkbTypes, QgsPointXY, QgsGeometry, QgsCoordinateTransform, QgsRaster, QgsProject
+from qgis.core import QgsFeature, QgsMessageLog, QgsWkbTypes, QgsPointXY, QgsGeometry, QgsCoordinateTransform, QgsRaster, QgsProject
 #if QGis.QGIS_VERSION_INT >= 10900:
 #    import processing
 
@@ -403,7 +403,9 @@ class CreateProfile(QObject):
                                                        raster.crs(), QgsProject.instance())
                     p = transform.transform(pnt)
 
-            #QgsMessageLog.logMessage(str(pnt), 'VoGis', Qgis.Info)
+            if p is None:
+                #QgsMessageLog.logMessage(u'point not transformed {0}'.format(str(pnt)))
+                p = pnt
 
             identify_result = raster.dataProvider().identify(p, QgsRaster.IdentifyFormatValue)
             #QgsMessageLog.logMessage(u'identify_result: {0}'.format(identify_result.results()), 'VoGis', Qgis.Info)
