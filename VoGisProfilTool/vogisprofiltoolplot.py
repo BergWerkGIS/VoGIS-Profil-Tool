@@ -40,7 +40,7 @@ from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QPushButton, QLineEdit, QLabel, QDialog, QApplication, QSizePolicy, QMessageBox, QAction
 
-from qgis.core import QgsSettings, QgsMessageLog, QgsProject, QgsLayoutItemPicture, QgsLayoutSize, QgsUnitTypes
+from qgis.core import Qgis, QgsSettings, QgsMessageLog, QgsProject, QgsLayoutItemPicture, QgsLayoutSize, QgsUnitTypes
 
 from VoGisProfilTool.ui.ui_vogisprofiltoolplot import Ui_VoGISProfilToolPlot
 
@@ -95,40 +95,40 @@ class VoGISProfilToolPlotDialog(QDialog):
         #nimmt die Locale vom System, nicht von QGIS
         #kein Weg gefunden, um QGIS Locale: QSettings().value("locale/userLocale")
         #zu initialisieren, nur um Dezimaltrenne auszulesen
-        #QgsMessageLog.logMessage("QGIS Locale:{0}".format(QSettings().value("locale/userLocale").toString()), "VoGis")
+        #QgsMessageLog.logMessage("QGIS Locale:{0}".format(QSettings().value("locale/userLocale").toString()), "VoGis", Qgis.Info)
         #!!!nl_langinfo not available on Windows!!!
         #http://docs.python.org/2.7/library/locale.html#locale.nl_langinfo
         # ...  This function is not available on all systems ...
         #decimalDelimiter = locale.nl_langinfo(locale.RADIXCHAR)
         decimalDelimiter = locale.localeconv()["decimal_point"]
-        QgsMessageLog.logMessage("delimiter:{0}".format(decimalDelimiter), "VoGis")
+        QgsMessageLog.logMessage("delimiter:{0}".format(decimalDelimiter), "VoGis", Qgis.Info)
         idx = self.ui.IDC_cbDecimalDelimiter.findText(decimalDelimiter, Qt.MatchExactly)
-        QgsMessageLog.logMessage("idx:{0}".format(idx), "VoGis")
+        QgsMessageLog.logMessage("idx:{0}".format(idx), "VoGis", Qgis.Info)
         self.ui.IDC_cbDecimalDelimiter.setCurrentIndex(idx)
 
         plt_extent = PlotExtent()
         for profile in self.profiles:
             plt_extent.union(profile.getExtent())
             if self.debug:
-                QgsMessageLog.logMessage(plt_extent.toString(), "VoGis")
+                QgsMessageLog.logMessage(plt_extent.toString(), "VoGis", Qgis.Info)
 
         plt_extent.expand()
 
         self.orig_plt_xtnt = PlotExtent(plt_extent.xmin, plt_extent.ymin, plt_extent.xmax, plt_extent.ymax)
         self.plt_widget = self.__createMatplotlibCanvas(plt_extent)
         layout = self.ui.IDC_frPlot.layout()
-        #QgsMessageLog.logMessage("layout: {0}".format(layout), "VoGis")
+        #QgsMessageLog.logMessage("layout: {0}".format(layout), "VoGis", Qgis.Info)
         layout.addWidget(self.plt_widget)
 
         plt_toolbar = NavigationToolbar2QT(self.plt_widget, self.ui.IDC_frPlot)
         self.ui.IDC_frToolbar.layout().addWidget(plt_toolbar)
 
         #adjust actions
-        #QgsMessageLog.logMessage("{0}".format(dir(lstActions[0])), "VoGis")
+        #QgsMessageLog.logMessage("{0}".format(dir(lstActions[0])), "VoGis", Qgis.Info)
 #        for a in plt_toolbar.actions():
-#            QgsMessageLog.logMessage("{0}".format(a.text()), "VoGis")
+#            QgsMessageLog.logMessage("{0}".format(a.text()), "VoGis", Qgis.Info)
 #        for t in plt_toolbar.toolitems:
-#            QgsMessageLog.logMessage("{0}".format(t), "VoGis")
+#            QgsMessageLog.logMessage("{0}".format(t), "VoGis", Qgis.Info)
         #lstActions = plt_toolbar.actions()
 
         #https://hub.qgis.org/wiki/17/Icons_20
@@ -219,7 +219,7 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def accept(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "ACCEPTED")
-        QgsMessageLog.logMessage("accept: {0}".format(self.exaggeration_edited), "VoGis")
+        QgsMessageLog.logMessage("accept: {0}".format(self.exaggeration_edited), "VoGis", Qgis.Info)
         if self.exaggeration_edited is True:
             self.exaggeration_edited = False
             return
@@ -227,7 +227,7 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def reject(self):
         #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "REJECTED")
-        QgsMessageLog.logMessage("reject: {0}".format(self.exaggeration_edited), "VoGis")
+        QgsMessageLog.logMessage("reject: {0}".format(self.exaggeration_edited), "VoGis", Qgis.Info)
         if self.exaggeration_edited is True:
             self.exaggeration_edited = False
             return
@@ -273,7 +273,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         file_format.append(["Comma-Separated Values CSV", "csv"])
 
         fileName, fileExt = u.getFileName(caption, file_format, self.filePath)
-        QgsMessageLog.logMessage("fileName: {0} fileExt:{1}".format(fileName, fileExt), "VoGis")
+        QgsMessageLog.logMessage("fileName: {0} fileExt:{1}".format(fileName, fileExt), "VoGis", Qgis.Info)
 
         if fileName == "":
             return
@@ -387,7 +387,7 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def __figureDrawn(self, event):
         if self.debug:
-            QgsMessageLog.logMessage("__figureDrawn, draw_event_fired:{0} exaggeration_edited: {1}".format(self.draw_event_fired, self.exaggeration_edited), "VoGis")
+            QgsMessageLog.logMessage("__figureDrawn, draw_event_fired:{0} exaggeration_edited: {1}".format(self.draw_event_fired, self.exaggeration_edited), "VoGis", Qgis.Info)
         #draw event seems to get fired twice?????
         if self.draw_event_fired == True:
             return
@@ -396,7 +396,7 @@ class VoGISProfilToolPlotDialog(QDialog):
         xlim = axes.get_xlim()
         ylim = axes.get_ylim()
         if self.debug:
-            QgsMessageLog.logMessage("__figureDrawn: xlim:{0} ylim:{1}".format(xlim, ylim), "VoGis")
+            QgsMessageLog.logMessage("__figureDrawn: xlim:{0} ylim:{1}".format(xlim, ylim), "VoGis", Qgis.Info)
         dpi = self.plt_widget.figure.get_dpi()
         fig_width = self.plt_widget.figure.get_figwidth() * dpi
         fig_height = self.plt_widget.figure.get_figheight() * dpi
@@ -409,23 +409,23 @@ class VoGISProfilToolPlotDialog(QDialog):
         ratio = (delta_x / fig_width) / (delta_y / fig_height)
         ratio = floor(ratio * 10) / 10
         if self.debug:
-            QgsMessageLog.logMessage("__figureDrawn: fig_width:{0} fig_height:{1} dpi:{2} delta_x:{3} delta_y:{4}, ratio:{5}".format(fig_width, fig_height, dpi, delta_x, delta_y, ratio), "VoGis")
+            QgsMessageLog.logMessage("__figureDrawn: fig_width:{0} fig_height:{1} dpi:{2} delta_x:{3} delta_y:{4}, ratio:{5}".format(fig_width, fig_height, dpi, delta_x, delta_y, ratio), "VoGis", Qgis.Info)
         if self.debug:
-            QgsMessageLog.logMessage("__figureDrawn: axes.get_data_ratio:{0}".format(axes.get_data_ratio()), "VoGis")
+            QgsMessageLog.logMessage("__figureDrawn: axes.get_data_ratio:{0}".format(axes.get_data_ratio()), "VoGis", Qgis.Info)
         #self.editExaggeration.setText("{0:.1f}".format(ratio))
         self.editExaggeration.setText("{0:.1f}".format(axes.get_aspect()))
         self.draw_event_fired = False
 
     def __exaggeration_edited(self, *args):
         if self.debug:
-            QgsMessageLog.logMessage("__exaggeration_edited, exaggeration_edited:{0} draw_event_fired: {1}".format(self.exaggeration_edited, self.draw_event_fired), "VoGis")
+            QgsMessageLog.logMessage("__exaggeration_edited, exaggeration_edited:{0} draw_event_fired: {1}".format(self.exaggeration_edited, self.draw_event_fired), "VoGis", Qgis.Info)
         #this event handler seems to get called twice????
         if self.draw_event_fired == True:
             return
         if self.exaggeration_edited == True:
             return
         self.exaggeration_edited = True
-        #QgsMessageLog.logMessage("__exaggeration_edited: {0}".format(self.exaggeration_edited), "VoGis")
+        #QgsMessageLog.logMessage("__exaggeration_edited: {0}".format(self.exaggeration_edited), "VoGis", Qgis.Info)
         ut = Util(self.iface)
         txtExa = QApplication.translate("code", "Überhöhung")
         if ut.isFloat(self.editExaggeration.text(), txtExa) is False:
@@ -436,8 +436,8 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.__adjustAxes(exa)
 
     def __one2oneClicked(self):
-        if self.debug: QgsMessageLog.logMessage("1:1 clicked", "VoGis")
-        #QgsMessageLog.logMessage("axes:{0}".format(self.plt_widget.figure.get_axes()), "VoGis")
+        if self.debug: QgsMessageLog.logMessage("1:1 clicked", "VoGis", Qgis.Info)
+        #QgsMessageLog.logMessage("axes:{0}".format(self.plt_widget.figure.get_axes()), "VoGis", Qgis.Info)
         self.__adjustAxes(1.0)
 
     def __adjustAxes(self, exaggeration):
@@ -447,10 +447,10 @@ class VoGISProfilToolPlotDialog(QDialog):
         #axes.set_autoscalex_on(False)
         #axes.set_autoscaley_on(True)
         if self.debug:
-            QgsMessageLog.logMessage("__adjustAxes, get_aspect:{0}".format(axes.get_aspect()), "VoGis")
-            QgsMessageLog.logMessage("__adjustAxes, get_position:{0}".format(axes.get_position()), "VoGis")
-            QgsMessageLog.logMessage("__adjustAxes, xBound:{0} xlim:{1}".format(axes.get_xbound(),axes.get_xlim()), "VoGis")
-            QgsMessageLog.logMessage("__adjustAxes, yBound:{0} ylim:{1}".format(axes.get_ybound(),axes.get_ylim()), "VoGis")
+            QgsMessageLog.logMessage("__adjustAxes, get_aspect:{0}".format(axes.get_aspect()), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("__adjustAxes, get_position:{0}".format(axes.get_position()), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("__adjustAxes, xBound:{0} xlim:{1}".format(axes.get_xbound(),axes.get_xlim()), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("__adjustAxes, yBound:{0} ylim:{1}".format(axes.get_ybound(),axes.get_ylim()), "VoGis", Qgis.Info)
         oldexa = axes.get_aspect()
         ratioexa = oldexa / exaggeration
         ylim = axes.get_ylim()
@@ -461,31 +461,31 @@ class VoGISProfilToolPlotDialog(QDialog):
         axes.set_aspect(exaggeration, "datalim", "C")
         self.plt_widget.draw()
         if self.debug:
-            QgsMessageLog.logMessage("__adjustAxes, get_aspect:{0}".format(axes.get_aspect()), "VoGis")
-            QgsMessageLog.logMessage("__adjustAxes, get_position:{0}".format(axes.get_position()), "VoGis")
-            QgsMessageLog.logMessage("__adjustAxes, xBound:{0} xlim:{1}".format(axes.get_xbound(),axes.get_xlim()), "VoGis")
-            QgsMessageLog.logMessage("__adjustAxes, yBound:{0} ylim:{1}".format(axes.get_ybound(),axes.get_ylim()), "VoGis")
+            QgsMessageLog.logMessage("__adjustAxes, get_aspect:{0}".format(axes.get_aspect()), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("__adjustAxes, get_position:{0}".format(axes.get_position()), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("__adjustAxes, xBound:{0} xlim:{1}".format(axes.get_xbound(),axes.get_xlim()), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("__adjustAxes, yBound:{0} ylim:{1}".format(axes.get_ybound(),axes.get_ylim()), "VoGis", Qgis.Info)
 
     def __plotPicked(self, event):
         self.plotpicked = True
-        if self.debug: QgsMessageLog.logMessage("__plotPicked", "VoGis")
-        #QgsMessageLog.logMessage("artist:{0}".format(type(event.artist)), "VoGis")
+        if self.debug: QgsMessageLog.logMessage("__plotPicked", "VoGis", Qgis.Info)
+        #QgsMessageLog.logMessage("artist:{0}".format(type(event.artist)), "VoGis", Qgis.Info)
         self.dhmLbl.setText(" ? ")
         if isinstance(event.artist, Line2D):
-            QgsMessageLog.logMessage("Line2D", "VoGis")
+            QgsMessageLog.logMessage("Line2D", "VoGis", Qgis.Info)
             line = event.artist
             xdata = line.get_xdata()
             ydata = line.get_ydata()
             ind = event.ind
-            QgsMessageLog.logMessage("{0}: {1} {2}".format(ind, xdata, ydata), "VoGis")
-            QgsMessageLog.logMessage(help(line), "VoGis")
+            QgsMessageLog.logMessage("{0}: {1} {2}".format(ind, xdata, ydata), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage(help(line), "VoGis", Qgis.Info)
         elif isinstance(event.artist, LineCollection):
-            QgsMessageLog.logMessage("LineCollection", "VoGis")
+            QgsMessageLog.logMessage("LineCollection", "VoGis", Qgis.Info)
             r = self.settings.mapData.rasters.selectedRasters()[event.ind[0]]
-            QgsMessageLog.logMessage("Raster: {0}".format(r.name), "VoGis")
+            QgsMessageLog.logMessage("Raster: {0}".format(r.name), "VoGis", Qgis.Info)
             self.dhmLbl.setText("  [" + r.name + "] ")
         else:
-            QgsMessageLog.logMessage("no Line2D or LineCollection", "VoGis")
+            QgsMessageLog.logMessage("no Line2D or LineCollection", "VoGis", Qgis.Info)
 
     def __mouse_move(self, event):
         if self.measuring is False:
@@ -499,10 +499,10 @@ class VoGISProfilToolPlotDialog(QDialog):
         dy = event.ydata - self.click1.ydata
 
         if self.debug:
-            #QgsMessageLog.logMessage("mouse move name {0}".format(event.name), "VoGis")
-            #QgsMessageLog.logMessage("mouse move xdata {0}".format(event.xdata), "VoGis")
-            #QgsMessageLog.logMessage("mouse move ydata {0}".format(event.ydata), "VoGis")
-            QgsMessageLog.logMessage("dx/dy {0}/{1}".format(dx, dy), "VoGis")
+            #QgsMessageLog.logMessage("mouse move name {0}".format(event.name), "VoGis", Qgis.Info)
+            #QgsMessageLog.logMessage("mouse move xdata {0}".format(event.xdata), "VoGis", Qgis.Info)
+            #QgsMessageLog.logMessage("mouse move ydata {0}".format(event.ydata), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("dx/dy {0}/{1}".format(dx, dy), "VoGis", Qgis.Info)
         self.measure_lbl.setText(" x/y:{0:.1f}/{1:.1f} dx/dy:{2:.1f}/{3:.1f}".format(
             self.click1.xdata,
             self.click1.ydata,
@@ -513,7 +513,7 @@ class VoGISProfilToolPlotDialog(QDialog):
 
     def __buttonPressed(self, event):
         if self.debug:
-            QgsMessageLog.logMessage("__buttonPressed", "VoGis")
+            QgsMessageLog.logMessage("__buttonPressed", "VoGis", Qgis.Info)
 
         if self.plotpicked is False:
             self.dhmLbl.setText(" ? ")
@@ -525,13 +525,13 @@ class VoGISProfilToolPlotDialog(QDialog):
             return
 
         if self.debug:
-            QgsMessageLog.logMessage("{0}".format(dir(event)), "VoGis")
-            QgsMessageLog.logMessage("{0}".format(dir(event.xdata)), "VoGis")
-            QgsMessageLog.logMessage("{0}".format(dir(event.ydata)), "VoGis")
+            QgsMessageLog.logMessage("{0}".format(dir(event)), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("{0}".format(dir(event.xdata)), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("{0}".format(dir(event.ydata)), "VoGis", Qgis.Info)
             QgsMessageLog.logMessage(
                 "x:{0} y:{1} xdata:{2} ydata:{3} click1:{4} click2:{5} click1pnt:{6} click2pnt:{7}".format(
-                    event.x, event.y, event.xdata, event.ydata, self.click1, self.click2, self.click1pnt, self.click2pnt), "VoGis")
-            QgsMessageLog.logMessage("click1pnt: {0}".format(dir(self.click1pnt)), "VoGis")
+                    event.x, event.y, event.xdata, event.ydata, self.click1, self.click2, self.click1pnt, self.click2pnt), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("click1pnt: {0}".format(dir(self.click1pnt)), "VoGis", Qgis.Info)
 
         if event.xdata is None or event.ydata is None:
             return
@@ -570,7 +570,7 @@ class VoGISProfilToolPlotDialog(QDialog):
                 self.click2pnt = None
             self.click2pnt = self.subplot.plot(event.xdata, event.ydata, "go")
         #refresh plot to show points, when identify tool active
-        #if self.debug: QgsMessageLog.logMessage("__buttonPressed: active: {0}".format(self.plt_toolbar._active), "VoGis")
+        #if self.debug: QgsMessageLog.logMessage("__buttonPressed: active: {0}".format(self.plt_toolbar._active), "VoGis", Qgis.Info)
         #if self.plotpicked is True:
         if self.plt_toolbar._active is None:
             self.plt_widget.draw()
@@ -658,7 +658,7 @@ class VoGISProfilToolPlotDialog(QDialog):
     def __getDecimalDelimiter(self):
         #delim = self.ui.IDC_cbDecimalDelimiter.itemData(self.ui.IDC_cbDecimalDelimiter.currentIndex())
         delim = self.ui.IDC_cbDecimalDelimiter.currentText()
-        #QgsMessageLog.logMessage("delim:" + str(delim), "VoGis")
+        #QgsMessageLog.logMessage("delim:" + str(delim), "VoGis", Qgis.Info)
         return delim
 
     def __getDelimiter(self):
@@ -733,9 +733,9 @@ class VoGISProfilToolPlotDialog(QDialog):
             #if idxCol > len(colors) - 1:
             #    idxCol = 0
             #x, plt_segments = p.getPlotSegments()
-            #QgsMessageLog.logMessage("x: {0}".format(x), "VoGis")
+            #QgsMessageLog.logMessage("x: {0}".format(x), "VoGis", Qgis.Info)
             plt_segments = p.getPlotSegments()
-            #QgsMessageLog.logMessage("plt_segments: {0}".format(plt_segments), "VoGis")
+            #QgsMessageLog.logMessage("plt_segments: {0}".format(plt_segments), "VoGis", Qgis.Info)
             lineColl = LineCollection(plt_segments,
                                       linewidths=2,
                                       linestyles="solid",

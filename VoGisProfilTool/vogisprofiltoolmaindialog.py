@@ -26,7 +26,7 @@ from qgis.PyQt.QtCore import Qt, QThread
 from qgis.PyQt.QtGui import QIntValidator, QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction, QMessageBox, QApplication, QDialogButtonBox, QListWidgetItem, QInputDialog, QDialog
 
-from qgis.core import QgsMessageLog, QgsGeometry, QgsPointXY, QgsProject, QgsMapLayer, QgsCoordinateTransform, QgsProject
+from qgis.core import Qgis, QgsMessageLog, QgsGeometry, QgsPointXY, QgsProject, QgsMapLayer, QgsCoordinateTransform, QgsProject
 from qgis.gui import QgsRubberBand
 
 from VoGisProfilTool.ui.ui_vogisprofiltoolmain import Ui_VoGISProfilToolMain
@@ -111,7 +111,7 @@ class VoGISProfilToolMainDialog(QDialog):
         try:
             nodata = self.ui.IDC_tbNoDataExport.text()
             self.settings.nodata_value = int(nodata) if nodata != "" else None
-            QgsMessageLog.logMessage("Maindlg: nodata: {0}".format(self.settings.nodata_value), "VoGis")
+            QgsMessageLog.logMessage("Maindlg: nodata: {0}".format(self.settings.nodata_value), "VoGis", Qgis.Info)
 
             if self.settings.onlyHektoMode is True and self.settings.mapData.rasters.count() > 0:
                 self.settings.onlyHektoMode = False
@@ -139,8 +139,8 @@ class VoGISProfilToolMainDialog(QDialog):
                                         QApplication.translate("code", "Kein Raster selektiert!"))
                     return
 
-            QgsMessageLog.logMessage("modeLine!=line: {0}".format(self.settings.modeLine != enumModeLine.line), "VoGis")
-            QgsMessageLog.logMessage("customLine is None: {0}".format(self.settings.mapData.customLine is None), "VoGis")
+            QgsMessageLog.logMessage("modeLine!=line: {0}".format(self.settings.modeLine != enumModeLine.line), "VoGis", Qgis.Info)
+            QgsMessageLog.logMessage("customLine is None: {0}".format(self.settings.mapData.customLine is None), "VoGis", Qgis.Info)
 
             if self.settings.modeLine != enumModeLine.line and self.settings.mapData.customLine is None:
                 QMessageBox.warning(self.iface.mainWindow(),
@@ -190,7 +190,7 @@ class VoGISProfilToolMainDialog(QDialog):
 
         #QGIS 2.0 http://gis.stackexchange.com/a/58754 http://gis.stackexchange.com/a/57090
         self.iface.mainWindow().statusBar().showMessage("VoGIS-Profiltool, {0} Profile".format(len(profiles)))
-        QgsMessageLog.logMessage("Profile Count: {0}".format(len(profiles)), "VoGis")
+        QgsMessageLog.logMessage("Profile Count: {0}".format(len(profiles)), "VoGis", Qgis.Info)
 
         if len(profiles) < 1:
             QApplication.restoreOverrideCursor()
@@ -205,7 +205,7 @@ class VoGISProfilToolMainDialog(QDialog):
 
     def profiles_error(self, exception_string):
         QApplication.restoreOverrideCursor()
-        QgsMessageLog.logMessage("Error during profile creation: {0}".format(exception_string), "VoGis")
+        QgsMessageLog.logMessage("Error during profile creation: {0}".format(exception_string), "VoGis", Qgis.Critical)
         QMessageBox.critical(self.iface.mainWindow(), "VoGIS-Profiltool", exception_string)
 
     def profiles_progress(self, msg):

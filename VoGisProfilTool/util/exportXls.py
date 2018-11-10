@@ -3,7 +3,7 @@
 import VoGisProfilTool.util.xlsxwriter as xlsxwriter
 
 from qgis.PyQt.QtWidgets import QApplication
-from qgis.core import QgsMessageLog
+from qgis.core import Qgis, QgsMessageLog
 
 
 class ExportXls:
@@ -44,7 +44,7 @@ class ExportXls:
             worksheet_1.write(row, col, kopfspalte, format_center)
 
             spalten_name_profil_nr = QApplication.translate('code', 'Profilnummer')
-            QgsMessageLog.logMessage(u'spalten_name_profil_nr: {0}'.format(spalten_name_profil_nr), 'VoGis')
+            QgsMessageLog.logMessage(u'spalten_name_profil_nr: {0}'.format(spalten_name_profil_nr), 'VoGis', Qgis.Info)
 
             if (kopfspalte == spalten_name_profil_nr):
                 profilspalte = col

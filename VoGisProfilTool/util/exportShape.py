@@ -5,7 +5,7 @@ from osgeo import ogr
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtWidgets import QMessageBox
 
-from qgis.core import QgsMessageLog, QgsVectorFileWriter, QgsField
+from qgis.core import Qgis, QgsMessageLog, QgsVectorFileWriter, QgsField
 #from qgis.core import QgsGeometry
 #from qgis.core import QgsFeature
 
@@ -51,7 +51,7 @@ class ExportShape:
 
         #raster
         for r in self.settings.mapData.rasters.selectedRasters():
-            #QgsMessageLog.logMessage('rasterName: {0}'.format(r.name), 'VoGis')
+            #QgsMessageLog.logMessage('rasterName: {0}'.format(r.name), 'VoGis', Qgis.Info)
             fldDfn = ogr.FieldDefn(r.name, ogr.OFTReal)
             fldDfn.SetWidth(8)
             fldDfn.SetPrecision(2)
@@ -75,15 +75,15 @@ class ExportShape:
             return
 
         if self.hekto is True:
-            QgsMessageLog.logMessage('Creating HEKTO field', 'VoGis')
+            QgsMessageLog.logMessage('Creating HEKTO field', 'VoGis', Qgis.Info)
             fldDfn = ogr.FieldDefn('Hekto', ogr.OFTString)
             fldDfn.SetWidth(10)
             if lyr.CreateField(fldDfn) != 0:
-                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format('Hekto'))
+                QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format('Hekto'), Qgis.Critical)
                 return
 
         if self.attribs is True:
-            #QgsMessageLog.logMessage('EXPORT POINT attribs TRUE', 'VoGis')
+            #QgsMessageLog.logMessage('EXPORT POINT attribs TRUE', 'VoGis', Qgis.Info)
             if self.settings.modeLine == enumModeLine.line:
                 provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
                 for fld in provider.fields():
@@ -99,7 +99,7 @@ class ExportShape:
                         QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
                         return
         else:
-            QgsMessageLog.logMessage('attribs FALSE', 'VoGis')
+            QgsMessageLog.logMessage('attribs FALSE', 'VoGis', Qgis.Info)
 
         segOld = None
         for p in self.profiles:
@@ -158,12 +158,12 @@ class ExportShape:
         feat.SetField(fldCnt, v.getType())
         fldCnt += 1
         if self.hekto is True:
-            #QgsMessageLog.logMessage('fldIdx:{0} {1}'.format(fldCnt, v.getHekto(self.decimalDelimiter)), 'VoGis')
+            #QgsMessageLog.logMessage('fldIdx:{0} {1}'.format(fldCnt, v.getHekto(self.decimalDelimiter)), 'VoGis', Qgis.Info)
             #feat.SetField(fldCnt, 'HEKTO')
             feat.SetField(fldCnt, str(v.getHekto(self.decimalDelimiter)))
             fldCnt += 1
         if self.attribs is True:
-            #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
+            #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis', Qgis.Info)
             if self.settings.modeLine == enumModeLine.line:
                 for a in v.getAttributeVals():
                     feat.SetField(fldCnt, a)
@@ -196,7 +196,7 @@ class ExportShape:
             return
 
         if self.attribs is True:
-            QgsMessageLog.logMessage('EXPORT LINE attribs TRUE', 'VoGis')
+            QgsMessageLog.logMessage('EXPORT LINE attribs TRUE', 'VoGis', Qgis.Info)
             if self.settings.modeLine == enumModeLine.line:
                 provider = self.settings.mapData.selectedLineLyr.line.dataProvider()
                 for fld in provider.fields():
@@ -212,7 +212,7 @@ class ExportShape:
                         QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", 'Konnte Attribut nicht erstellen: {0}'.format(fld.name()))
                         return
         else:
-            QgsMessageLog.logMessage('attribs FALSE', 'VoGis')
+            QgsMessageLog.logMessage('attribs FALSE', 'VoGis', Qgis.Info)
 
         if self.settings.onlyHektoMode is True:
             for p in self.profiles:
@@ -227,7 +227,7 @@ class ExportShape:
                 feat.SetField(0, lastV.distanceProfile)
                 fldCnt = 1
                 if self.attribs is True:
-                    #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
+                    #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis', Qgis.Info)
                     if self.settings.modeLine == enumModeLine.line:
                         for a in v.getAttributeVals():
                             feat.SetField(fldCnt, a)
@@ -255,7 +255,7 @@ class ExportShape:
                         v = s.vertices[idxV]
                         for idx in range(len(selRstrs)):
                             lastV[idx] = v
-                            #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[idx]), 'VoGis')
+                            #QgsMessageLog.logMessage('zVal: {0}'.format(v.zvals[idx]), 'VoGis', Qgis.Info)
                             if v.zvals[idx] is None:
                                 lineGeoms[idx].AddPoint(v.x, v.y)
                             else:
@@ -265,7 +265,7 @@ class ExportShape:
                     feats[idx].SetField(1, selRstrs[idx].name)
                     fldCnt = 2
                     if self.attribs is True:
-                        #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis')
+                        #QgsMessageLog.logMessage('modeLine:{0}'.format(self.settings.modeLine), 'VoGis', Qgis.Info)
                         if self.settings.modeLine == enumModeLine.line:
                             for a in v.getAttributeVals():
                                 feats[idx].SetField(fldCnt, a)

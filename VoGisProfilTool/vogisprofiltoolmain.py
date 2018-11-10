@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import QLocale, QTranslator
 from qgis.PyQt.QtWidgets import QApplication, QAction, QMessageBox
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsSettings, QgsMessageLog, QgsMapLayer, QgsProject, QgsWkbTypes
+from qgis.core import Qgis, QgsSettings, QgsMessageLog, QgsMapLayer, QgsProject, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
 from VoGisProfilTool.vogisprofiltoolmaindialog import VoGISProfilToolMainDialog
@@ -55,7 +55,7 @@ class VoGISProfilToolMain:
         else:
             locale = QgsSettings().value("locale/userLocale", "")
 
-        QgsMessageLog.logMessage("Locale: {}".format(locale), "VoGis")
+        QgsMessageLog.logMessage("Locale: {}".format(locale), "VoGis", Qgis.Info)
         qmPath = "{}/i18n/vogisprofiltoolmain_{}.qm".format(pluginPath, locale)
 
         if locale != 'de' and not os.path.exists(qmPath):
@@ -85,9 +85,9 @@ class VoGISProfilToolMain:
     # run method that performs all the real work
     def run(self):
         is_open = QgsSettings().value("vogisprofiltoolmain/isopen", False, bool)
-        QgsMessageLog.logMessage("Is open: {0}".format(is_open), "VoGis")
+        QgsMessageLog.logMessage("Is open: {0}".format(is_open), "VoGis", Qgis.Info)
         if is_open:
-            QgsMessageLog.logMessage(u"Dialog already opened", "VoGis")
+            QgsMessageLog.logMessage(u"Dialog already opened", "VoGis", Qgis.Info)
             return
 
         try:
@@ -158,7 +158,7 @@ class VoGISProfilToolMain:
                         poly_coll.addPolygon(new_poly)
                 elif lyr_type == QgsMapLayer.RasterLayer:
                     #Raster
-                    QgsMessageLog.logMessage("[{0}] provider type: {1}".format(lyr_name, mapLayer.providerType()), "VoGis")
+                    QgsMessageLog.logMessage("[{0}] provider type: {1}".format(lyr_name, mapLayer.providerType()), "VoGis", Qgis.Info)
                     if mapLayer.providerType() == "gdal":
                         if mapLayer.bandCount() < 2:
                             new_raster = Raster(mapLayer.id(), lyr_name, mapLayer)

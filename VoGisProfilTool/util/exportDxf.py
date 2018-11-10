@@ -40,7 +40,7 @@ class ExportDxf:
             for p in self.profiles:
                 for s in p.segments:
                     for v in s.vertices:
-                        #QgsMessageLog.logMessage("rasterName: {0}".format(selRstrs[idx].name), "VoGis")
+                        #QgsMessageLog.logMessage("rasterName: {0}".format(selRstrs[idx].name), "VoGis", Qgis.Info)
                         feat = ogr.Feature(lyr.GetLayerDefn())
                         #feat.SetField("Layer", selRstrs[idx].name)
                         pt = ogr.Geometry(ogr.wkbPoint25D)
@@ -59,7 +59,7 @@ class ExportDxf:
                 for s in p.segments:
                     for v in s.vertices:
                         for idx in range(len(selRstrs)):
-                            #QgsMessageLog.logMessage("rasterName: {0}".format(selRstrs[idx].name), "VoGis")
+                            #QgsMessageLog.logMessage("rasterName: {0}".format(selRstrs[idx].name), "VoGis", Qgis.Info)
                             feat = ogr.Feature(lyr.GetLayerDefn())
                             feat.SetField("Layer", selRstrs[idx].name)
                             pt = ogr.Geometry(ogr.wkbPoint25D)
@@ -127,7 +127,7 @@ class ExportDxf:
                     for idxV in range(len(s.vertices)):
                         v = s.vertices[idxV]
                         for idx in range(len(selRstrs)):
-                            #QgsMessageLog.logMessage("zVal: {0}".format(v.zvals[idx]), "VoGis")
+                            #QgsMessageLog.logMessage("zVal: {0}".format(v.zvals[idx]), "VoGis", Qgis.Info)
                             if v.zvals[idx] is None:
                                 lineGeoms[idx].AddPoint(v.x, v.y)
                             else:

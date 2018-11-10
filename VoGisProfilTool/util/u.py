@@ -8,7 +8,7 @@ from osgeo import osr
 
 from qgis.PyQt.QtWidgets import QApplication, QFileDialog, QMessageBox
 
-from qgis.core import QgsVectorFileWriter, QgsPointXY, QgsGeometry, QgsFeature, QgsMessageLog, QgsWkbTypes
+from qgis.core import Qgis, QgsVectorFileWriter, QgsPointXY, QgsGeometry, QgsFeature, QgsMessageLog, QgsWkbTypes
 
 from VoGisProfilTool.bo.node import Node
 from VoGisProfilTool.bo.linkedList import LinkedList
@@ -74,18 +74,18 @@ class Util:
                                            filePath,
                                            ";;".join(filters)
                                            )
-        QgsMessageLog.logMessage("selectedFilter: {0}".format(selectedFilter), "VoGis")
+        QgsMessageLog.logMessage("selectedFilter: {0}".format(selectedFilter), "VoGis", Qgis.Info)
 
-        #QgsMessageLog.logMessage("{0}".format(fileName), "VoGis")
+        #QgsMessageLog.logMessage("{0}".format(fileName), "VoGis", Qgis.Info)
         if fileName is None or fileName == "":
             return "", ""
 
-        QgsMessageLog.logMessage("fileDlg.filters(): {0}".format(fileDlg.nameFilters()), "VoGis")
+        QgsMessageLog.logMessage("fileDlg.filters(): {0}".format(fileDlg.nameFilters()), "VoGis", Qgis.Info)
         selectedFilter = fileDlg.nameFilters().index(selectedFilter)
         fileExt = filter[selectedFilter][1]
 
-        QgsMessageLog.logMessage("selectedFilter: {0}".format(selectedFilter), "VoGis")
-        QgsMessageLog.logMessage("fileExt: {0}".format(fileExt), "VoGis")
+        QgsMessageLog.logMessage("selectedFilter: {0}".format(selectedFilter), "VoGis", Qgis.Info)
+        QgsMessageLog.logMessage("fileExt: {0}".format(fileExt), "VoGis", Qgis.Info)
 
         if fileName.lower().endswith(fileExt) is False:
             fileName = fileName + "." + fileExt
@@ -133,7 +133,7 @@ class Util:
 
         if settings.linesMerge is True:
             if len(feats) > 500:
-                QgsMessageLog.logMessage("+500 features: merging not possible", "VoGis")
+                QgsMessageLog.logMessage("+500 features: merging not possible", "VoGis", Qgis.Critical)
             else:
                 feats = self.__mergeFeaturesAny(feats)
                 #self.__printAttribs(feats[0].attributeMap())
@@ -147,17 +147,17 @@ class Util:
         return feats, None
 
     def valid(self, feats):
-        #QgsMessageLog.logMessage("check feat valid", "VoGis")
+        #QgsMessageLog.logMessage("check feat valid", "VoGis", Qgis.Info)
         err_cnt = 0
         for feat in feats:
-            #QgsMessageLog.logMessage("feat", "VoGis")
+            #QgsMessageLog.logMessage("feat", "VoGis", Qgis.Info)
             #if feat.isValid() is False:
             #    return [], "Vector input not valid!\nPlease check using the check validity tool."
             #geom = QgsGeometry(feat.geometry())
             geom = feat.geometry()
             if geom.isEmpty():
                 err_cnt +=1
-                QgsMessageLog.logMessage("$id [{0}] Empty geometry".format(feat.id()), "VoGis")
+                QgsMessageLog.logMessage("$id [{0}] Empty geometry".format(feat.id()), "VoGis", Qgis.Warning)
             else:
                 errors = geom.validateGeometry()
                 if len(errors) > 0:
@@ -165,7 +165,7 @@ class Util:
                         continue
                     for err in errors:
                         err_cnt += 1
-                        QgsMessageLog.logMessage("$id [{0}] {1}".format(feat.id(), err.what()), "VoGis")
+                        QgsMessageLog.logMessage("$id [{0}] {1}".format(feat.id(), err.what()), "VoGis", Qgis.Critical)
         return (1 > err_cnt)
 
     def __mergeFeaturesAny(self, origFeats):
@@ -184,18 +184,18 @@ class Util:
             ll.addNode(n)
 
         #for n in ll.nodes:
-        #    QgsMessageLog.logMessage("{0}".format(n.toString()), "VoGis")
+        #    QgsMessageLog.logMessage("{0}".format(n.toString()), "VoGis", Qgis.Info)
 
         newFeats = []
         orderedIds = ll.getOrderedIds()
-        #QgsMessageLog.logMessage("{0}".format(orderedIds), "VoGis")
+        #QgsMessageLog.logMessage("{0}".format(orderedIds), "VoGis", Qgis.Info)
         for idx in orderedIds:
             newFeats.append(origFeats[idx])
 
         tmpFeats = []
         for feat in newFeats:
             if feat.geometry().isEmpty() is True:
-                QgsMessageLog.logMessage("dropping empty geometry", "VoGis")
+                QgsMessageLog.logMessage("dropping empty geometry", "VoGis", Qgis.Warning)
                 continue
             else:
                 tmpFeats.append(feat)
@@ -205,7 +205,7 @@ class Util:
 
     def __mergeFeaturesSimple(self, provider, origFeats):
         newFeats = []
-        QgsMessageLog.logMessage("---- Merge Simple: {0} features".format(len(origFeats)), "VoGis")
+        QgsMessageLog.logMessage("---- Merge Simple: {0} features".format(len(origFeats)), "VoGis", Qgis.Info)
 
         if len(origFeats) < 1:
             return []
@@ -215,23 +215,23 @@ class Util:
         newGeom = QgsGeometry().fromPolylineXY([])
         attrMap = None
         #newGeom = QgsGeometry.fromPolyline([QgsPoint(1, 1), QgsPoint(2, 2)])
-        #QgsMessageLog.logMessage("newGeom WKB Type {0}".format(newGeom.wkbType() == QGis.WKBLineString), "VoGis")
+        #QgsMessageLog.logMessage("newGeom WKB Type {0}".format(newGeom.wkbType() == QGis.WKBLineString), "VoGis", Qgis.Info)
         for feat in origFeats:
-            #QgsMessageLog.logMessage("{0}:{1}".format("ORIG FEAT AttributeMap", self.__printAttribs(feat.attributeMap())), "VoGis")
+            #QgsMessageLog.logMessage("{0}:{1}".format("ORIG FEAT AttributeMap", self.__printAttribs(feat.attributeMap())), "VoGis", Qgis.Info)
             #self.__printAttribs(feat.attributeMap())
             currentGeom = feat.geometry()
             currentPnts = currentGeom.asPolyline()
             if prevToPnt is None:
-                #QgsMessageLog.logMessage("combining FIRST {0}".format(currentGeom.asPolyline()), "VoGis")
+                #QgsMessageLog.logMessage("combining FIRST {0}".format(currentGeom.asPolyline()), "VoGis", Qgis.Info)
                 newGeom = newGeom.combine(currentGeom)
                 attrMap = feat.attributes()
             else:
                 if currentPnts[0] == prevToPnt:
-                    #QgsMessageLog.logMessage("combining {0}".format(currentGeom.asPolyline()), "VoGis")
+                    #QgsMessageLog.logMessage("combining {0}".format(currentGeom.asPolyline()), "VoGis", Qgis.Info)
                     newGeom = newGeom.combine(currentGeom)
                     attrMap = feat.attributes();
                 else:
-                    #QgsMessageLog.logMessage("creating {0}".format(newGeom.asPolyline()), "VoGis")
+                    #QgsMessageLog.logMessage("creating {0}".format(newGeom.asPolyline()), "VoGis", Qgis.Info)
                     featNew = self.createQgLineFeature(newGeom.asPolyline())
                     featNew = self.__transferAttributes(provider, attrMap, featNew)
                     newFeats.append(featNew)
@@ -251,20 +251,20 @@ class Util:
         tmpFeats = []
         for feat in newFeats:
             if feat.geometry().isEmpty() is True:
-                QgsMessageLog.logMessage("dropping empty geometry", "VoGis")
+                QgsMessageLog.logMessage("dropping empty geometry", "VoGis", Qgis.Warning)
                 continue
             else:
                 tmpFeats.append(feat)
         newFeats = tmpFeats
 
-        QgsMessageLog.logMessage("---- {0} features after Merge Simple".format(len(newFeats)), "VoGis")
+        QgsMessageLog.logMessage("---- {0} features after Merge Simple".format(len(newFeats)), "VoGis", Qgis.Info)
 
         #for idx, f in enumerate(newFeats):
-        #    QgsMessageLog.logMessage("--------feature {0}---------".format(idx), "VoGis")
+        #    QgsMessageLog.logMessage("--------feature {0}---------".format(idx), "VoGis", Qgis.Info)
         #    geo = f.geometry()
         #    pnts = geo.asPolyline()
         #    for i, v in enumerate(pnts):
-        #        QgsMessageLog.logMessage("   pnt {0}: {1}/{2}".format(i, v.x(), v.y()), "VoGis")
+        #        QgsMessageLog.logMessage("   pnt {0}: {1}/{2}".format(i, v.x(), v.y()), "VoGis", Qgis.Info)
 
         return newFeats
 
@@ -276,18 +276,18 @@ class Util:
 
     def __explodeMultiPartFeatures(self, provider, origFeats):
         newFeats = []
-        QgsMessageLog.logMessage("exploding {0} features".format(len(origFeats)), "VoGis")
+        QgsMessageLog.logMessage("exploding {0} features".format(len(origFeats)), "VoGis", Qgis.Info)
 
         for feat in origFeats:
             geom = feat.geometry()
             if geom.isMultipart():
-                #QgsMessageLog.logMessage("FId[{0}]: {1}".format(feat.id(), "multipart feature!"), "VoGis")
+                #QgsMessageLog.logMessage("FId[{0}]: {1}".format(feat.id(), "multipart feature!"), "VoGis", Qgis.Info)
                 newFeats.extend(self.explodeMultiPartFeature(provider, feat))
             else:
-                #QgsMessageLog.logMessage("FId[{0}]: {1}".format(feat.id(), "single part feature"), "VoGis")
+                #QgsMessageLog.logMessage("FId[{0}]: {1}".format(feat.id(), "single part feature"), "VoGis", Qgis.Info)
                 newFeats.append(feat)
 
-        QgsMessageLog.logMessage("{0} features after exploding".format(len(newFeats)), "VoGis")
+        QgsMessageLog.logMessage("{0} features after exploding".format(len(newFeats)), "VoGis", Qgis.Info)
         return newFeats
 
     #https://github.com/SrNetoChan/MultipartSplit/blob/master/splitmultipart.py
@@ -318,8 +318,8 @@ class Util:
         return newFeats
 
     def __transferAttributes(self, provider, attrMap, featNew):
-        #QgsMessageLog.logMessage("{0}: {1}".format("__transferAttributes OLD", self.__printAttribs(attrMap)), "VoGis")
-        #QgsMessageLog.logMessage("{0}: {1}".format("__transferAttributes NEW", self.__printAttribs(featNew.attributeMap())), "VoGis")
+        #QgsMessageLog.logMessage("{0}: {1}".format("__transferAttributes OLD", self.__printAttribs(attrMap)), "VoGis", Qgis.Info)
+        #QgsMessageLog.logMessage("{0}: {1}".format("__transferAttributes NEW", self.__printAttribs(featNew.attributeMap())), "VoGis", Qgis.Info)
 
         newAttribs = attrMap
         for j in range(newAttribs.__len__()):
@@ -327,7 +327,7 @@ class Util:
                 newAttribs[j] = provider.defaultValue(j)
         featNew.setAttributes(newAttribs)
 
-        #QgsMessageLog.logMessage("{0}: {1}".format("__transferAttributes NEW2", self.__printAttribs(featNew.attributeMap())), "VoGis")
+        #QgsMessageLog.logMessage("{0}: {1}".format("__transferAttributes NEW2", self.__printAttribs(featNew.attributeMap())), "VoGis", Qgis.Info)
         return featNew
 
     def deleteVectorFile(self, fileName):
@@ -399,7 +399,7 @@ class Util:
         return ds, lyr
 
     def createOgrPointFeature(self, lyr, v):
-        #QgsMessageLog.logMessage("zVal: {0}".format(v.zvals[0]), "VoGis")
+        #QgsMessageLog.logMessage("zVal: {0}".format(v.zvals[0]), "VoGis", Qgis.Info)
         feat = ogr.Feature(lyr.GetLayerDefn())
         pt = ogr.Geometry(ogr.wkbPoint25D)
         z = 0

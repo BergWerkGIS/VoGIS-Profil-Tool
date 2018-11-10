@@ -30,7 +30,7 @@ class Profile:
                         ymin = z
                     if ymax < z:
                         ymax = z
-                    #QgsMessageLog.logMessage('z:{0} ymin:{1} ymax:{2}'.format(z, ymin, ymax), 'VoGis')
+                    #QgsMessageLog.logMessage('z:{0} ymin:{1} ymax:{2}'.format(z, ymin, ymax), 'VoGis', Qgis.Info)
         return PlotExtent(xmin, ymin, xmax, ymax)
 
     def getPlotSegments(self):
@@ -38,7 +38,7 @@ class Profile:
         # pltSegs = []
         # for s in self.segments:
         #     for v in s.vertices:
-        #         #QgsMessageLog.logMessage('zvals: {0}'.format(v.zvals), 'VoGis')
+        #         #QgsMessageLog.logMessage('zvals: {0}'.format(v.zvals), 'VoGis', Qgis.Info)
         #         x.append(v.distanceProfile)
         #         pltSegs.append(list(zip(itertools.repeat(v.distanceProfile, len(v.zvals)), v.zvals)))
         # return x, pltSegs

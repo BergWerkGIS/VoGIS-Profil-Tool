@@ -132,12 +132,12 @@ class CreateProfile(QObject):
             self.finished.emit([], [], [])
 
     def processFeature(self, fields, profileId, layerId, feat):
-        #QgsMessageLog.logMessage('processFeature', 'VoGis')
+        #QgsMessageLog.logMessage('processFeature', 'VoGis', Qgis.Info)
         geom = feat.geometry()
         segments = self.processVertices(fields, feat.attributes(), profileId, geom, layerId, feat.id())
 
         #intersection with area
-        #QgsMessageLog.logMessage(u'{0}'.format(dir(feat)), 'VoGis')
+        #QgsMessageLog.logMessage(u'{0}'.format(dir(feat)), 'VoGis', Qgis.Info)
         line_geom = feat.geometry()
         if not self.settings.mapData.polygons is None:
             polys = self.settings.mapData.polygons.polygons()
@@ -217,7 +217,7 @@ class CreateProfile(QObject):
         return shply_line.project(shply_pnt)
 
     def processVertices(self, fields, attribMap, profileId, qgGeom, layerId, featId):
-        #QgsMessageLog.logMessage('{0}: {1}'.format('processFeature',attribMap), 'VoGis')
+        #QgsMessageLog.logMessage('{0}: {1}'.format('processFeature',attribMap), 'VoGis', Qgis.Info)
         step = -1
         segment_counter = 1
         segments = []
@@ -263,7 +263,7 @@ class CreateProfile(QObject):
                         )
         segmentvertices.append(new_vtx)
 
-        #QgsMessageLog.logMessage('GeomLength:' + str(shply_geom.length), 'VoGis')
+        #QgsMessageLog.logMessage('GeomLength:' + str(shply_geom.length), 'VoGis', Qgis.Info)
 
         while dist_total < shply_geom.length:
             dist_segment += step
@@ -389,7 +389,7 @@ class CreateProfile(QObject):
             #TODO!!!! QGIS BUG: QGIS 2.0.1: raster.noDataValue() = > AttributeError: 'QgsRasterLayer' object has no attribute 'noDataValue'
             raster_val = self.settings.nodata_value
 
-            #QgsMessageLog.logMessage('raster_val VOR identify:' + str(raster_val), 'VoGis')
+            #QgsMessageLog.logMessage('raster_val VOR identify:' + str(raster_val), 'VoGis', Qgis.Info)
 
             #check if coordinate systems match
             if self.settings.modeLine == enumModeLine.line:
@@ -403,10 +403,10 @@ class CreateProfile(QObject):
                                                        raster.crs(), QgsProject.instance())
                     p = transform.transform(pnt)
 
-            #QgsMessageLog.logMessage(str(pnt), 'VoGis')
+            #QgsMessageLog.logMessage(str(pnt), 'VoGis', Qgis.Info)
 
             identify_result = raster.dataProvider().identify(p, QgsRaster.IdentifyFormatValue)
-            #QgsMessageLog.logMessage(u'identify_result: {0}'.format(identify_result.results()), 'VoGis')
+            #QgsMessageLog.logMessage(u'identify_result: {0}'.format(identify_result.results()), 'VoGis', Qgis.Info)
             for bnd_nr, pix_val in identify_result.results().items():
                 if 1 == bnd_nr:
                     try:
@@ -416,10 +416,10 @@ class CreateProfile(QObject):
                             raster_val = float(pix_val)
                     #except ValueError:
                     except:
-                        QgsMessageLog.logMessage('pix_val Exception: ' + str(pix_val), 'VoGis')
+                        QgsMessageLog.logMessage('pix_val Exception: ' + str(pix_val), 'VoGis', Qgis.Info)
                         raster_val = self.settings.nodata_value
 
-            #QgsMessageLog.logMessage('raster_val NACH identify:' + str(raster_val), 'VoGis')
+            #QgsMessageLog.logMessage('raster_val NACH identify:' + str(raster_val), 'VoGis', Qgis.Info)
 
             vals.append(raster_val)
 
