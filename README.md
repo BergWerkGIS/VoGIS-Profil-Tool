@@ -1,31 +1,39 @@
 # VoGIS-Profil-Tool
 
-One plugin working with QGIS 1.8 and 2.x.
+PlugIn for creating profile lines with QGIS >=3.4.
 
-## Developed for
+## Development funded by
 
-Amt der Vorarlberger Landesregierung
-
-Landesamt für Vermessung und Geoinformation
+Amt der Vorarlberger Landesregierung - Landesamt für Vermessung und Geoinformation
 
 http://vorarlberg.at/vorarlberg/bauen_wohnen/bauen/vermessung_geoinformation/start.htm
+
+# Known issues
+
+If you get an error message about shapely missing get it via
+
+```bash
+sudo apt-get install python3-shapely
+```
+
+
+# Download the ready-to-deploy PlugIn
+
+Download via 
+* QGIS Plugin Manager 
+* or GitHub https://github.com/BergWerkGIS/VoGIS-Profil-Tool/releases
 
 
 # Build from source
 
-```
-* git clone https://github.com/BergWerkGIS/VoGIS-Profil-Tool.git
-* cd ./VoGISProfilTool
+```bash
+* git clone git@github.com:BergWerkGIS/VoGIS-Profil-Tool.git
+* cd VoGIS-Profil-Tool/VoGisProfilTool
 * make clean #(clean temporary files)
 * make derase #(delete folder ~/.qgis/pyhton/plugins/VoGISProfilTool)
 * make deploy #(compile and deploy to ~/.qgis/pyhton/plugins/VoGISProfilTool)
 * make zip #(create plugin zip-file for deployment in local folder)
 ```
-
-# Download the ready-to-deploy PlugIn
-
-Download via QGIS Plugin Manager or directly from GitHub:
-https://github.com/BergWerkGIS/VoGIS-Profil-Tool/raw/master/VoGisProfilTool/VoGisProfilTool.zip
 
 # Description
 
@@ -42,12 +50,12 @@ Export to:
 * text
 * csv (optimized for MS Exel)
 * graphic (png, jpg, pdf)
+* graphic with defined scale and DPI
+* add profile line to layout
 
-![Alt text](/screenshots/maindialog.png)
-![Alt text](/screenshots/plotdialog.png)
+## Main Dialog
+![main dialog](/screenshots/maindialog.png)
 
-## Known issues
+## Plot Dialog
+![plot dialog](/screenshots/plotdialog.png)
 
-If you get an error message about missing shapely, just do
-
-`sudo apt-get install python3-shapely`.
