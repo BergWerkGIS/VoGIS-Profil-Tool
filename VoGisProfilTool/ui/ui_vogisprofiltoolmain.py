@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -26,13 +26,12 @@ class Ui_VoGISProfilToolMain(object):
         self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -251, 480, 808))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.IDC_widRaster = QtWidgets.QWidget(self.scrollAreaWidgetContents)
         self.IDC_widRaster.setEnabled(True)
         self.IDC_widRaster.setObjectName("IDC_widRaster")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.IDC_widRaster)
-        self.gridLayout_2.setContentsMargins(0, 2, 0, 2)
+        self.gridLayout_2.setContentsMargins(-1, 2, -1, 2)
         self.gridLayout_2.setVerticalSpacing(0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.IDC_grpRaster = QtWidgets.QGroupBox(self.IDC_widRaster)
@@ -61,7 +60,7 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_widProfilLinien = QtWidgets.QWidget(self.scrollAreaWidgetContents)
         self.IDC_widProfilLinien.setObjectName("IDC_widProfilLinien")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.IDC_widProfilLinien)
-        self.gridLayout_4.setContentsMargins(0, 2, 0, 2)
+        self.gridLayout_4.setContentsMargins(-1, 2, -1, 2)
         self.gridLayout_4.setVerticalSpacing(0)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.IDC_grpProfilLinien = QtWidgets.QGroupBox(self.IDC_widProfilLinien)
@@ -177,7 +176,7 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_widPolygonLayers = QtWidgets.QWidget(self.scrollAreaWidgetContents)
         self.IDC_widPolygonLayers.setObjectName("IDC_widPolygonLayers")
         self.gridLayout_10 = QtWidgets.QGridLayout(self.IDC_widPolygonLayers)
-        self.gridLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_10.setContentsMargins(-1, 0, -1, 0)
         self.gridLayout_10.setObjectName("gridLayout_10")
         self.IDC_grpIntersection = QtWidgets.QGroupBox(self.IDC_widPolygonLayers)
         self.IDC_grpIntersection.setObjectName("IDC_grpIntersection")
@@ -198,7 +197,7 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_widNoDataAndProgress = QtWidgets.QWidget(self.IDC_widPolygonLayers)
         self.IDC_widNoDataAndProgress.setObjectName("IDC_widNoDataAndProgress")
         self.gridLayout_9 = QtWidgets.QGridLayout(self.IDC_widNoDataAndProgress)
-        self.gridLayout_9.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_9.setContentsMargins(-1, 0, -1, 0)
         self.gridLayout_9.setObjectName("gridLayout_9")
         self.IDC_tbNoDataExport = QtWidgets.QLineEdit(self.IDC_widNoDataAndProgress)
         self.IDC_tbNoDataExport.setInputMask("")
@@ -229,7 +228,7 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_widVertices = QtWidgets.QWidget(VoGISProfilToolMain)
         self.IDC_widVertices.setObjectName("IDC_widVertices")
         self.gridLayout_6 = QtWidgets.QGridLayout(self.IDC_widVertices)
-        self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_6.setContentsMargins(-1, 0, -1, 0)
         self.gridLayout_6.setVerticalSpacing(0)
         self.gridLayout_6.setObjectName("gridLayout_6")
         self.verticalLayout_2.addWidget(self.IDC_widVertices)
