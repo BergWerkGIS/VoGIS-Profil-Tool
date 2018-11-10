@@ -25,7 +25,7 @@ email=wb@BergWerk-GIS.at
 # Uncomment the following line and add your changelog entries:
 changelog=
   3.0.1 - ??????:
-  * Updated for LTS 3.4
+  * Updated for LTR 3.4
   * French translation by @kikislater https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/14
   * English translation fix DHM -> DEM by @kannes https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/12/
   * Bugfix: DEM query point not assigned in case no coordinate transformation is necessary, by @jef-n, https://github.com/BergWerkGIS/VoGIS-Profil-Tool/commit/24a26eb3833a554686c44d17ab1d416ceb484254#r29595856

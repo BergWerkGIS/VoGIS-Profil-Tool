@@ -17,6 +17,8 @@
 # *                                                                         *
 # ***************************************************************************/
 
+
+
 # CONFIGURATION
 PLUGIN_UPLOAD = $(CURDIR)/plugin_upload.py
 
@@ -166,7 +168,7 @@ derase:
 # The zip target deploys the plugin and creates a zip file with the deployed
 # content. You can then upload the zip file on http://plugins.qgis.org
 zip: deploy dclean
-	rm -f $(PLUGINNAME).zip
+	rm -f $(CURDIR)/../$(PLUGINNAME).zip
 	cd $(HOME)/$(QGISPIDIR)/python/plugins; zip -9r $(CURDIR)/../$(PLUGINNAME).zip $(PLUGINNAME)
 
 # Create a zip package of the plugin named $(PLUGINNAME).zip.
