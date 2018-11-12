@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_VoGISProfilToolMain(object):
     def setupUi(self, VoGISProfilToolMain):
         VoGISProfilToolMain.setObjectName("VoGISProfilToolMain")
-        VoGISProfilToolMain.resize(500, 597)
+        VoGISProfilToolMain.resize(548, 938)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -23,7 +23,7 @@ class Ui_VoGISProfilToolMain(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, -251, 480, 808))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 526, 910))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName("verticalLayout")

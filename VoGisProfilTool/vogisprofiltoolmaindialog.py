@@ -386,11 +386,27 @@ class VoGISProfilToolMainDialog(QDialog):
         self.tool.deactivated.connect(self.__deactivateDigiTool)
 
     def __deactivateDigiTool(self):
-        self.tool.moved.disconnect(self.__moved)
-        self.tool.leftClicked.disconnect(self.__leftClicked)
-        self.tool.rightClicked.disconnect(self.__rightClicked)
-        self.tool.doubleClicked.disconnect(self.__doubleClicked)
-        self.iface.mainWindow().statusBar().showMessage("")
+        # TODO: how to check if not connected???
+        try:
+            self.tool.moved.disconnect(self.__moved)
+        except:
+            pass
+        try:
+            self.tool.leftClicked.disconnect(self.__leftClicked)
+        except:
+            pass
+        try:
+            self.tool.rightClicked.disconnect(self.__rightClicked)
+        except:
+            pass
+        try:
+            self.tool.doubleClicked.disconnect(self.__doubleClicked)
+        except:
+            pass
+        try:
+            self.iface.mainWindow().statusBar().showMessage("")
+        except:
+            pass
 
     def __moved(self, position):
         if len(self.pointsToDraw) > 0:
