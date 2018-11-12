@@ -371,11 +371,11 @@ class CreateProfile(QObject):
 
     def __getValsAtPoint(self, pnt):
         vals = []
+        rasterNodata = []
 
         for rObj in self.settings.mapData.rasters.selectedRasters():
             raster = rObj.grid
 
-            rasterNodata = []
             nodata = raster.dataProvider().sourceNoDataValue(1)
             if not math.isnan(nodata):
                 rasterNodata.append(nodata)
@@ -392,6 +392,7 @@ class CreateProfile(QObject):
             #QgsMessageLog.logMessage('raster_val VOR identify:' + str(raster_val), 'VoGis', Qgis.Info)
 
             #check if coordinate systems match
+            p = None
             if self.settings.modeLine == enumModeLine.line:
                 if raster.crs() != self.settings.mapData.selectedLineLyr.line.crs():
                     transform = QgsCoordinateTransform(self.settings.mapData.selectedLineLyr.line.crs(),
