@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_VoGISProfilToolLayouts(object):
     def setupUi(self, VoGISProfilToolLayouts):
         VoGISProfilToolLayouts.setObjectName("VoGISProfilToolLayouts")
-        VoGISProfilToolLayouts.resize(298, 68)
+        VoGISProfilToolLayouts.resize(298, 76)
         self.gridLayout = QtWidgets.QGridLayout(VoGISProfilToolLayouts)
         self.gridLayout.setObjectName("gridLayout")
         self.label = QtWidgets.QLabel(VoGISProfilToolLayouts)

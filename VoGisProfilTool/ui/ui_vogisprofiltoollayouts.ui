@@ -7,17 +7,17 @@
     <x>0</x>
     <y>0</y>
     <width>298</width>
-    <height>68</height>
+    <height>76</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select layout</string>
+   <string>Layout wählen</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Layout to use</string>
+      <string>Layout verwenden</string>
      </property>
     </widget>
    </item>

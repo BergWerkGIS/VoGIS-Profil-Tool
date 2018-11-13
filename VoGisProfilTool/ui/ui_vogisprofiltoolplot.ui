@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>836</width>
+    <width>850</width>
     <height>472</height>
    </rect>
   </property>
@@ -214,7 +214,7 @@
      <item row="3" column="7">
       <widget class="QPushButton" name="btnAddLayout">
        <property name="text">
-        <string>Add to Layout</string>
+        <string>Zum Layout hinzufügen</string>
        </property>
       </widget>
      </item>

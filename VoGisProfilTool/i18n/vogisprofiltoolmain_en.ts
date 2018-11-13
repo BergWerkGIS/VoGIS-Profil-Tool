@@ -129,7 +129,7 @@
     <message>
         <location filename="../ui/ui_vogisprofiltoolmain.py" line="253"/>
         <source>Im aktuellen Extent sichtbare Raster auswählen</source>
-        <translation>Select rasters visible within current extent</translation>
+        <translation>Select rasters visible in current extent</translation>
     </message>
     <message>
         <location filename="../ui/ui_vogisprofiltoolmain.py" line="259"/>
@@ -237,7 +237,7 @@
     <message>
         <location filename="../ui/ui_vogisprofiltoolplot.py" line="123"/>
         <source>Dezimalzeichen (für Text, csv):</source>
-        <translation>Decimal delimiter (for text, CSV):</translation>
+        <translation>Decimal delimiter (for text, CSV)</translation>
     </message>
     <message>
         <location filename="../ui/ui_vogisprofiltoolplot.py" line="134"/>
@@ -247,11 +247,6 @@
 </context>
 <context>
     <name>VoGISProfilToolScale</name>
-    <message>
-        <location filename="../ui/ui_vogisprofiltoolscale.py" line="55"/>
-        <source>Scale</source>
-        <translation>Maßstab</translation>
-    </message>
     <message>
         <location filename="../ui/ui_vogisprofiltoolscale.py" line="56"/>
         <source>1:500</source>
@@ -311,6 +306,11 @@
         <location filename="../ui/ui_vogisprofiltoolscale.py" line="54"/>
         <source>Speichern mit Maßstab/DPI</source>
         <translation>Save with scale/DPI</translation>
+    </message>
+    <message>
+        <location filename="../ui/ui_vogisprofiltoolscale.py" line="55"/>
+        <source>Maßstab</source>
+        <translation>Scale</translation>
     </message>
 </context>
 <context>
@@ -461,7 +461,7 @@
         <translation>Export Excel or CSV file</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolplot.py" line="847"/>
+        <location filename="../vogisprofiltoolplot.py" line="860"/>
         <source>PNG export</source>
         <translation>PNG export</translation>
     </message>
@@ -491,17 +491,17 @@
         <translation>Driver not available</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolplot.py" line="676"/>
+        <location filename="../vogisprofiltoolplot.py" line="689"/>
         <source>Keine Layouts</source>
         <translation>No layouts</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolplot.py" line="676"/>
+        <location filename="../vogisprofiltoolplot.py" line="689"/>
         <source>Zuerst ein Layout erstellen</source>
         <translation>Create a layout first</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolplot.py" line="691"/>
+        <location filename="../vogisprofiltoolplot.py" line="704"/>
         <source>PNG Datei</source>
         <translation>PNG file</translation>
     </message>

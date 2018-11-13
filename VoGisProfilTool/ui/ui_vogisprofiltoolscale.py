@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_VoGISProfilToolScale(object):
     def setupUi(self, VoGISProfilToolScale):
         VoGISProfilToolScale.setObjectName("VoGISProfilToolScale")
-        VoGISProfilToolScale.resize(184, 96)
+        VoGISProfilToolScale.resize(184, 105)
         self.gridLayout = QtWidgets.QGridLayout(VoGISProfilToolScale)
         self.gridLayout.setObjectName("gridLayout")
         self.label = QtWidgets.QLabel(VoGISProfilToolScale)
@@ -52,7 +52,7 @@ class Ui_VoGISProfilToolScale(object):
     def retranslateUi(self, VoGISProfilToolScale):
         _translate = QtCore.QCoreApplication.translate
         VoGISProfilToolScale.setWindowTitle(_translate("VoGISProfilToolScale", "Speichern mit Maßstab/DPI"))
-        self.label.setText(_translate("VoGISProfilToolScale", "Scale"))
+        self.label.setText(_translate("VoGISProfilToolScale", "Maßstab"))
         self.cmbScale.setItemText(0, _translate("VoGISProfilToolScale", "1:500"))
         self.cmbScale.setItemText(1, _translate("VoGISProfilToolScale", "1:1000"))
         self.cmbScale.setItemText(2, _translate("VoGISProfilToolScale", "1:2000"))
