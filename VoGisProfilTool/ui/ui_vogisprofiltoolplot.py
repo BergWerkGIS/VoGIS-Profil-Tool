@@ -131,5 +131,5 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_chkLineAttributes.setText(_translate("VoGISProfilToolPlot", "Linien Attribute"))
         self.IDC_bText.setText(_translate("VoGISProfilToolPlot", "Textdatei"))
         self.IDC_bExcel.setText(_translate("VoGISProfilToolPlot", "Excel / CSV"))
-        self.btnAddLayout.setText(_translate("VoGISProfilToolPlot", "Add to Layout"))
+        self.btnAddLayout.setText(_translate("VoGISProfilToolPlot", "Zum Layout hinzufügen"))
 

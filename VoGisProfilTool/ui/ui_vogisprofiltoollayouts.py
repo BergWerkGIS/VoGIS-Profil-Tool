@@ -33,6 +33,6 @@ class Ui_VoGISProfilToolLayouts(object):
 
     def retranslateUi(self, VoGISProfilToolLayouts):
         _translate = QtCore.QCoreApplication.translate
-        VoGISProfilToolLayouts.setWindowTitle(_translate("VoGISProfilToolLayouts", "Select layout"))
-        self.label.setText(_translate("VoGISProfilToolLayouts", "Layout to use"))
+        VoGISProfilToolLayouts.setWindowTitle(_translate("VoGISProfilToolLayouts", "Layout wählen"))
+        self.label.setText(_translate("VoGISProfilToolLayouts", "Layout verwenden"))
 

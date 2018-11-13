@@ -274,5 +274,5 @@ class Ui_VoGISProfilToolMain(object):
         self.IDC_tbNoDataExport.setText(_translate("VoGISProfilToolMain", "-9999"))
         self.label_5.setText(_translate("VoGISProfilToolMain", "Nodata (Export)"))
         self.IDC_lblCreateStatus.setText(_translate("VoGISProfilToolMain", "0/0"))
-        self.grpCadastre.setTitle(_translate("VoGISProfilToolMain", "Cadastre intersection"))
+        self.grpCadastre.setTitle(_translate("VoGISProfilToolMain", "Kataster Verschneidung"))
 

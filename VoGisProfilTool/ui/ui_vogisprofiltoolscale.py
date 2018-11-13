@@ -51,7 +51,7 @@ class Ui_VoGISProfilToolScale(object):
 
     def retranslateUi(self, VoGISProfilToolScale):
         _translate = QtCore.QCoreApplication.translate
-        VoGISProfilToolScale.setWindowTitle(_translate("VoGISProfilToolScale", "Save with scale/DPI"))
+        VoGISProfilToolScale.setWindowTitle(_translate("VoGISProfilToolScale", "Speichern mit Maßstab/DPI"))
         self.label.setText(_translate("VoGISProfilToolScale", "Scale"))
         self.cmbScale.setItemText(0, _translate("VoGISProfilToolScale", "1:500"))
         self.cmbScale.setItemText(1, _translate("VoGISProfilToolScale", "1:1000"))

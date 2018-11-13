@@ -153,7 +153,7 @@ class VoGISProfilToolPlotDialog(QDialog):
                 plt_toolbar.removeAction(a)
 
         self.actionSaveScale = QAction(QIcon(":/plugins/vogisprofiltoolmain/icons/save.png"),
-                                       QApplication.translate("code", "Save scale"),
+                                       QApplication.translate("code", "Maßstab speichern"),
                                        plt_toolbar)
         plt_toolbar.addAction(self.actionSaveScale)
         self.actionSaveScale.triggered.connect(self.saveScale)
@@ -674,8 +674,8 @@ class VoGISProfilToolPlotDialog(QDialog):
         layouts = mgr.layouts()
         if len(layouts) == 0:
             QMessageBox.warning(self,
-                                QApplication.translate("code", "No layouts"),
-                                QApplication.translate("code", "Please create a layout first."))
+                                QApplication.translate("code", "Keine Layouts"),
+                                QApplication.translate("code", "Zuerst ein Layout erstellen"))
             return
         elif len(layouts) == 1:
             layout = layouts[0]
@@ -688,7 +688,7 @@ class VoGISProfilToolPlotDialog(QDialog):
                 return
 
         u = Util(self.iface)
-        caption = QApplication.translate("code", "PNG image")
+        caption = QApplication.translate("code", "PNG Datei")
         file_format = []
         file_format.append(["PNG files", "png"])
         fileName, fileExt = u.getFileName(caption, file_format, QgsProject.instance().homePath())
