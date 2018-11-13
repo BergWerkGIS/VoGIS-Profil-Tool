@@ -441,7 +441,20 @@ class VoGISProfilToolPlotDialog(QDialog):
         self.__adjustAxes(1.0)
 
     def __adjustAxes(self, exaggeration):
-        exaggeration = floor(exaggeration * 10) / 10
+        # avoid rounding errors for exaggeration
+        exaggerationOrig = exaggeration
+        # one digit after the comma
+        exaggeration = floor(exaggerationOrig * 10) / 10
+        # two digits after the comma
+        if exaggeration == 0.0:
+            exaggeration = floor(exaggerationOrig * 100) / 100
+        # three digits after the comma
+        if exaggeration == 0.0:
+            exaggeration == floor(exaggerationOrig * 1000) / 1000
+        # if still 0 give up and reset to 1
+        if exaggeration == 0.0:
+            exaggeration = 1.0
+
         axes = self.plt_widget.figure.get_axes()[0]
         #axes.set_aspect(exaggeration)
         #axes.set_autoscalex_on(False)
