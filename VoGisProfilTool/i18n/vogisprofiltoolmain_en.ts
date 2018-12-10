@@ -124,7 +124,7 @@
     <message>
         <location filename="../ui/ui_vogisprofiltoolmain.py" line="252"/>
         <source>Rastermodell(e) auswählen</source>
-        <translation>Select raster(s)</translation>
+        <translation>Select rasters</translation>
     </message>
     <message>
         <location filename="../ui/ui_vogisprofiltoolmain.py" line="253"/>
@@ -134,17 +134,17 @@
     <message>
         <location filename="../ui/ui_vogisprofiltoolmain.py" line="259"/>
         <source>Profillinie(n) aus Linienthema übernehmen</source>
-        <translation>Use profile lines from line layer</translation>
+        <translation>Use profile line from line layer</translation>
     </message>
     <message>
         <location filename="../ui/ui_vogisprofiltoolmain.py" line="269"/>
         <source>Stützstellen festlegen</source>
-        <translation>Define sampling points</translation>
+        <translation>Define vertices</translation>
     </message>
     <message>
         <location filename="../ui/ui_vogisprofiltoolmain.py" line="272"/>
         <source>Profilpunkte erstellen an Knoten und Stützstellen</source>
-        <translation>Create profile points at vertices and at sampling points</translation>
+        <translation>Create profile points at nodes and vertices</translation>
     </message>
     <message>
         <location filename="../ui/ui_vogisprofiltoolmain.py" line="273"/>
@@ -237,7 +237,7 @@
     <message>
         <location filename="../ui/ui_vogisprofiltoolplot.py" line="123"/>
         <source>Dezimalzeichen (für Text, csv):</source>
-        <translation>Decimal delimiter (for text, CSV)</translation>
+        <translation>Decimal delimiter (Text, CSV):</translation>
     </message>
     <message>
         <location filename="../ui/ui_vogisprofiltoolplot.py" line="134"/>
@@ -316,47 +316,47 @@
 <context>
     <name>code</name>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="137"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="139"/>
         <source>Kein Raster selektiert!</source>
         <translation>No rasters selected!</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="121"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="123"/>
         <source>Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?</source>
         <translation>No (visible) raster layers! Create profile line attributes (hektometers) only?</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="146"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="148"/>
         <source>Keine Profillinie vorhanden!</source>
         <translation>No profile line!</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="197"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="199"/>
         <source>Es konnten keine Profile erstellt werden.</source>
         <translation>Could not create any profiles.</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="367"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="369"/>
         <source>Profillinie digitalisieren abgebrochen!</source>
         <translation>Digitizing has been canceled!</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="472"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="474"/>
         <source>Rechtswert von</source>
         <translation>X-Value from</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="476"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="478"/>
         <source>Hochwert von</source>
         <translation>Y-Value from</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="480"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="482"/>
         <source>Rechtswert nach</source>
         <translation>X-Value to</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="484"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="486"/>
         <source>Hochwert nach</source>
         <translation>Y-Value to</translation>
     </message>
@@ -466,7 +466,7 @@
         <translation>PNG export</translation>
     </message>
     <message>
-        <location filename="../vogisprofiltoolmaindialog.py" line="452"/>
+        <location filename="../vogisprofiltoolmaindialog.py" line="454"/>
         <source>Der gewÃ¤hlte Layer hat keine selektierten Elemente.</source>
         <translation>No selected features in selected Layer</translation>
     </message>
@@ -504,6 +504,16 @@
         <location filename="../vogisprofiltoolplot.py" line="704"/>
         <source>PNG Datei</source>
         <translation>PNG file</translation>
+    </message>
+    <message>
+        <location filename="../vogisprofiltoolmaindialog.py" line="54"/>
+        <source>Profil erstellen</source>
+        <translation>Create Profile</translation>
+    </message>
+    <message>
+        <location filename="../vogisprofiltoolmaindialog.py" line="55"/>
+        <source>Schließen</source>
+        <translation>Close</translation>
     </message>
     <message>
         <location filename="../vogisprofiltoolplot.py" line="155"/>

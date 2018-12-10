@@ -51,6 +51,8 @@ class VoGISProfilToolMainDialog(QDialog):
         # Set up the user interface from Designer.
         self.ui = Ui_VoGISProfilToolMain()
         self.ui.setupUi(self)
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setText(QApplication.translate("code", "Profil erstellen"))
+        self.ui.buttonBox.button(QDialogButtonBox.Cancel).setText(QApplication.translate("code", "Schließen"))
 
         self.ui.grpCadastre.toggled.connect(self._toggleCadastreLayer)
         self.ui.cmbCadastreLayer.currentIndexChanged.connect(self._updateCadastreLayer)
