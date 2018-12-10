@@ -14,7 +14,7 @@ qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 about=Create profiles from DEMs using vector geometries or a digitized line.
 description=Create profiles from DEMs using vector geometries or a digitized line.
-version=3.0.1
+version=3.0.2
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 
