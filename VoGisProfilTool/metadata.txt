@@ -52,7 +52,7 @@ repository=https://github.com/BergWerkGIS/VoGIS-Profil-Tool/
 icon=icons/icon.png
 category=Raster
 # experimental flag
-experimental=True
+#experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False
