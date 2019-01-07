@@ -24,13 +24,15 @@ email=wb@BergWerk-GIS.at
 
 # Uncomment the following line and add your changelog entries:
 changelog=
-  3.0.1 - ??????:
+  3.0.2 - 20190107:
+  * Fix translation errors
+  3.0.1 - 20181110 (internal testing):
   * Updated for LTR 3.4
   * French translation by @kikislater https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/14
   * English translation fix DHM -> DEM by @kannes https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/12/
   * Bugfix: DEM query point not assigned in case no coordinate transformation is necessary, by @jef-n, https://github.com/BergWerkGIS/VoGIS-Profil-Tool/commit/24a26eb3833a554686c44d17ab1d416ceb484254#r29595856
   * General development support by @alexbruy
-  2.99.1 - 20180125:
+  2.99.1 - 20180125 (internal testing):
   * Bugfix: error when entering an empty string into "Nodata (Export)"
   * Bugfix: consider different matplotlib versions
   * New: show cadastre in the profile chart as small vertical lines
