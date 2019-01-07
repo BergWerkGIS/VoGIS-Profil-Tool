@@ -1,8 +1,10 @@
 #from qgis.core import QgsMessageLog
-from plotExtent import PlotExtent
-#import itertools
-from PyQt4.QtGui import *
+
 import os
+#import itertools
+
+from qgis.PyQt.QtWidgets import QApplication
+from VoGisProfilTool.bo.plotExtent import PlotExtent
 
 
 class Profile:
@@ -22,11 +24,13 @@ class Profile:
                 if xmax < v.distanceProfile:
                     xmax = v.distanceProfile
                 for z in v.zvals:
+                    if z == v.nodata_value or z in v.raster_nodata:
+                        continue
                     if ymin > z:
                         ymin = z
                     if ymax < z:
                         ymax = z
-                    #QgsMessageLog.logMessage('z:{0} ymin:{1} ymax:{2}'.format(z, ymin, ymax), 'VoGis')
+                    #QgsMessageLog.logMessage('z:{0} ymin:{1} ymax:{2}'.format(z, ymin, ymax), 'VoGis', Qgis.Info)
         return PlotExtent(xmin, ymin, xmax, ymax)
 
     def getPlotSegments(self):
@@ -34,7 +38,7 @@ class Profile:
         # pltSegs = []
         # for s in self.segments:
         #     for v in s.vertices:
-        #         #QgsMessageLog.logMessage('zvals: {0}'.format(v.zvals), 'VoGis')
+        #         #QgsMessageLog.logMessage('zvals: {0}'.format(v.zvals), 'VoGis', Qgis.Info)
         #         x.append(v.distanceProfile)
         #         pltSegs.append(list(zip(itertools.repeat(v.distanceProfile, len(v.zvals)), v.zvals)))
         # return x, pltSegs
@@ -45,8 +49,11 @@ class Profile:
             pltSeg = []
             for s in self.segments:
                 for v in s.vertices:
+                    z = v.zvals[idx]
+                    if z == v.nodata_value or z in v.raster_nodata:
+                        z = None
                     #!!!double parentheses!!! -> tuples
-                    pltSeg.append((v.distanceProfile, v.zvals[idx]))
+                    pltSeg.append((v.distanceProfile, z))
             pltSegs.append(pltSeg)
         return pltSegs
 
@@ -56,14 +63,14 @@ class Profile:
         #Profilnummer;Segmentnummer;Punktnummer;Punktklasse;
         #Hektometer
         #ATTRIBUTE
-        hdr_prof_len = QApplication.translate('code', 'Profillaenge', None, QApplication.UnicodeUTF8)
-        hdr_seg_len = QApplication.translate('code', 'Segmentlaenge', None, QApplication.UnicodeUTF8)
-        hdr_xval = QApplication.translate('code', 'Rechtswert', None, QApplication.UnicodeUTF8)
-        hdr_yval = QApplication.translate('code', 'Hochwert', None, QApplication.UnicodeUTF8)
-        hdr_prof_nr = QApplication.translate('code', 'Profilnummer', None, QApplication.UnicodeUTF8)
-        hdr_seg_nr = QApplication.translate('code', 'Segmentnummer', None, QApplication.UnicodeUTF8)
-        hdr_pnt_nr = QApplication.translate('code', 'Punktnummer', None, QApplication.UnicodeUTF8)
-        hdr_pnt_class = QApplication.translate('code', 'Punktklasse', None, QApplication.UnicodeUTF8)
+        hdr_prof_len = QApplication.translate('code', 'Profillaenge')
+        hdr_seg_len = QApplication.translate('code', 'Segmentlaenge')
+        hdr_xval = QApplication.translate('code', 'Rechtswert')
+        hdr_yval = QApplication.translate('code', 'Hochwert')
+        hdr_prof_nr = QApplication.translate('code', 'Profilnummer')
+        hdr_seg_nr = QApplication.translate('code', 'Segmentnummer')
+        hdr_pnt_nr = QApplication.translate('code', 'Punktnummer')
+        hdr_pnt_class = QApplication.translate('code', 'Punktklasse')
         hdr = '{1}{0}{2}{0}{3}{0}{4}'.format(delimiter, hdr_prof_len, hdr_seg_len, hdr_xval, hdr_yval)
         for r in selectedRasters:
             hdr += '{0}"{1}"'.format(delimiter, r.name)
@@ -124,14 +131,14 @@ class Profile:
         #Profilnummer;Segmentnummer;Punktnummer;Punktklasse;
         #Hektometer
         #ATTRIBUTE
-        hdr_prof_len = QApplication.translate('code', 'Profillaenge', None, QApplication.UnicodeUTF8)
-        hdr_seg_len = QApplication.translate('code', 'Segmentlaenge', None, QApplication.UnicodeUTF8)
-        hdr_xval = QApplication.translate('code', 'Rechtswert', None, QApplication.UnicodeUTF8)
-        hdr_yval = QApplication.translate('code', 'Hochwert', None, QApplication.UnicodeUTF8)
-        hdr_prof_nr = QApplication.translate('code', 'Profilnummer', None, QApplication.UnicodeUTF8)
-        hdr_seg_nr = QApplication.translate('code', 'Segmentnummer', None, QApplication.UnicodeUTF8)
-        hdr_pnt_nr = QApplication.translate('code', 'Punktnummer', None, QApplication.UnicodeUTF8)
-        hdr_pnt_class = QApplication.translate('code', 'Punktklasse', None, QApplication.UnicodeUTF8)
+        hdr_prof_len = QApplication.translate('code', 'Profillaenge')
+        hdr_seg_len = QApplication.translate('code', 'Segmentlaenge')
+        hdr_xval = QApplication.translate('code', 'Rechtswert')
+        hdr_yval = QApplication.translate('code', 'Hochwert')
+        hdr_prof_nr = QApplication.translate('code', 'Profilnummer')
+        hdr_seg_nr = QApplication.translate('code', 'Segmentnummer')
+        hdr_pnt_nr = QApplication.translate('code', 'Punktnummer')
+        hdr_pnt_class = QApplication.translate('code', 'Punktklasse')
 
         hdr = []
         hdr.append(hdr_prof_len)
@@ -150,7 +157,6 @@ class Profile:
             for fldName in self.segments[0].vertices[0].attribNames:
                 hdr.append(fldName)
         return hdr
-
 
     def toACadTxt(self, delimiter, decimalDelimiter):
         acadTxt = ''

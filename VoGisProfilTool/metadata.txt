@@ -10,11 +10,11 @@
 
 [general]
 name=VoGIS-ProfilTool
-qgisMinimumVersion=1.8
-qgisMaximumVersion=2.99
-about=Create profiles from DHMs using vector geometries or a digitized line.
-description=Create profiles from DHMs using vector geometries or a digitized line.
-version=2.5.6
+qgisMinimumVersion=3.4
+qgisMaximumVersion=3.99
+about=Create profiles from DEMs using vector geometries or a digitized line.
+description=Create profiles from DEMs using vector geometries or a digitized line.
+version=3.0.2
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 
@@ -23,10 +23,28 @@ email=wb@BergWerk-GIS.at
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog=fix for matplotlib >= 1.5 by https://github.com/haubourg https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/7
+changelog=
+  3.0.2 - 20190107:
+  * Fix translation errors
+  3.0.1 - 20181110 (internal testing):
+  * Updated for LTR 3.4
+  * French translation by @kikislater https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/14
+  * English translation fix DHM -> DEM by @kannes https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/12/
+  * Bugfix: DEM query point not assigned in case no coordinate transformation is necessary, by @jef-n, https://github.com/BergWerkGIS/VoGIS-Profil-Tool/commit/24a26eb3833a554686c44d17ab1d416ceb484254#r29595856
+  * General development support by @alexbruy
+  2.99.1 - 20180125 (internal testing):
+  * Bugfix: error when entering an empty string into "Nodata (Export)"
+  * Bugfix: consider different matplotlib versions
+  * New: show cadastre in the profile chart as small vertical lines
+  * New: intermittent profile lines when outside of DEM
+  * New: insert profile chart into layout
+  * New: export profile chart to scale by defining scale and DPI
+  * New: support DEMs with different projections
+  2.99.0 - 20180110:
+  * initial port to 3.x
 
 # tags are comma separated with spaces allowed
-tags=raster, profile, profiles, vorarlberg, dxf, vogis, matplotlib, dhm, csv, equidistant
+tags=raster, profile, profiles, vorarlberg, dxf, vogis, matplotlib, dem, csv, equidistant
 
 homepage=https://github.com/BergWerkGIS/VoGIS-Profil-Tool/
 tracker=https://github.com/BergWerkGIS/VoGIS-Profil-Tool/issues
@@ -34,7 +52,7 @@ repository=https://github.com/BergWerkGIS/VoGIS-Profil-Tool/
 icon=icons/icon.png
 category=Raster
 # experimental flag
-experimental=False
+#experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False

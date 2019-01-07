@@ -19,103 +19,91 @@
  *                                                                         *
  ***************************************************************************/
 """
-import unicodedata
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-import resources_rc
-from vogisprofiltoolmaindialog import VoGISProfilToolMainDialog
-from bo.raster import Raster
-from bo.line import Line
-from bo.polygon import Polygon
-from bo.rasterCollection import RasterCollection
-from bo.lineCollection import LineCollection
-from bo.polygonCollection import PolygonCollection
-from bo.mapdata import MapData
-from bo.settings import Settings
+import os
+
+from qgis.PyQt.QtCore import QLocale, QTranslator
+from qgis.PyQt.QtWidgets import QApplication, QAction, QMessageBox
+from qgis.PyQt.QtGui import QIcon
+
+from qgis.core import Qgis, QgsSettings, QgsMessageLog, QgsMapLayer, QgsProject, QgsWkbTypes
+from qgis.gui import QgsMessageBar
+
+from VoGisProfilTool.vogisprofiltoolmaindialog import VoGISProfilToolMainDialog
+from VoGisProfilTool.bo.raster import Raster
+from VoGisProfilTool.bo.line import Line
+from VoGisProfilTool.bo.polygon import Polygon
+from VoGisProfilTool.bo.rasterCollection import RasterCollection
+from VoGisProfilTool.bo.lineCollection import LineCollection
+from VoGisProfilTool.bo.polygonCollection import PolygonCollection
+from VoGisProfilTool.bo.mapdata import MapData
+from VoGisProfilTool.bo.settings import Settings
+
+import VoGisProfilTool.resources_rc
+
+pluginPath = os.path.dirname(__file__)
 
 
 class VoGISProfilToolMain:
 
     def __init__(self, iface):
-        QSettings().setValue("vogisprofiltoolmain/isopen", False)
-        # Save reference to the QGIS interface
         self.iface = iface
-        # initialize plugin directory
-        self.plugin_dir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/VoGisProfilTool"
-        # initialize locale
-        localePath = ""
-        if QGis.QGIS_VERSION_INT < 10900:
-            loc = QSettings().value("locale/userLocale").toString()[0:2]
-        else:
-            loc = QSettings().value("locale/userLocale")[0:2]
-
-        QgsMessageLog.logMessage("locale: {0}".format(loc), 'VoGis')
-
-        if QFileInfo(self.plugin_dir).exists():
-            #QgsMessageLog.logMessage('plugin_dir exits', 'VoGis')
-            localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_" + loc + ".qm"
-
-        if loc != 'de' and not QFileInfo(localePath).exists():
-            localePath = self.plugin_dir + "/i18n/vogisprofiltoolmain_en.qm"
-
-        if QFileInfo(localePath).exists():
-            #QgsMessageLog.logMessage('localePath exits', 'VoGis')
-            self.translator = QTranslator()
-            self.translator.load(localePath)
-
-            if qVersion() > '4.3.3':
-                #QgsMessageLog.logMessage("qVersion() > '4.3.3'", 'VoGis')
-                QCoreApplication.installTranslator(self.translator)
-
         self.settings = None
+
+        overrideLocale = QgsSettings().value("locale/overrideFlag", False, bool)
+        if not overrideLocale:
+            locale = QLocale.system().name()[:2]
+        else:
+            locale = QgsSettings().value("locale/userLocale", "")
+
+        QgsMessageLog.logMessage("Locale: {}".format(locale), "VoGis", Qgis.Info)
+        qmPath = "{}/i18n/vogisprofiltoolmain_{}.qm".format(pluginPath, locale)
+
+        if locale != 'de' and not os.path.exists(qmPath):
+            qmPath = "{}/i18n/vogisprofiltoolmain_en.qm".format(pluginPath)
+
+        if os.path.exists(qmPath):
+            self.translator = QTranslator()
+            self.translator.load(qmPath)
+            QApplication.installTranslator(self.translator)
 
     def initGui(self):
         # Create action that will start plugin configuration
         self.action = QAction(
             QIcon(":/plugins/vogisprofiltoolmain/icons/icon.png"),
-            #QIcon(":/plugins/vogisprofiltoolmain/icons/home.png"),
-            u"VoGIS Profil Tool", self.iface.mainWindow())
-        # connect the action to the run method
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+            "VoGIS Profil Tool", self.iface.mainWindow())
+        self.action.triggered.connect(self.run)
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
-        #self.iface.addPluginToMenu(u"&VoGIS ProfilTool", self.action)
-        self.iface.addPluginToRasterMenu(u"&VoGIS ProfilTool", self.action)
+        self.iface.addPluginToRasterMenu("&VoGIS ProfilTool", self.action)
 
     def unload(self):
         # Remove the plugin menu item and icon
-        self.iface.removePluginMenu(u"&VoGIS ProfilTool", self.action)
+        self.iface.removePluginMenu("&VoGIS ProfilTool", self.action)
         self.iface.removeToolBarIcon(self.action)
 
     # run method that performs all the real work
     def run(self):
-
-        is_open = QSettings().value("vogisprofiltoolmain/isopen", False)
-        #Python treats almost everything as True````
-        #is_open = bool(is_open)
-        QgsMessageLog.logMessage(u'isopen: {0}'.format(is_open), 'VoGis')
-        #!!!string comparison
-        if is_open == 'true':
-            QgsMessageLog.logMessage(u'Dialog already opened', 'VoGis')
+        is_open = QgsSettings().value("vogisprofiltoolmain/isopen", False, bool)
+        QgsMessageLog.logMessage("Is open: {0}".format(is_open), "VoGis", Qgis.Info)
+        if is_open:
+            QgsMessageLog.logMessage(u"Dialog already opened", "VoGis", Qgis.Info)
             return
 
         try:
             import shapely
         except ImportError:
-            QMessageBox.warning(self.iface.mainWindow(),
-                                "VoGIS-Profiltool",
-                                'Library "shapely" not found. Please install!')
+            self.iface.messageBar().pushCritical(
+                "VoGIS-Profiltool",
+                "Library 'shapely' not found. Please install!")
             return
         except:
-            QMessageBox.warning(self.iface.mainWindow(),
-                                "VoGIS-Profiltool",
-                                'There seems to be a problem with your shapely/geos install.\nSee:\nhttp://comments.gmane.org/gmane.linux.debian.devel.bugs.general/1111838!')
+            self.iface.messageBar().pushCritical(
+                "VoGIS-Profiltool",
+                "There seems to be a problem with your shapely/geos install.\nSee:\nhttp://comments.gmane.org/gmane.linux.debian.devel.bugs.general/1111838!")
             return
 
         self.settings = Settings(self.__getMapData())
-        #QMessageBox.warning(self.iface.mainWindow(), "VoGIS-Profiltool", "lines:" + str(self.settings.mapData.lines.count()) + " rasters:" + str(self.settings.mapData.rasters.count()))
 
         #checken ob raster und oder lines vorhanden sind
         #if self.settings.mapData.lines.count() < 1:
@@ -124,7 +112,7 @@ class VoGISProfilToolMain:
         if self.settings.mapData.rasters.count() < 1:
             retVal = QMessageBox.warning(self.iface.mainWindow(),
                                          "VoGIS-Profiltool",
-                                         QApplication.translate('code', 'Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?', None, QApplication.UnicodeUTF8),
+                                         QApplication.translate("code", "Keine Rasterebene vorhanden oder sichtbar! Nur hektometrieren?"),
                                          QMessageBox.Yes | QMessageBox.No,
                                          QMessageBox.Yes)
             if retVal == QMessageBox.No:
@@ -134,48 +122,46 @@ class VoGISProfilToolMain:
                 self.settings.createHekto = True
 
         try:
-            QSettings().setValue("vogisprofiltoolmain/isopen", True)
+            QgsSettings().setValue("vogisprofiltoolmain/isopen", True)
             # Create the dialog (after translation) and keep reference
             self.dlg = VoGISProfilToolMainDialog(self.iface, self.settings)
             # show the dialog
             self.dlg.show()
             # Run the dialog event loop
-            #result = self.dlg.exec_()
             self.dlg.exec_()
         finally:
-            QSettings().setValue("vogisprofiltoolmain/isopen", False)
+            QgsSettings().setValue("vogisprofiltoolmain/isopen", False)
 
 
     def __getMapData(self):
-
-        legend = self.iface.legendInterface()
-        avail_lyrs = legend.layers()
-
         raster_coll = RasterCollection()
         line_coll = LineCollection()
         poly_coll = PolygonCollection()
 
+        root = QgsProject.instance().layerTreeRoot()
+        avail_lyrs = root.findLayers()
+
         for lyr in avail_lyrs:
-            if legend.isLayerVisible(lyr):
-                lyr_type = lyr.type()
-                lyr_name = unicodedata.normalize('NFKD', unicode(lyr.name())).encode('ascii', 'ignore')
-                #lyr_name = unicodedata.normalize('NFKD', unicode(lyr.name()))
-                if lyr_type == 0:
+            if lyr.isVisible():
+                mapLayer = lyr.layer()
+                lyr_type = mapLayer.type()
+                lyr_name = mapLayer.name()
+                if lyr_type == QgsMapLayer.VectorLayer:
                     #vector
-                    if lyr.geometryType() == 1:
+                    if mapLayer.geometryType() == QgsWkbTypes.LineGeometry:
                         #Line
-                        new_line = Line(lyr.id(), lyr_name, lyr)
+                        new_line = Line(mapLayer.id(), lyr_name, mapLayer)
                         line_coll.addLine(new_line)
-                    elif lyr.geometryType() == 2:
+                    elif mapLayer.geometryType() == QgsWkbTypes.PolygonGeometry:
                         #Polygon
-                        new_poly = Polygon(lyr.id(), lyr_name, lyr)
+                        new_poly = Polygon(mapLayer.id(), lyr_name, mapLayer)
                         poly_coll.addPolygon(new_poly)
-                elif lyr_type == 1:
+                elif lyr_type == QgsMapLayer.RasterLayer:
                     #Raster
-                    QgsMessageLog.logMessage(u'[{0}] provider type: {1}'.format(lyr.name(), lyr.providerType()), 'VoGis')
-                    if lyr.providerType() == 'gdal':
-                        if lyr.bandCount() < 2:
-                            new_raster = Raster(lyr.id(), lyr_name, lyr)
+                    QgsMessageLog.logMessage("[{0}] provider type: {1}".format(lyr_name, mapLayer.providerType()), "VoGis", Qgis.Info)
+                    if mapLayer.providerType() == "gdal":
+                        if mapLayer.bandCount() < 2:
+                            new_raster = Raster(mapLayer.id(), lyr_name, mapLayer)
                             raster_coll.addRaster(new_raster)
 
         map_data = MapData()

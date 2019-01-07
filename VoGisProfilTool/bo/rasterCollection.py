@@ -4,10 +4,8 @@ class RasterCollection(object):
     def __init__(self):
         self.__rasters = []
 
-
     def addRaster(self, raster):
         self.__rasters.append(raster)
-
 
     def getById(self, id):
         if len(self.__rasters) < 1:
@@ -16,14 +14,11 @@ class RasterCollection(object):
             if raster.id == id:
                 return raster
 
-
     def count(self):
         return len(self.__rasters)
 
-
     def rasters(self):
         return self.__rasters
-
 
     def selectedRasters(self):
         sel_rasters = []
