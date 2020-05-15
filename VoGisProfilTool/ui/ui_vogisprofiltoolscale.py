@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolscale.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_VoGISProfilToolScale(object):
     def setupUi(self, VoGISProfilToolScale):
@@ -64,4 +66,3 @@ class Ui_VoGISProfilToolScale(object):
         self.cmbDpi.setItemText(2, _translate("VoGISProfilToolScale", "150"))
         self.cmbDpi.setItemText(3, _translate("VoGISProfilToolScale", "300"))
         self.cmbDpi.setItemText(4, _translate("VoGISProfilToolScale", "600"))
-

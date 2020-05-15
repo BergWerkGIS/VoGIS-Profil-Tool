@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolplot.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_VoGISProfilToolPlot(object):
     def setupUi(self, VoGISProfilToolPlot):
@@ -132,4 +134,3 @@ class Ui_VoGISProfilToolPlot(object):
         self.IDC_bText.setText(_translate("VoGISProfilToolPlot", "Textdatei"))
         self.IDC_bExcel.setText(_translate("VoGISProfilToolPlot", "Excel / CSV"))
         self.btnAddLayout.setText(_translate("VoGISProfilToolPlot", "Zum Layout hinzufügen"))
-

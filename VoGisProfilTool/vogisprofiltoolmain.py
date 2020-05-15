@@ -49,6 +49,8 @@ class VoGISProfilToolMain:
         self.iface = iface
         self.settings = None
 
+        QgsSettings().setValue("vogisprofiltoolmain/isopen", False)
+
         overrideLocale = QgsSettings().value("locale/overrideFlag", False, bool)
         if not overrideLocale:
             locale = QLocale.system().name()[:2]

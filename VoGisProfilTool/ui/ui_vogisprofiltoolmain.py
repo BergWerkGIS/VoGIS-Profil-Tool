@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoolmain.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_VoGISProfilToolMain(object):
     def setupUi(self, VoGISProfilToolMain):
@@ -275,4 +277,3 @@ class Ui_VoGISProfilToolMain(object):
         self.label_5.setText(_translate("VoGISProfilToolMain", "Nodata (Export)"))
         self.IDC_lblCreateStatus.setText(_translate("VoGISProfilToolMain", "0/0"))
         self.grpCadastre.setTitle(_translate("VoGISProfilToolMain", "Kataster Verschneidung"))
-

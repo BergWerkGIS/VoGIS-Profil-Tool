@@ -14,7 +14,7 @@ qgisMinimumVersion=3.4
 qgisMaximumVersion=3.99
 about=Create profiles from DEMs using vector geometries or a digitized line.
 description=Create profiles from DEMs using vector geometries or a digitized line.
-version=3.0.2
+version=3.0.3
 author=BergWerk GIS
 email=wb@BergWerk-GIS.at
 
@@ -24,8 +24,14 @@ email=wb@BergWerk-GIS.at
 
 # Uncomment the following line and add your changelog entries:
 changelog=
-  3.0.2 - 20190107:
+  <p>3.0.3 - 20200515:
+  * Fix dialog not opening after QGIS crash
+  <p>3.0.2 - 20190107:
   * Fix translation errors
+
+
+## old changelog, keep actual changelog short, otherwise it doesn't display in QGIS
+old_changelog=dgdfgsfs
   3.0.1 - 20181110 (internal testing):
   * Updated for LTR 3.4
   * French translation by @kikislater https://github.com/BergWerkGIS/VoGIS-Profil-Tool/pull/14

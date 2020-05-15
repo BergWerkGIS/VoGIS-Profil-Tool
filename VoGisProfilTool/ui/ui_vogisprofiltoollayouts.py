@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'ui/ui_vogisprofiltoollayouts.ui'
 #
-# Created by: PyQt5 UI code generator 5.10.1
+# Created by: PyQt5 UI code generator 5.14.1
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_VoGISProfilToolLayouts(object):
     def setupUi(self, VoGISProfilToolLayouts):
@@ -35,4 +37,3 @@ class Ui_VoGISProfilToolLayouts(object):
         _translate = QtCore.QCoreApplication.translate
         VoGISProfilToolLayouts.setWindowTitle(_translate("VoGISProfilToolLayouts", "Layout wählen"))
         self.label.setText(_translate("VoGISProfilToolLayouts", "Layout verwenden"))
-

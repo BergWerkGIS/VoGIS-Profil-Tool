@@ -2,7 +2,7 @@
 <plugins>
     <pyqgis_plugin name="VoGIS-ProfilTool" version="3.0.2">
         <description><![CDATA[Create profiles from DHMs using vector geometries or a digitized line.]]></description>
-        <version>3.0.2</version>
+        <version>3.0.3</version>
         <qgis_minimum_version>3.4</qgis_minimum_version>
         <qgis_maximum_version>3.99.0</qgis_maximum_version>
         <homepage>https://github.com/BergWerkGIS/VoGIS-Profil-Tool/</homepage>
